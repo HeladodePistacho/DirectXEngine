@@ -1,5 +1,5 @@
 #include <Windows.h>
-
+#include <iostream>
 
 class Window
 {
@@ -33,6 +33,7 @@ private:
 	static LRESULT CALLBACK HandleMsgThunk(HWND handle, UINT message, WPARAM w_param, LPARAM l_param);
 	LRESULT HanldeMessage(HWND handle, UINT message, WPARAM w_param, LPARAM l_param);
 
+	std::string TranslateError(HRESULT);
 private:
 	int width, height;
 	HWND window_handle;

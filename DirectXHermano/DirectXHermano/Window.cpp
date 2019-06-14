@@ -1,4 +1,5 @@
 #include "Window.h"
+#include "ErrorHandling.h"
 
 //----------------------WINDOW CLASS-----------------------
 Window::WindowClass Window::WindowClass::singleton_window_class;
@@ -38,13 +39,24 @@ Window::Window(int width, int height, const char* name)
 	window_rect.right = window_rect.left + width;
 	window_rect.bottom = window_rect.top + height;
 
-	AdjustWindowRect(&window_rect, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE);
+	if(FAILED(AdjustWindowRect(&window_rect, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE)))
+	{
+		custom_exception error("Window Error", TranslateError(GetLastError()).c_str());
+		throw error;	 
+	}
 
 	window_handle = CreateWindow(
 		WindowClass::GetName(), name,
 		WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,
 		CW_USEDEFAULT, CW_USEDEFAULT, width, height,
 		nullptr, nullptr, WindowClass::GetInstance(), this);
+
+	if (window_handle == nullptr)
+	{
+		
+		custom_exception error("Window Error", TranslateError(GetLastError()).c_str());
+		throw error;
+	}
 
 	ShowWindow(window_handle, SW_SHOWDEFAULT);
 }
@@ -113,4 +125,22 @@ LRESULT Window::HanldeMessage(HWND handle, UINT message, WPARAM w_param, LPARAM 
 	//	break;
 	}
 	return DefWindowProc(handle, message, w_param, l_param);
+}
+
+std::string Window::TranslateError(HRESULT error)
+{
+	char* error_char = nullptr;
+	DWORD message_lenght = FormatMessage(
+		FORMAT_MESSAGE_ALLOCATE_BUFFER |
+		FORMAT_MESSAGE_FROM_SYSTEM |
+		FORMAT_MESSAGE_IGNORE_INSERTS,
+		nullptr,
+		error, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), reinterpret_cast<LPSTR>(&error_char), 0, nullptr);
+
+	if (message_lenght == 0)
+		return "UNKNOWN ERROR";
+
+	std::string tmp = error_char;
+	LocalFree(error_char);
+	return tmp;
 }
