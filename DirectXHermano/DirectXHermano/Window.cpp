@@ -39,7 +39,7 @@ Window::Window(int width, int height, const char* name)
 	window_rect.right = window_rect.left + width;
 	window_rect.bottom = window_rect.top + height;
 
-	if(FAILED(AdjustWindowRect(&window_rect, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE)))
+	if(AdjustWindowRect(&window_rect, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE) == 0)
 	{
 		custom_exception error("Window Error", TranslateError(GetLastError()).c_str());
 		throw error;	 
@@ -64,6 +64,15 @@ Window::Window(int width, int height, const char* name)
 Window::~Window()
 {
 	DestroyWindow(window_handle);
+}
+
+void Window::SetWindowTitle(const char * name)
+{
+	if (SetWindowText(window_handle, name) == 0)
+	{
+		custom_exception error("Window Error", TranslateError(GetLastError()).c_str());
+		throw error;
+	}
 }
 
 LRESULT Window::HandleMsgSetup(HWND handle, UINT message, WPARAM w_param, LPARAM l_param)
@@ -126,12 +135,48 @@ LRESULT Window::HanldeMessage(HWND handle, UINT message, WPARAM w_param, LPARAM 
 		keyboard.OnChar(static_cast<unsigned char>(w_param));
 		break;
 	
-	//	//Mouse Input Messages
-	//case WM_LBUTTONDOWN:
-	//	POINTS mouse_pos = MAKEPOINTS(l_param);
-	//
-	//
-	//	break;
+		//Mouse Input Messages
+	case WM_MOUSEMOVE:
+	{
+		POINTS mouse_pos = MAKEPOINTS(l_param);
+		mouse.OnMouseMove(mouse_pos.x, mouse_pos.y);
+	}
+	case WM_LBUTTONDOWN:
+	{
+		POINTS mouse_pos = MAKEPOINTS(l_param);
+		mouse.OnLeftPressed(mouse_pos.x, mouse_pos.y);
+		break;
+	}
+	case WM_LBUTTONUP:
+	{
+		POINTS mouse_pos = MAKEPOINTS(l_param);
+		mouse.OnLeftReleased(mouse_pos.x, mouse_pos.y);
+		break;
+	}
+	case WM_RBUTTONDOWN:
+	{
+		POINTS mouse_pos = MAKEPOINTS(l_param);
+		mouse.OnRightPressed(mouse_pos.x, mouse_pos.y);
+		break;
+	}
+	case WM_RBUTTONUP:
+	{
+		POINTS mouse_pos = MAKEPOINTS(l_param);
+		mouse.OnRightReleased(mouse_pos.x, mouse_pos.y);
+		break;
+	}
+	case WM_MOUSEWHEEL:
+	{
+		POINTS mouse_pos = MAKEPOINTS(l_param);
+		if (GET_WHEEL_DELTA_WPARAM(w_param) > 0)
+			mouse.OnWheelUp(mouse_pos.x, mouse_pos.y);
+		else
+		{
+			if (GET_WHEEL_DELTA_WPARAM(w_param) < 0)
+				mouse.OnWheelDown(mouse_pos.x, mouse_pos.y);
+		}
+		break;
+	}
 	}
 	return DefWindowProc(handle, message, w_param, l_param);
 }
