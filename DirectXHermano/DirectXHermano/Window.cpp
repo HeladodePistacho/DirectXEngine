@@ -31,24 +31,12 @@ Window::WindowClass::~WindowClass()
 
 //---------------------- WINDOW -----------------------
 
-Window::Window(int width, int height, const char* name)
+Window::Window(int _width, int _height, const char* name)
 {
-	RECT window_rect;
-	window_rect.left = 100;
-	window_rect.top = 100;
-	window_rect.right = window_rect.left + width;
-	window_rect.bottom = window_rect.top + height;
-
-	if(AdjustWindowRect(&window_rect, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE) == 0)
-	{
-		custom_exception error("Window Error", TranslateError(GetLastError()).c_str());
-		throw error;	 
-	}
-
 	window_handle = CreateWindow(
 		WindowClass::GetName(), name,
 		WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,
-		CW_USEDEFAULT, CW_USEDEFAULT, width, height,
+		CW_USEDEFAULT, CW_USEDEFAULT, _width, _height,
 		nullptr, nullptr, WindowClass::GetInstance(), this);
 
 	if (window_handle == nullptr)
@@ -57,6 +45,12 @@ Window::Window(int width, int height, const char* name)
 		custom_exception error("Window Error", TranslateError(GetLastError()).c_str());
 		throw error;
 	}
+
+	RECT rect_size;
+	GetClientRect(window_handle, &rect_size);
+
+	width = rect_size.right;
+	height = rect_size.bottom;
 
 	ShowWindow(window_handle, SW_SHOWDEFAULT);
 }
@@ -139,7 +133,34 @@ LRESULT Window::HanldeMessage(HWND handle, UINT message, WPARAM w_param, LPARAM 
 	case WM_MOUSEMOVE:
 	{
 		POINTS mouse_pos = MAKEPOINTS(l_param);
-		mouse.OnMouseMove(mouse_pos.x, mouse_pos.y);
+
+		//Look if mouse is inside window region
+		if (mouse_pos.x >= 0 && mouse_pos.x < width && mouse_pos.y >= 0 && mouse_pos.y < height)
+		{
+			mouse.OnMouseMove(mouse_pos.x, mouse_pos.y);
+
+			if (!mouse.IsInWindow())
+			{
+				SetCapture(window_handle);
+				mouse.OnMouseEnter();
+			}
+		}
+		else
+		{
+			//If it is outside keep moving if some button is down
+			if (mouse.LeftIsPressed() || mouse.RightIsPressed())
+			{
+				mouse.OnMouseMove(mouse_pos.x, mouse_pos.y);
+			}
+			else
+			{
+				ReleaseCapture();
+				mouse.OnMouseLeave();
+			}
+		}
+
+		
+		break;
 	}
 	case WM_LBUTTONDOWN:
 	{

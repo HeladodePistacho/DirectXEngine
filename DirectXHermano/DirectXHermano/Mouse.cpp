@@ -40,6 +40,22 @@ void Mouse::OnMouseMove(int x, int y)
 
 }
 
+void Mouse::OnMouseEnter()
+{
+	is_in_window = true;
+
+	mouse_event_buffer.push(Mouse::Event(Mouse::Event::MOUSE_EVENT_TYPE::ENTER, (*this)));
+	TrimBuffer();
+}
+
+void Mouse::OnMouseLeave()
+{
+	is_in_window = false;
+
+	mouse_event_buffer.push(Mouse::Event(Mouse::Event::MOUSE_EVENT_TYPE::LEAVE, (*this)));
+	TrimBuffer();
+}
+
 void Mouse::OnLeftPressed(int x, int y)
 {
 	left_is_pressed = true;

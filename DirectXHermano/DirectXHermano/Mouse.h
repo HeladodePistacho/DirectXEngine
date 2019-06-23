@@ -21,6 +21,9 @@ public:
 			WHEEL_DOWN,
 			MOVE,
 
+			ENTER,
+			LEAVE,
+
 			INVALID
 		};
 
@@ -58,6 +61,7 @@ public:
 
 	bool LeftIsPressed() const { return left_is_pressed; }
 	bool RightIsPressed() const { return right_is_pressed; }
+	bool IsInWindow() const { return is_in_window; }
 
 	Mouse::Event ReadEvent();
 	bool IsEmpty() const;
@@ -66,6 +70,8 @@ public:
 
 private:
 	void OnMouseMove(int x, int y);
+	void OnMouseEnter();
+	void OnMouseLeave();
 	void OnLeftPressed(int x, int y);
 	void OnLeftReleased(int x, int y);
 	void OnRightPressed(int x, int y);
@@ -81,6 +87,7 @@ private:
 	int x, y;
 	bool left_is_pressed = false;
 	bool right_is_pressed = false;
+	bool is_in_window = false;
 
 	std::queue<Event> mouse_event_buffer;
 };
