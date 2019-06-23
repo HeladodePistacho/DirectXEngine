@@ -189,13 +189,9 @@ LRESULT Window::HanldeMessage(HWND handle, UINT message, WPARAM w_param, LPARAM 
 	case WM_MOUSEWHEEL:
 	{
 		POINTS mouse_pos = MAKEPOINTS(l_param);
-		if (GET_WHEEL_DELTA_WPARAM(w_param) > 0)
-			mouse.OnWheelUp(mouse_pos.x, mouse_pos.y);
-		else
-		{
-			if (GET_WHEEL_DELTA_WPARAM(w_param) < 0)
-				mouse.OnWheelDown(mouse_pos.x, mouse_pos.y);
-		}
+		const int delta = GET_WHEEL_DELTA_WPARAM(w_param);
+		mouse.OnWeheelDelta(mouse_pos.x, mouse_pos.y, delta);
+		
 		break;
 	}
 	}

@@ -1,4 +1,6 @@
 #pragma once
+#define WHEEL_DELTA 120
+
 #include <queue>
 
 class Mouse
@@ -78,7 +80,7 @@ private:
 	void OnRightReleased(int x, int y);
 	void OnWheelUp(int x, int y);
 	void OnWheelDown(int x, int y);
-
+	void OnWeheelDelta(int x, int y, int delta);
 	void TrimBuffer();
 
 
@@ -88,6 +90,7 @@ private:
 	bool left_is_pressed = false;
 	bool right_is_pressed = false;
 	bool is_in_window = false;
+	int mouse_wheel_delta = 0;
 
 	std::queue<Event> mouse_event_buffer;
 };

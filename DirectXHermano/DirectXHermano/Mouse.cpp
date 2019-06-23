@@ -100,6 +100,22 @@ void Mouse::OnWheelDown(int x, int y)
 	TrimBuffer();
 }
 
+void Mouse::OnWeheelDelta(int x, int y, int delta)
+{
+	mouse_wheel_delta += delta;
+	while (mouse_wheel_delta >= WHEEL_DELTA)
+	{
+		mouse_wheel_delta -= WHEEL_DELTA;
+		OnWheelUp(x, y);
+	}
+
+	while (mouse_wheel_delta <= -WHEEL_DELTA)
+	{
+		mouse_wheel_delta += WHEEL_DELTA;
+		OnWheelDown(x, y);
+	}
+}
+
 void Mouse::TrimBuffer()
 {
 	while (mouse_event_buffer.size() > buffer_sizze)
