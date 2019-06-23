@@ -105,18 +105,27 @@ LRESULT Window::HanldeMessage(HWND handle, UINT message, WPARAM w_param, LPARAM 
 		return 0;
 		break;
 
-	//	//Keyboard Input Messages
-	//case WM_KEYDOWN:
-	//
-	//	break;
-	//
-	//case WM_KEYUP:
-	//	break;
-	//
-	//case WM_CHAR:
-	//
-	//	break;
-	//
+		//Clear Key states when we change the focused window to avoid zombie key events
+	case WM_KILLFOCUS:
+		keyboard.ClearState();
+		break;
+
+		//Keyboard Input Messages
+	case WM_KEYDOWN:
+	case WM_SYSKEYDOWN:
+		//Bit 30 -> 0x40000000 is equals to 1 if the key was before, so we want only to get keydown when it is 0
+		if(!(l_param & 0x40000000) || keyboard.IsRepeatEnabled())
+			keyboard.OnKeyPressed(static_cast<unsigned char>(w_param));
+		break;
+	
+	case WM_KEYUP:
+		keyboard.OnKeyReleased(static_cast<unsigned char>(w_param));
+		break;
+	
+	case WM_CHAR:
+		keyboard.OnChar(static_cast<unsigned char>(w_param));
+		break;
+	
 	//	//Mouse Input Messages
 	//case WM_LBUTTONDOWN:
 	//	POINTS mouse_pos = MAKEPOINTS(l_param);

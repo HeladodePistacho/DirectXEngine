@@ -1,5 +1,6 @@
 #include <Windows.h>
 #include <iostream>
+#include "KeyBoard.h"
 
 class Window
 {
@@ -28,6 +29,7 @@ public:
 	~Window();
 	Window& operator=(const Window&) = delete;
 
+	KeyBoard keyboard;
 private:
 	static LRESULT CALLBACK HandleMsgSetup(HWND handle, UINT message, WPARAM w_param, LPARAM l_param); //Connect our Window Instance with the Message Handling system
 	static LRESULT CALLBACK HandleMsgThunk(HWND handle, UINT message, WPARAM w_param, LPARAM l_param);
