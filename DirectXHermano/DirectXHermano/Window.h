@@ -1,4 +1,5 @@
-#include <Windows.h>
+#define MESSAGE_OK 1
+#include "Fast.h"
 #include <iostream>
 
 #include "KeyBoard.h"
@@ -35,6 +36,7 @@ public:
 	Mouse	 mouse;
 
 	void SetWindowTitle(const char* name);
+	static int ProcessMessages();
 private:
 	static LRESULT CALLBACK HandleMsgSetup(HWND handle, UINT message, WPARAM w_param, LPARAM l_param); //Connect our Window Instance with the Message Handling system
 	static LRESULT CALLBACK HandleMsgThunk(HWND handle, UINT message, WPARAM w_param, LPARAM l_param);
