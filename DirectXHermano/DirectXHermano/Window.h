@@ -4,6 +4,7 @@
 
 #include "KeyBoard.h"
 #include "Mouse.h"
+#include "Render.h"
 
 class Window
 {
@@ -34,6 +35,7 @@ public:
 
 	KeyBoard keyboard;
 	Mouse	 mouse;
+	Render&  GetRender() const { return *window_render; }
 
 	void SetWindowTitle(const char* name);
 	static int ProcessMessages();
@@ -46,4 +48,5 @@ private:
 private:
 	int width, height;
 	HWND window_handle;
+	Render* window_render = nullptr;
 };

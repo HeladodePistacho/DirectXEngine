@@ -25,11 +25,7 @@ int DirectXApp::Start()
 
 void DirectXApp::Update(float dt)
 {
-	float time = timer.Peek();
-	
-	char buffer[256];
-	sprintf_s(buffer, "%f", time);
-	//
-	//window.SetWindowTitle("wasa");
-
+	//float time = (sin(timer.Peek()) / 2.0) + 0.5;
+	window.GetRender().ClearBuffer(0.5f, 0.5f, 0.5f);
+	window.GetRender().EndFrame();
 }

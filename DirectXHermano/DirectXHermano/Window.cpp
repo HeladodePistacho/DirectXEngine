@@ -53,6 +53,9 @@ Window::Window(int _width, int _height, const char* name)
 	height = rect_size.bottom;
 
 	ShowWindow(window_handle, SW_SHOWDEFAULT);
+
+	//Create graphics object
+	window_render = new Render(window_handle);
 }
 
 Window::~Window()
