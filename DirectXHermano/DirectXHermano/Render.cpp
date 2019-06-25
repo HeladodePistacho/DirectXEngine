@@ -78,15 +78,19 @@ void Render::DrawTestTriangle()
 
 	struct Vertex
 	{
+		//Pos
 		float x, y;
+
+		//Color
 		unsigned char r, g, b, a;
 	};
 
 	const Vertex vertex_data[] =
 	{   //Position    //Color
-		{ 0.0f, 0.5f,   255, 0, 0, 255 },
-		{ 0.5f, -0.5f,  0, 0, 255, 255 },
-		{ -0.5f, -0.5f, 0, 255, 0, 255 }
+		{ -1.0f, 0.0f, 255, 0, 0, 255 },
+		{ -1.0f, 1.0f, 0, 0, 255, 255 },
+		{ 0.0f, 0.0f,  0, 255, 0, 255 },
+		{ 0.0f, 1.0f,  255, 255, 255, 255 }
 	};
 
 	D3D11_BUFFER_DESC buffer_descriptor = {};
@@ -106,9 +110,41 @@ void Render::DrawTestTriangle()
 		custom_exception error("Render Error", "Triangle Buffer Creation Failed");
 		throw error;
 	}
+
+	//Bind Verex Buffer
 	const UINT offset = 0u;
 	direct_context->IASetVertexBuffers(0u, 1u, &vertex_buffer, &buffer_descriptor.StructureByteStride, &offset);
 
+	//Create Indices Buffer
+	const unsigned short indices_data[] =
+	{
+		0, 1, 2,
+		1, 3, 2
+	};
+
+	ID3D11Buffer* indices_buffer = nullptr;
+	D3D11_BUFFER_DESC indices_descriptor = {};
+	indices_descriptor.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	indices_descriptor.Usage = D3D11_USAGE_DEFAULT;
+	indices_descriptor.CPUAccessFlags = 0u;
+	indices_descriptor.MiscFlags = 0u;
+	indices_descriptor.ByteWidth = sizeof(indices_data);
+	indices_descriptor.StructureByteStride = sizeof(unsigned short);
+
+	D3D11_SUBRESOURCE_DATA indices = {};
+	indices.pSysMem = indices_data;
+
+	//Create the buffer
+	if (FAILED(direct_device->CreateBuffer(&indices_descriptor, &indices, &indices_buffer)))
+	{
+		custom_exception error("Render Error", "Triangle Indices Buffer Creation Failed");
+		throw error;
+	}
+
+	//Bind Index Buffer
+	direct_context->IASetIndexBuffer(indices_buffer, DXGI_FORMAT::DXGI_FORMAT_R16_UINT, 0u);
+
+	
 	//Create Vertex Shader
 	ID3D11VertexShader* vertex_shader = nullptr;
 	ID3DBlob* blob = nullptr;
@@ -145,13 +181,13 @@ void Render::DrawTestTriangle()
 	direct_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	D3D11_VIEWPORT view_port;
-	view_port.Width = 800;
-	view_port.Height = 600;
+	view_port.Width = 400;
+	view_port.Height = 300;
 	view_port.MinDepth = 0;
 	view_port.MaxDepth = 1;
-	view_port.TopLeftX = 0; 
-	view_port.TopLeftY = 0;
+	view_port.TopLeftX = 50; 
+	view_port.TopLeftY = 50;
 	direct_context->RSSetViewports(1u, &view_port);
 
-	direct_context->Draw(3u, 0u);
+	direct_context->DrawIndexed((UINT)std::size(indices_data), 0u, 0u );
 }
