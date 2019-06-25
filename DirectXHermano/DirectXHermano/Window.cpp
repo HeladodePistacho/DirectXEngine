@@ -51,6 +51,12 @@ Window::Window(int _width, int _height, const char* name)
 	width = rect_size.right;
 	height = rect_size.bottom;
 
+	//char buffer_1[256];
+	//sprintf_s(buffer_1, "Width: %i, Height: %i", width, height);
+	//
+	//custom_exception error("Window Error", buffer_1);
+	//throw error;
+
 	ShowWindow(window_handle, SW_SHOWDEFAULT);
 
 	//Create graphics object

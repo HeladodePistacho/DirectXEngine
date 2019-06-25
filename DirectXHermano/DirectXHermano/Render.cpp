@@ -2,8 +2,12 @@
 #include "ErrorHandling.h"
 #include <d3dcompiler.h>
 
+#include <DirectXMath.h>
+
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
+
+namespace Dx = DirectX;
 
 Render::Render(HWND window_handle)
 {
@@ -71,7 +75,7 @@ void Render::ClearBuffer(float r, float g, float b)
 	direct_context->ClearRenderTargetView(direct_render_target.Get(), color);
 }
 
-void Render::DrawTestTriangle()
+void Render::DrawTestTriangle(float angle, float x, float y)
 {
 	//Load Vertex buffer data
 	ID3D11Buffer* vertex_buffer = nullptr;
@@ -144,7 +148,43 @@ void Render::DrawTestTriangle()
 	//Bind Index Buffer
 	direct_context->IASetIndexBuffer(indices_buffer, DXGI_FORMAT::DXGI_FORMAT_R16_UINT, 0u);
 
+	//Create constant buffer for transformation matrix
+	struct ConstantBuffer
+	{
+		Dx::XMMATRIX transform;
+	};
+
+	const ConstantBuffer matrix =
+	{
+		{
+			Dx::XMMatrixTranspose(
+				Dx::XMMatrixRotationZ(angle) *
+				Dx::XMMatrixScaling(3.0f / 4.0f, 1.0f, 1.0f) *
+				Dx::XMMatrixTranslation(x, y, 0.0f)
+			)
+		}
+	};
 	
+	ID3D11Buffer* transform_buffer = nullptr;
+	D3D11_BUFFER_DESC transform_descriptor = {};
+	transform_descriptor.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	transform_descriptor.Usage = D3D11_USAGE_DYNAMIC;
+	transform_descriptor.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	transform_descriptor.MiscFlags = 0u;
+	transform_descriptor.ByteWidth = sizeof(matrix);
+	transform_descriptor.StructureByteStride = 0u;
+
+	D3D11_SUBRESOURCE_DATA transform_data = {};
+	transform_data.pSysMem = &matrix;
+
+	if (FAILED(direct_device->CreateBuffer(&transform_descriptor, &transform_data, &transform_buffer)))
+	{
+		custom_exception error("Render Error", "Triangle Indices Buffer Creation Failed");
+		throw error;
+	}
+
+	direct_context->VSSetConstantBuffers(0u, 1u, &transform_buffer);
+
 	//Create Vertex Shader
 	ID3D11VertexShader* vertex_shader = nullptr;
 	ID3DBlob* blob = nullptr;
@@ -181,12 +221,12 @@ void Render::DrawTestTriangle()
 	direct_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	D3D11_VIEWPORT view_port;
-	view_port.Width = 400;
-	view_port.Height = 300;
+	view_port.Width = 784;
+	view_port.Height = 561;
 	view_port.MinDepth = 0;
 	view_port.MaxDepth = 1;
-	view_port.TopLeftX = 50; 
-	view_port.TopLeftY = 50;
+	view_port.TopLeftX = 0; 
+	view_port.TopLeftY = 0;
 	direct_context->RSSetViewports(1u, &view_port);
 
 	direct_context->DrawIndexed((UINT)std::size(indices_data), 0u, 0u );

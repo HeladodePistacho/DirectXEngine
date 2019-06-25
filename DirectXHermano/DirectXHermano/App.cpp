@@ -26,6 +26,10 @@ int DirectXApp::Start()
 void DirectXApp::Update(float dt)
 {
 	window.GetRender().ClearBuffer(0.5f, 0.5f, 0.5f);
-	window.GetRender().DrawTestTriangle();
+	window.GetRender().DrawTestTriangle(
+		timer.Peek(), 
+		((window.mouse.GetPosX() / 784.0f) * 2.0f) - 1.0f,
+		((window.mouse.GetPosY() / 561.0f) * -2.0f) + 1.0f
+	);
 	window.GetRender().EndFrame();
 }

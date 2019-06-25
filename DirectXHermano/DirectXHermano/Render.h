@@ -15,7 +15,7 @@ public:
 	void EndFrame();
 	void ClearBuffer(float r, float g, float b);
 
-	void DrawTestTriangle();
+	void DrawTestTriangle(float angle, float x, float y);
 private:
 	Microsoft::WRL::ComPtr<ID3D11Device> direct_device;
 	Microsoft::WRL::ComPtr<IDXGISwapChain> direct_swap;
