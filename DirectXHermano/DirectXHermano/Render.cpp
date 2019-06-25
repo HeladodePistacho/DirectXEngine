@@ -1,9 +1,14 @@
 #include "Render.h"
+#include "ErrorHandling.h"
+#include <d3dcompiler.h>
 
 #pragma comment(lib, "d3d11.lib")
+#pragma comment(lib, "D3DCompiler.lib")
 
 Render::Render(HWND window_handle)
 {
+	custom_exception error("Render Error", "Unknown Error");
+
 	//Holds information configuration for D3D
 	DXGI_SWAP_CHAIN_DESC descriptor;
 	descriptor.BufferDesc.Width = 0;
@@ -22,38 +27,131 @@ Render::Render(HWND window_handle)
 	descriptor.Flags = 0;
 
 	//Create the Device, the swap chain and the rendring context
-	D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, nullptr, 0, D3D11_SDK_VERSION, &descriptor, &direct_swap, &direct_device, nullptr, &direct_context);
+	if (FAILED(D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, nullptr, 0, D3D11_SDK_VERSION, &descriptor, &direct_swap, &direct_device, nullptr, &direct_context)))
+	{ 
+		error.Fill("Render Error", "Error while Creating the Device and Swap Chain");
+		throw error;
+	}
 
 	//Get acces to swap chain texture
-	ID3D11Resource* swap_back_buffer = nullptr;
-	direct_swap->GetBuffer(0, __uuidof(ID3D11Resource), (void**)&swap_back_buffer);
-	direct_device->CreateRenderTargetView(swap_back_buffer, nullptr, &direct_render_target);
-	swap_back_buffer->Release();
-}
-
-Render::~Render()
-{
-	if (direct_device != nullptr)
-		direct_device->Release();
-
-	if (direct_swap != nullptr)
-		direct_swap->Release();
-
-	if (direct_context != nullptr)
-		direct_context->Release();
-
-	if (direct_render_target != nullptr)
-		direct_render_target->Release();
+	Microsoft::WRL::ComPtr<ID3D11Resource> swap_back_buffer;
+	if (FAILED(direct_swap->GetBuffer(0, __uuidof(ID3D11Resource), (void**)&swap_back_buffer)))
+	{
+		error.Fill("Render Error", "Error while Getting the Buffer from Swap Chain");
+		throw error;
+	}
+	
+	if (FAILED(direct_device->CreateRenderTargetView(swap_back_buffer.Get(), nullptr, &direct_render_target)))
+	{
+		error.Fill("Render Error", "Error while Creating Render Target View");
+		throw error;
+	}
+	
 }
 
 void Render::EndFrame()
 {
+	HRESULT hr;
+
 	//Swaps buffers -> 1u = 60fps, 2u = 30fps
-	direct_swap->Present(1u, 0u);
+	if (FAILED(hr = direct_swap->Present(1u, 0u)))
+	{
+		custom_exception error("","");
+		if (hr == DXGI_ERROR_DEVICE_REMOVED)
+			error.Fill("Render Error", "Device Removed, Possible Drivers Issue");
+		else error.Fill("Render Error", "Swapping Buffers Error");
+
+		throw error;
+	}
 }
 
 void Render::ClearBuffer(float r, float g, float b)
 {
 	const float color[] = { r, g, b, 1.0 };
-	direct_context->ClearRenderTargetView(direct_render_target, color);
+	direct_context->ClearRenderTargetView(direct_render_target.Get(), color);
+}
+
+void Render::DrawTestTriangle()
+{
+	//Load Vertex buffer data
+	ID3D11Buffer* vertex_buffer = nullptr;
+
+	struct Vertex
+	{
+		float x, y;
+		unsigned char r, g, b, a;
+	};
+
+	const Vertex vertex_data[] =
+	{   //Position    //Color
+		{ 0.0f, 0.5f,   255, 0, 0, 255 },
+		{ 0.5f, -0.5f,  0, 0, 255, 255 },
+		{ -0.5f, -0.5f, 0, 255, 0, 255 }
+	};
+
+	D3D11_BUFFER_DESC buffer_descriptor = {};
+	buffer_descriptor.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	buffer_descriptor.Usage = D3D11_USAGE_DEFAULT;
+	buffer_descriptor.CPUAccessFlags = 0u;
+	buffer_descriptor.MiscFlags = 0u;
+	buffer_descriptor.ByteWidth = sizeof(vertex_data);
+	buffer_descriptor.StructureByteStride = sizeof(Vertex);
+
+	D3D11_SUBRESOURCE_DATA vertices = {};
+	vertices.pSysMem = vertex_data;
+
+	//Create the buffer
+	if (FAILED(direct_device->CreateBuffer(&buffer_descriptor, &vertices, &vertex_buffer)))
+	{
+		custom_exception error("Render Error", "Triangle Buffer Creation Failed");
+		throw error;
+	}
+	const UINT offset = 0u;
+	direct_context->IASetVertexBuffers(0u, 1u, &vertex_buffer, &buffer_descriptor.StructureByteStride, &offset);
+
+	//Create Vertex Shader
+	ID3D11VertexShader* vertex_shader = nullptr;
+	ID3DBlob* blob = nullptr;
+	D3DReadFileToBlob(L"VertexShader.cso", &blob);
+	direct_device->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &vertex_shader);
+
+	//Bind Vertex Shader
+	direct_context->VSSetShader(vertex_shader, nullptr, 0u);
+	
+	//Create Pixel Shader
+	ID3D11PixelShader* pixel_shader = nullptr;
+	ID3DBlob* blob_2 = nullptr;
+	D3DReadFileToBlob(L"PixelShader.cso", &blob_2);
+	direct_device->CreatePixelShader(blob_2->GetBufferPointer(), blob_2->GetBufferSize(), nullptr, &pixel_shader);
+
+	//Bind Pixel Shader
+	direct_context->PSSetShader(pixel_shader, nullptr, 0u);
+	
+	//Tells the vertex shader how is structured the vertex input data
+	ID3D11InputLayout* input_layout = nullptr;
+	const D3D11_INPUT_ELEMENT_DESC input_descriptor[] =
+	{
+		{ "Position", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "Color", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, sizeof(float)*2, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+	};
+	direct_device->CreateInputLayout(input_descriptor, (UINT)std::size(input_descriptor), blob->GetBufferPointer(), blob->GetBufferSize(), &input_layout);
+
+	//Bind Vertex Layout
+	direct_context->IASetInputLayout(input_layout);
+
+	//Bind Render Target
+	direct_context->OMSetRenderTargets(1u, direct_render_target.GetAddressOf(), nullptr);
+
+	direct_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	D3D11_VIEWPORT view_port;
+	view_port.Width = 800;
+	view_port.Height = 600;
+	view_port.MinDepth = 0;
+	view_port.MaxDepth = 1;
+	view_port.TopLeftX = 0; 
+	view_port.TopLeftY = 0;
+	direct_context->RSSetViewports(1u, &view_port);
+
+	direct_context->Draw(3u, 0u);
 }

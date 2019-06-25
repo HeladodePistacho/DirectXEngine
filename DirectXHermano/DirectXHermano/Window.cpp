@@ -41,7 +41,6 @@ Window::Window(int _width, int _height, const char* name)
 
 	if (window_handle == nullptr)
 	{
-		
 		custom_exception error("Window Error", TranslateError(GetLastError()).c_str());
 		throw error;
 	}
