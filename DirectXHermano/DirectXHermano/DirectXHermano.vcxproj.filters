@@ -16,28 +16,52 @@
     <Filter Include="Archivos de encabezado\Shaders">
       <UniqueIdentifier>{de13c981-1b7a-4ab1-94aa-cdc45892dad3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Archivos de encabezado\DirectX">
+      <UniqueIdentifier>{1f492517-69cd-4d4a-8260-407e1dd822f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de código fuente\DirectX">
+      <UniqueIdentifier>{14a5d98f-d25f-4ea8-b0f1-d780ee444d11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de código fuente\Resources">
+      <UniqueIdentifier>{df816e58-a8f6-4654-bebc-111f9dfa3b55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\Resources">
+      <UniqueIdentifier>{ac8e01df-a22b-49de-8446-1cb0ba20a309}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="WinMain.cpp">
-      <Filter>Archivos de recursos</Filter>
-    </ClCompile>
-    <ClCompile Include="Window.cpp">
-      <Filter>Archivos de recursos</Filter>
-    </ClCompile>
-    <ClCompile Include="KeyBoard.cpp">
-      <Filter>Archivos de recursos</Filter>
-    </ClCompile>
-    <ClCompile Include="Mouse.cpp">
-      <Filter>Archivos de recursos</Filter>
-    </ClCompile>
-    <ClCompile Include="App.cpp">
-      <Filter>Archivos de recursos</Filter>
-    </ClCompile>
-    <ClCompile Include="Render.cpp">
-      <Filter>Archivos de recursos</Filter>
-    </ClCompile>
     <ClCompile Include="ErrorHandling.cpp">
       <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="App.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="KeyBoard.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="Mouse.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="Render.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="Window.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="WinMain.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="Bindable.cpp">
+      <Filter>Archivos de código fuente\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="IndexBuffer.cpp">
+      <Filter>Archivos de código fuente\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexBuffer.cpp">
+      <Filter>Archivos de código fuente\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="InputLayout.cpp">
+      <Filter>Archivos de código fuente\DirectX</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -64,6 +88,27 @@
     </ClInclude>
     <ClInclude Include="Render.h">
       <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Bindable.h">
+      <Filter>Archivos de encabezado\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="ConstBuffers.h">
+      <Filter>Archivos de encabezado\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="IndexBuffer.h">
+      <Filter>Archivos de encabezado\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexBuffer.h">
+      <Filter>Archivos de encabezado\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="InputLayout.h">
+      <Filter>Archivos de encabezado\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="Topology.h">
+      <Filter>Archivos de encabezado\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderProgram.h">
+      <Filter>Archivos de encabezado\DirectX</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,7 +1,5 @@
 #include "Render.h"
 #include "ErrorHandling.h"
-#include <d3dcompiler.h>
-
 #include <DirectXMath.h>
 
 #pragma comment(lib, "d3d11.lib")
@@ -50,6 +48,17 @@ Render::Render(HWND window_handle)
 		error.Fill("Render Error", "Error while Creating Render Target View");
 		throw error;
 	}
+
+	direct_context->OMSetRenderTargets(1u, direct_render_target.GetAddressOf(), nullptr);
+
+	D3D11_VIEWPORT view_port;
+	view_port.Width = 784;
+	view_port.Height = 561;
+	view_port.MinDepth = 0;
+	view_port.MaxDepth = 1;
+	view_port.TopLeftX = 0;
+	view_port.TopLeftY = 0;
+	direct_context->RSSetViewports(1u, &view_port);
 	
 }
 
@@ -80,7 +89,7 @@ void Render::DrawTestTriangle(float angle, float x, float y)
 	//Load Vertex buffer data
 	ID3D11Buffer* vertex_buffer = nullptr;
 
-	struct Vertex
+	struct Vertexo
 	{
 		//Pos
 		float x, y;
@@ -89,7 +98,7 @@ void Render::DrawTestTriangle(float angle, float x, float y)
 		unsigned char r, g, b, a;
 	};
 
-	const Vertex vertex_data[] =
+	const Vertexo vertex_data[] =
 	{   //Position    //Color
 		{ -1.0f, 0.0f, 255, 0, 0, 255 },
 		{ -1.0f, 1.0f, 0, 0, 255, 255 },
@@ -103,7 +112,7 @@ void Render::DrawTestTriangle(float angle, float x, float y)
 	buffer_descriptor.CPUAccessFlags = 0u;
 	buffer_descriptor.MiscFlags = 0u;
 	buffer_descriptor.ByteWidth = sizeof(vertex_data);
-	buffer_descriptor.StructureByteStride = sizeof(Vertex);
+	buffer_descriptor.StructureByteStride = sizeof(Vertexo);
 
 	D3D11_SUBRESOURCE_DATA vertices = {};
 	vertices.pSysMem = vertex_data;
