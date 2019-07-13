@@ -41,8 +41,8 @@ Window::Window(int _width, int _height, const char* name)
 
 	if (window_handle == nullptr)
 	{
-		custom_exception error("Window Error", TranslateError(GetLastError()).c_str());
-		throw error;
+		//custom_exception error("Window Error", TranslateError(GetLastError()).c_str());
+		//throw error;
 	}
 
 	RECT rect_size;
@@ -60,20 +60,23 @@ Window::Window(int _width, int _height, const char* name)
 	ShowWindow(window_handle, SW_SHOWDEFAULT);
 
 	//Create graphics object
-	window_render = new Render(window_handle);
+	window_render = new Render(window_handle, width, height);
 }
 
 Window::~Window()
 {
 	DestroyWindow(window_handle);
+
+	if (window_render)
+		delete window_render;
 }
 
 void Window::SetWindowTitle(const char * name)
 {
 	if (SetWindowText(window_handle, name) == 0)
-	{
-		custom_exception error("Window Error", TranslateError(GetLastError()).c_str());
-		throw error;
+	{  
+		//custom_exception error("Window Error", TranslateError(GetLastError()).c_str());
+		//throw error;
 	}
 }
 

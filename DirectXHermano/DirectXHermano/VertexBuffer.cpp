@@ -17,8 +17,8 @@ VertexBuffer::VertexBuffer(Render & ren, std::vector<Vertex> vertices)
 	HRESULT hr;
 	if (FAILED(hr = GetDevice(ren)->CreateBuffer(&buffer_descriptor, &vertices_data, &buffer_data)))
 	{
-		custom_exception error("Render Error", "Triangle Buffer Creation Failed");
-		throw error;
+		//custom_exception error("Render Error", "Triangle Buffer Creation Failed");
+		//throw error;
 	}
 }
 

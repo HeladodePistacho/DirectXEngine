@@ -17,8 +17,8 @@ IndexBuffer::IndexBuffer(Render & ren, const std::vector<unsigned short>& indice
 	//Create the buffer
 	if (FAILED(GetDevice(ren)->CreateBuffer(&indices_descriptor, &indices_data, &buffer_data)))
 	{
-		custom_exception error("Render Error", "Triangle Indices Buffer Creation Failed");
-		throw error;
+		//custom_exception error("Render Error", "Triangle Indices Buffer Creation Failed");
+		//throw error;
 	}
 }
 

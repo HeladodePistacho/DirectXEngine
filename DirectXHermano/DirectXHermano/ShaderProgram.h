@@ -8,8 +8,8 @@ public:
 	{
 		if (FAILED(D3DReadFileToBlob(name, &byte_code)))
 		{
-			custom_exception error("RENDER ERROR", "VERTEX SHADER FAILED TO LOAD");
-			throw error;
+			//custom_exception error("RENDER ERROR", "VERTEX SHADER FAILED TO LOAD");
+			//throw error;
 		}
 
 		GetDevice(ren)->CreateVertexShader(byte_code->GetBufferPointer(), byte_code->GetBufferSize(), nullptr, &vertex_shader);
@@ -44,8 +44,8 @@ public:
 	{
 		if (FAILED(D3DReadFileToBlob(name, &byte_code)))
 		{
-			custom_exception error("RENDER ERROR", "PIXEL SHADER FAILED TO LOAD");
-			throw error;
+			//custom_exception error("RENDER ERROR", "PIXEL SHADER FAILED TO LOAD");
+			//throw error;
 		}
 
 		GetDevice(ren)->CreatePixelShader(byte_code->GetBufferPointer(), byte_code->GetBufferSize(), nullptr, &pixel_shader);
@@ -103,8 +103,8 @@ public:
 		}
 		else
 		{
-			custom_exception error("RENDER ERROR", "SHADER PROGRAM MISS ONE SHADER TO LOAD");
-			throw error;
+			//custom_exception error("RENDER ERROR", "SHADER PROGRAM MISS ONE SHADER TO LOAD");
+			//throw error;
 		}
 
 	}

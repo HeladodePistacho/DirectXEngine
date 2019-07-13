@@ -4,8 +4,8 @@ InputLayout::InputLayout(Render& ren, const std::vector<D3D11_INPUT_ELEMENT_DESC
 {
 	if (FAILED(GetDevice(ren)->CreateInputLayout(layout.data(), (UINT)std::size(layout), vertex_shader_bytecode->GetBufferPointer(), vertex_shader_bytecode->GetBufferSize(), &input_layout)))
 	{
-		custom_exception error("Render Error", "Input Layout Creation Failed");
-		throw error;
+		//custom_exception error("Render Error", "Input Layout Creation Failed");
+		//throw error;
 	}
 }
 

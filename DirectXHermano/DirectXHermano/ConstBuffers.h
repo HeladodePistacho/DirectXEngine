@@ -27,8 +27,8 @@ public:
 
 		if (FAILED(GetDevice(ren)->CreateBuffer(&descriptor, &data, &constant_buffer)))
 		{
-			custom_exception error("Render Error", "Triangle Indices Buffer Creation Failed");
-			throw error;
+			//custom_exception error("Render Error", "Triangle Indices Buffer Creation Failed");
+			//throw error;
 		}
 	}
 
@@ -53,14 +53,16 @@ public:
 		switch (type)
 		{
 		case UNDEFINED:
-			custom_exception error("Render Error", "Undefined Constant Buffer type");
-			throw error;
+		{
+			//custom_exception error("Render Error", "Undefined Constant Buffer type");
+			//throw error;
+		}
 			break;
 		case VERTEX_SHADER_BUFFER:
-			GetContext(ren)->VSSetConstantBuffers(0u, 1u, constant_buffer);
+			GetContext(ren)->VSSetConstantBuffers(0u, 1u, &constant_buffer);
 			break;
 		case PIXEL_SHADER_BUFFER:
-			GetContext(ren)->PSSetConstantBuffers(0u, 1u, constant_buffer);
+			GetContext(ren)->PSSetConstantBuffers(0u, 1u, &constant_buffer);
 			break;
 		}
 	}
