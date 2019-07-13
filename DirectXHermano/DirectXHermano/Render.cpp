@@ -1,15 +1,16 @@
 #include "Render.h"
 #include "ErrorHandling.h"
 #include <DirectXMath.h>
+#include "Camera.h"
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
 
 namespace Dx = DirectX;
 
-Render::Render(HWND window_handle)
+Render::Render(HWND window_handle, int width, int height)
 {
-	custom_exception error("Render Error", "Unknown Error");
+	//custom_exception error("Render Error", "Unknown Error");
 
 	//Holds information configuration for D3D
 	DXGI_SWAP_CHAIN_DESC descriptor;
@@ -31,35 +32,42 @@ Render::Render(HWND window_handle)
 	//Create the Device, the swap chain and the rendring context
 	if (FAILED(D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, nullptr, 0, D3D11_SDK_VERSION, &descriptor, &direct_swap, &direct_device, nullptr, &direct_context)))
 	{ 
-		error.Fill("Render Error", "Error while Creating the Device and Swap Chain");
-		throw error;
+		//error.Fill("Render Error", "Error while Creating the Device and Swap Chain");
+		//throw error;
 	}
 
 	//Get acces to swap chain texture
 	Microsoft::WRL::ComPtr<ID3D11Resource> swap_back_buffer;
 	if (FAILED(direct_swap->GetBuffer(0, __uuidof(ID3D11Resource), (void**)&swap_back_buffer)))
 	{
-		error.Fill("Render Error", "Error while Getting the Buffer from Swap Chain");
-		throw error;
+		//error.Fill("Render Error", "Error while Getting the Buffer from Swap Chain");
+		//throw error;
 	}
 	
 	if (FAILED(direct_device->CreateRenderTargetView(swap_back_buffer.Get(), nullptr, &direct_render_target)))
 	{
-		error.Fill("Render Error", "Error while Creating Render Target View");
-		throw error;
+		//error.Fill("Render Error", "Error while Creating Render Target View");
+		//throw error;
 	}
 
 	direct_context->OMSetRenderTargets(1u, direct_render_target.GetAddressOf(), nullptr);
 
-	D3D11_VIEWPORT view_port;
-	view_port.Width = 784;
-	view_port.Height = 561;
+	//Set viewport settings
+	view_port.Width = width;
+	view_port.Height = height;
 	view_port.MinDepth = 0;
 	view_port.MaxDepth = 1;
 	view_port.TopLeftX = 0;
 	view_port.TopLeftY = 0;
 	direct_context->RSSetViewports(1u, &view_port);
-	
+
+	main_camera = new Camera((*this), view_port.Width, view_port.Height);
+}
+
+Render::~Render()
+{
+	if (main_camera)
+		delete main_camera;
 }
 
 void Render::EndFrame()
@@ -69,12 +77,12 @@ void Render::EndFrame()
 	//Swaps buffers -> 1u = 60fps, 2u = 30fps
 	if (FAILED(hr = direct_swap->Present(1u, 0u)))
 	{
-		custom_exception error("","");
-		if (hr == DXGI_ERROR_DEVICE_REMOVED)
-			error.Fill("Render Error", "Device Removed, Possible Drivers Issue");
-		else error.Fill("Render Error", "Swapping Buffers Error");
-
-		throw error;
+		//custom_exception error("","");
+		//if (hr == DXGI_ERROR_DEVICE_REMOVED)
+		//	error.Fill("Render Error", "Device Removed, Possible Drivers Issue");
+		//else error.Fill("Render Error", "Swapping Buffers Error");
+		//
+		//throw error;
 	}
 }
 
@@ -120,8 +128,8 @@ void Render::DrawTestTriangle(float angle, float x, float y)
 	//Create the buffer
 	if (FAILED(direct_device->CreateBuffer(&buffer_descriptor, &vertices, &vertex_buffer)))
 	{
-		custom_exception error("Render Error", "Triangle Buffer Creation Failed");
-		throw error;
+		//custom_exception error("Render Error", "Triangle Buffer Creation Failed");
+		//throw error;
 	}
 
 	//Bind Verex Buffer
@@ -150,8 +158,8 @@ void Render::DrawTestTriangle(float angle, float x, float y)
 	//Create the buffer
 	if (FAILED(direct_device->CreateBuffer(&indices_descriptor, &indices, &indices_buffer)))
 	{
-		custom_exception error("Render Error", "Triangle Indices Buffer Creation Failed");
-		throw error;
+		//custom_exception error("Render Error", "Triangle Indices Buffer Creation Failed");
+		//throw error;
 	}
 
 	//Bind Index Buffer
@@ -170,29 +178,32 @@ void Render::DrawTestTriangle(float angle, float x, float y)
 				Dx::XMMatrixRotationZ(angle) *
 				Dx::XMMatrixScaling(3.0f / 4.0f, 1.0f, 1.0f) *
 				Dx::XMMatrixTranslation(x, y, 0.0f)
+				
 			)
 		}
 	};
 	
-	ID3D11Buffer* transform_buffer = nullptr;
-	D3D11_BUFFER_DESC transform_descriptor = {};
-	transform_descriptor.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	transform_descriptor.Usage = D3D11_USAGE_DYNAMIC;
-	transform_descriptor.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	transform_descriptor.MiscFlags = 0u;
-	transform_descriptor.ByteWidth = sizeof(matrix);
-	transform_descriptor.StructureByteStride = 0u;
+	//ID3D11Buffer* transform_buffer = nullptr;
+	//D3D11_BUFFER_DESC transform_descriptor = {};
+	//transform_descriptor.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	//transform_descriptor.Usage = D3D11_USAGE_DYNAMIC;
+	//transform_descriptor.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	//transform_descriptor.MiscFlags = 0u;
+	//transform_descriptor.ByteWidth = sizeof(matrix);
+	//transform_descriptor.StructureByteStride = 0u;
+	//
+	//D3D11_SUBRESOURCE_DATA transform_data = {};
+	//transform_data.pSysMem = &matrix;
+	//
+	//if (FAILED(direct_device->CreateBuffer(&transform_descriptor, &transform_data, &transform_buffer)))
+	//{
+	//	//custom_exception error("Render Error", "Triangle Indices Buffer Creation Failed");
+	//	//throw error;
+	//}
+	//
+	//direct_context->VSSetConstantBuffers(0u, 1u, &transform_buffer);
 
-	D3D11_SUBRESOURCE_DATA transform_data = {};
-	transform_data.pSysMem = &matrix;
-
-	if (FAILED(direct_device->CreateBuffer(&transform_descriptor, &transform_data, &transform_buffer)))
-	{
-		custom_exception error("Render Error", "Triangle Indices Buffer Creation Failed");
-		throw error;
-	}
-
-	direct_context->VSSetConstantBuffers(0u, 1u, &transform_buffer);
+	main_camera->BindAll(*this);
 
 	//Create Vertex Shader
 	ID3D11VertexShader* vertex_shader = nullptr;
@@ -229,14 +240,6 @@ void Render::DrawTestTriangle(float angle, float x, float y)
 
 	direct_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	D3D11_VIEWPORT view_port;
-	view_port.Width = 784;
-	view_port.Height = 561;
-	view_port.MinDepth = 0;
-	view_port.MaxDepth = 1;
-	view_port.TopLeftX = 0; 
-	view_port.TopLeftY = 0;
-	direct_context->RSSetViewports(1u, &view_port);
 
 	direct_context->DrawIndexed((UINT)std::size(indices_data), 0u, 0u );
 }
