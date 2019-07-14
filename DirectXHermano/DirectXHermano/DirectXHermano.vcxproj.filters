@@ -28,6 +28,12 @@
     <Filter Include="Archivos de encabezado\Resources">
       <UniqueIdentifier>{ac8e01df-a22b-49de-8446-1cb0ba20a309}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Archivos de encabezado\Scene">
+      <UniqueIdentifier>{4ecf193d-cc9f-442c-b614-ed81b29e244a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de código fuente\Scene">
+      <UniqueIdentifier>{3ef9aab6-9bbd-4517-82b2-d78287660f9d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ErrorHandling.cpp">
@@ -64,6 +70,12 @@
       <Filter>Archivos de código fuente\DirectX</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="Entity.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
   </ItemGroup>
@@ -118,6 +130,12 @@
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Archivos de encabezado\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>Archivos de encabezado\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

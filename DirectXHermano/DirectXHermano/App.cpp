@@ -1,8 +1,9 @@
 #include "App.h"
+#include "Scene.h"
 
 DirectXApp::DirectXApp() : window(800, 600, "DirectX Engine")
 {
-	
+	scene = new Scene();
 }
 
 int DirectXApp::Start()
@@ -18,6 +19,7 @@ int DirectXApp::Start()
 			return 2;
 		
 		Update(1.0f);
+		Draw(1.0f);
 	}
 
 	return 3;
@@ -26,10 +28,19 @@ int DirectXApp::Start()
 void DirectXApp::Update(float dt)
 {
 	window.GetRender().ClearBuffer(0.5f, 0.5f, 0.5f);
+	
+	scene->Update();
+}
+
+void DirectXApp::Draw(float dt)
+{
 	window.GetRender().DrawTestTriangle(
-		timer.Peek(), 
+		timer.Peek(),
 		((window.mouse.GetPosX() / 784.0f) * 2.0f) - 1.0f,
 		((window.mouse.GetPosY() / 561.0f) * -2.0f) + 1.0f
 	);
+	
+	scene->Draw(window.GetRender());
+
 	window.GetRender().EndFrame();
 }
