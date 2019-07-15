@@ -4,6 +4,8 @@
 #include "Timer.h"
 
 class Scene;
+class ResourceManager;
+class Camera;
 
 class DirectXApp
 {
@@ -14,7 +16,10 @@ public:
 private:
 	Timer timer;
 	Window window;
-	Scene* scene;
+
+	Camera* scene_camera = nullptr;
+	Scene* scene = nullptr;
+	ResourceManager* resource_manager = nullptr;
 
 	void Update(float dt);
 	void Draw(float dt);

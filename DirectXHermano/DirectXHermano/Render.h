@@ -22,6 +22,9 @@ public:
 
 	void DrawTestTriangle(float angle, float x, float y);
 	void DrawIndices(UINT num_indices) { direct_context->DrawIndexed(num_indices, 0u, 0u); }
+
+	const Camera& GetCamera() const { return render_camera; }
+	void SetCamera(Camera& cam) { render_camera = cam; }
 private:
 	Microsoft::WRL::ComPtr<ID3D11Device> direct_device;
 	Microsoft::WRL::ComPtr<IDXGISwapChain> direct_swap;
@@ -30,5 +33,5 @@ private:
 
 	D3D11_VIEWPORT view_port;
 
-	Camera* main_camera = nullptr;
+	Camera render_camera;
 };

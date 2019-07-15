@@ -39,6 +39,9 @@ public:
 
 	void SetWindowTitle(const char* name);
 	static int ProcessMessages();
+
+	int GetWidth() const { return width; }
+	int GetHeight() const { return height; }
 private:
 	static LRESULT CALLBACK HandleMsgSetup(HWND handle, UINT message, WPARAM w_param, LPARAM l_param); //Connect our Window Instance with the Message Handling system
 	static LRESULT CALLBACK HandleMsgThunk(HWND handle, UINT message, WPARAM w_param, LPARAM l_param);

@@ -1,6 +1,6 @@
 #include "VertexBuffer.h"
 
-VertexBuffer::VertexBuffer(Render & ren, std::vector<Vertex> vertices)
+VertexBuffer::VertexBuffer(Render & ren, std::vector<Vertex>& vertices)
 {
 	D3D11_BUFFER_DESC buffer_descriptor = {};
 	buffer_descriptor.BindFlags = D3D11_BIND_VERTEX_BUFFER;

@@ -9,7 +9,7 @@ public:
 	~IndexBuffer();
 
 	void Bind(Render& ren) override;
-	UINT GetNumIndices() { return num_indices; }
+	UINT GetNumIndices() const { return num_indices; }
 private:
 	ID3D11Buffer* buffer_data = nullptr;
 	UINT num_indices;

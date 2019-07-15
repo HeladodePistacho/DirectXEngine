@@ -1,5 +1,6 @@
 #pragma once
 #include "Bindable.h"
+#include "Resource.h"
 
 class VertexShader : public Bindable
 {
@@ -72,10 +73,10 @@ private:
 	ID3DBlob* byte_code = nullptr;
 };
 
-class ShaderProgram : public Bindable
+class ShaderProgram : public Bindable, public Resource
 {
 public:
-	ShaderProgram(Render& ren, LPCWSTR vertex_name, LPCWSTR pixel_name)
+	ShaderProgram(Render& ren, LPCWSTR vertex_name, LPCWSTR pixel_name) : Resource(RESOURCE_TYPE::SHADER)
 	{
 		vertex_shader = new VertexShader(ren, vertex_name);
 		pixel_shader = new PixelShader(ren, pixel_name);

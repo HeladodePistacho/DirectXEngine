@@ -72,11 +72,17 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Archivos de código fuente\Scene</Filter>
+    </ClCompile>
     <ClCompile Include="Entity.cpp">
+      <Filter>Archivos de código fuente\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceManager.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
-    <ClCompile Include="Scene.cpp">
-      <Filter>Archivos de código fuente</Filter>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Archivos de código fuente\Resources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -125,9 +131,6 @@
     <ClInclude Include="ShaderProgram.h">
       <Filter>Archivos de encabezado\DirectX</Filter>
     </ClInclude>
-    <ClInclude Include="Mesh.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
@@ -136,6 +139,15 @@
     </ClInclude>
     <ClInclude Include="Entity.h">
       <Filter>Archivos de encabezado\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Archivos de encabezado\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Archivos de encabezado\Resources</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

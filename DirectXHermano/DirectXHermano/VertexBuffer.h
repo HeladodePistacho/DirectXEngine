@@ -13,7 +13,7 @@ struct Vertex
 class VertexBuffer : public Bindable
 {
 public:
-	VertexBuffer(Render& ren, std::vector<Vertex> vertices);
+	VertexBuffer(Render& ren, std::vector<Vertex>& vertices);
 	~VertexBuffer();
 
 	void Bind(Render& ren) override;

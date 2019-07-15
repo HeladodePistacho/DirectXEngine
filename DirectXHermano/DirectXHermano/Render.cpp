@@ -94,96 +94,96 @@ void Render::ClearBuffer(float r, float g, float b)
 
 void Render::DrawTestTriangle(float angle, float x, float y)
 {
-	//Load Vertex buffer data
-	ID3D11Buffer* vertex_buffer = nullptr;
-
-	struct Vertexo
-	{
-		//Pos
-		float x, y;
-
-		//Color
-		unsigned char r, g, b, a;
-	};
-
-	const Vertexo vertex_data[] =
-	{   //Position    //Color
-		{ -1.0f, 0.0f, 255, 0, 0, 255 },
-		{ -1.0f, 1.0f, 0, 0, 255, 255 },
-		{ 0.0f, 0.0f,  0, 255, 0, 255 },
-		{ 0.0f, 1.0f,  255, 255, 255, 255 }
-	};
-
-	D3D11_BUFFER_DESC buffer_descriptor = {};
-	buffer_descriptor.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	buffer_descriptor.Usage = D3D11_USAGE_DEFAULT;
-	buffer_descriptor.CPUAccessFlags = 0u;
-	buffer_descriptor.MiscFlags = 0u;
-	buffer_descriptor.ByteWidth = sizeof(vertex_data);
-	buffer_descriptor.StructureByteStride = sizeof(Vertexo);
-
-	D3D11_SUBRESOURCE_DATA vertices = {};
-	vertices.pSysMem = vertex_data;
-
-	//Create the buffer
-	if (FAILED(direct_device->CreateBuffer(&buffer_descriptor, &vertices, &vertex_buffer)))
-	{
-		//custom_exception error("Render Error", "Triangle Buffer Creation Failed");
+	////Load Vertex buffer data
+	//ID3D11Buffer* vertex_buffer = nullptr;
+	//
+	//struct Vertexo
+	//{
+	//	//Pos
+	//	float x, y;
+	//
+	//	//Color
+	//	unsigned char r, g, b, a;
+	//};
+	//
+	//const Vertexo vertex_data[] =
+	//{   //Position    //Color
+	//	{ -1.0f, 0.0f, 255, 0, 0, 255 },
+	//	{ -1.0f, 1.0f, 0, 0, 255, 255 },
+	//	{ 0.0f, 0.0f,  0, 255, 0, 255 },
+	//	{ 0.0f, 1.0f,  255, 255, 255, 255 }
+	//};
+	//
+	//D3D11_BUFFER_DESC buffer_descriptor = {};
+	//buffer_descriptor.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	//buffer_descriptor.Usage = D3D11_USAGE_DEFAULT;
+	//buffer_descriptor.CPUAccessFlags = 0u;
+	//buffer_descriptor.MiscFlags = 0u;
+	//buffer_descriptor.ByteWidth = sizeof(vertex_data);
+	//buffer_descriptor.StructureByteStride = sizeof(Vertexo);
+	//
+	//D3D11_SUBRESOURCE_DATA vertices = {};
+	//vertices.pSysMem = vertex_data;
+	//
+	////Create the buffer
+	//if (FAILED(direct_device->CreateBuffer(&buffer_descriptor, &vertices, &vertex_buffer)))
+	//{
+	//	//custom_exception error("Render Error", "Triangle Buffer Creation Failed");
 		//throw error;
-	}
-
-	//Bind Verex Buffer
-	const UINT offset = 0u;
-	direct_context->IASetVertexBuffers(0u, 1u, &vertex_buffer, &buffer_descriptor.StructureByteStride, &offset);
-
-	//Create Indices Buffer
-	const unsigned short indices_data[] =
-	{
-		0, 1, 2,
-		1, 3, 2
-	};
-
-	ID3D11Buffer* indices_buffer = nullptr;
-	D3D11_BUFFER_DESC indices_descriptor = {};
-	indices_descriptor.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	indices_descriptor.Usage = D3D11_USAGE_DEFAULT;
-	indices_descriptor.CPUAccessFlags = 0u;
-	indices_descriptor.MiscFlags = 0u;
-	indices_descriptor.ByteWidth = sizeof(indices_data);
-	indices_descriptor.StructureByteStride = sizeof(unsigned short);
-
-	D3D11_SUBRESOURCE_DATA indices = {};
-	indices.pSysMem = indices_data;
-
-	//Create the buffer
-	if (FAILED(direct_device->CreateBuffer(&indices_descriptor, &indices, &indices_buffer)))
-	{
-		//custom_exception error("Render Error", "Triangle Indices Buffer Creation Failed");
+	//}
+	//
+	////Bind Verex Buffer
+	//const UINT offset = 0u;
+	//direct_context->IASetVertexBuffers(0u, 1u, &vertex_buffer, &buffer_descriptor.StructureByteStride, &offset);
+	//
+	////Create Indices Buffer
+	//const unsigned short indices_data[] =
+	//{
+	//	0, 1, 2,
+	//	1, 3, 2
+	//};
+	//
+	//ID3D11Buffer* indices_buffer = nullptr;
+	//D3D11_BUFFER_DESC indices_descriptor = {};
+	//indices_descriptor.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	//indices_descriptor.Usage = D3D11_USAGE_DEFAULT;
+	//indices_descriptor.CPUAccessFlags = 0u;
+	//indices_descriptor.MiscFlags = 0u;
+	//indices_descriptor.ByteWidth = sizeof(indices_data);
+	//indices_descriptor.StructureByteStride = sizeof(unsigned short);
+	//
+	//D3D11_SUBRESOURCE_DATA indices = {};
+	//indices.pSysMem = indices_data;
+	//
+	////Create the buffer
+	//if (FAILED(direct_device->CreateBuffer(&indices_descriptor, &indices, &indices_buffer)))
+	//{
+	//	//custom_exception error("Render Error", "Triangle Indices Buffer Creation Failed");
 		//throw error;
-	}
-
-	//Bind Index Buffer
-	direct_context->IASetIndexBuffer(indices_buffer, DXGI_FORMAT::DXGI_FORMAT_R16_UINT, 0u);
-
-	//Create constant buffer for transformation matrix
-	struct ConstantBuffer
-	{
-		Dx::XMMATRIX transform;
-	};
-
-	const ConstantBuffer matrix =
-	{
-		{
-			Dx::XMMatrixTranspose(
-				Dx::XMMatrixRotationZ(angle) *
-				Dx::XMMatrixScaling(3.0f / 4.0f, 1.0f, 1.0f) *
-				Dx::XMMatrixTranslation(x, y, 0.0f)
-				
-			)
-		}
-	};
-	
-	//ID3D11Buffer* transform_buffer = nullptr;
+	//}
+	//
+	////Bind Index Buffer
+	//direct_context->IASetIndexBuffer(indices_buffer, DXGI_FORMAT::DXGI_FORMAT_R16_UINT, 0u);
+	//
+	////Create constant buffer for transformation matrix
+	//struct ConstantBuffer
+	//{
+	//	Dx::XMMATRIX transform;
+	//};
+	//
+	//const ConstantBuffer matrix =
+	//{
+	//	{
+	//		Dx::XMMatrixTranspose(
+	//			Dx::XMMatrixRotationZ(angle) *
+	//			Dx::XMMatrixScaling(3.0f / 4.0f, 1.0f, 1.0f) *
+	//			Dx::XMMatrixTranslation(x, y, 0.0f)
+	//			
+	//		)
+	//	}
+	//};
+	//
+	////ID3D11Buffer* transform_buffer = nullptr;
 	//D3D11_BUFFER_DESC transform_descriptor = {};
 	//transform_descriptor.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	//transform_descriptor.Usage = D3D11_USAGE_DYNAMIC;
@@ -202,44 +202,46 @@ void Render::DrawTestTriangle(float angle, float x, float y)
 	//}
 	//
 	//direct_context->VSSetConstantBuffers(0u, 1u, &transform_buffer);
+	//
+	//
+	//
+	////Create Vertex Shader
+	//ID3D11VertexShader* vertex_shader = nullptr;
+	//ID3DBlob* blob = nullptr;
+	//D3DReadFileToBlob(L"VertexShader.cso", &blob);
+	//direct_device->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &vertex_shader);
+	//
+	////Bind Vertex Shader
+	//direct_context->VSSetShader(vertex_shader, nullptr, 0u);
+	//
+	////Create Pixel Shader
+	//ID3D11PixelShader* pixel_shader = nullptr;
+	//ID3DBlob* blob_2 = nullptr;
+	//D3DReadFileToBlob(L"PixelShader.cso", &blob_2);
+	//direct_device->CreatePixelShader(blob_2->GetBufferPointer(), blob_2->GetBufferSize(), nullptr, &pixel_shader);
+	//
+	////Bind Pixel Shader
+	//direct_context->PSSetShader(pixel_shader, nullptr, 0u);
+	//
+	////Tells the vertex shader how is structured the vertex input data
+	//ID3D11InputLayout* input_layout = nullptr;
+	//const D3D11_INPUT_ELEMENT_DESC input_descriptor[] =
+	//{
+	//	{ "Position", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	//	{ "Color", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, sizeof(float)*2, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+	//};
+	//direct_device->CreateInputLayout(input_descriptor, (UINT)std::size(input_descriptor), blob->GetBufferPointer(), blob->GetBufferSize(), &input_layout);
+	//
+	////Bind Vertex Layout
+	//direct_context->IASetInputLayout(input_layout);
+	//
+	////Bind Render Target
+	//direct_context->OMSetRenderTargets(1u, direct_render_target.GetAddressOf(), nullptr);
+	//
+	//direct_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	//
+	//
+	//direct_context->DrawIndexed((UINT)std::size(indices_data), 0u, 0u );
 
 	main_camera->BindAll(*this);
-
-	//Create Vertex Shader
-	ID3D11VertexShader* vertex_shader = nullptr;
-	ID3DBlob* blob = nullptr;
-	D3DReadFileToBlob(L"VertexShader.cso", &blob);
-	direct_device->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &vertex_shader);
-
-	//Bind Vertex Shader
-	direct_context->VSSetShader(vertex_shader, nullptr, 0u);
-	
-	//Create Pixel Shader
-	ID3D11PixelShader* pixel_shader = nullptr;
-	ID3DBlob* blob_2 = nullptr;
-	D3DReadFileToBlob(L"PixelShader.cso", &blob_2);
-	direct_device->CreatePixelShader(blob_2->GetBufferPointer(), blob_2->GetBufferSize(), nullptr, &pixel_shader);
-
-	//Bind Pixel Shader
-	direct_context->PSSetShader(pixel_shader, nullptr, 0u);
-	
-	//Tells the vertex shader how is structured the vertex input data
-	ID3D11InputLayout* input_layout = nullptr;
-	const D3D11_INPUT_ELEMENT_DESC input_descriptor[] =
-	{
-		{ "Position", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "Color", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, sizeof(float)*2, D3D11_INPUT_PER_VERTEX_DATA, 0 }
-	};
-	direct_device->CreateInputLayout(input_descriptor, (UINT)std::size(input_descriptor), blob->GetBufferPointer(), blob->GetBufferSize(), &input_layout);
-
-	//Bind Vertex Layout
-	direct_context->IASetInputLayout(input_layout);
-
-	//Bind Render Target
-	direct_context->OMSetRenderTargets(1u, direct_render_target.GetAddressOf(), nullptr);
-
-	direct_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-
-	direct_context->DrawIndexed((UINT)std::size(indices_data), 0u, 0u );
 }
