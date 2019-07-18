@@ -2,32 +2,23 @@
 #include <DirectXMath.h>
 #include "ConstBuffers.h"
 
-struct transform
-{
-	DirectX::XMMATRIX view;
-	DirectX::XMMATRIX perspective;
-};
-
 class Camera
 {
 public:
-	Camera(Render& ren, float width, float height);
+	Camera(float width, float height);
+	Camera(const Camera& cam);
 	~Camera();
 
-	void BindAll(Render& ren);
-	void BindViewMatrix(Render& ren);
-	void BindProjectionMatrix(Render& ren);
+	Camera& operator=(const Camera& cam);
 
+	void Move(DirectX::XMFLOAT3);
+	void Move(float, float, float);
 
-private:
-	float yaw, pitch;
+	float yaw, pitch; //in radians
 	float fov; //in radians
+	float aspect_ratio;
 	float z_near, z_far;
 	DirectX::XMFLOAT3 position;
 
-	ConstBuffer<DirectX::XMMATRIX>* world_matrix = nullptr;
-	ConstBuffer<DirectX::XMMATRIX>* view_matrix = nullptr;
-	ConstBuffer<DirectX::XMMATRIX>* perspective_matrix = nullptr;
-
-	ConstBuffer<transform>* trans_bufer = nullptr;
+	bool needs_update = false;
 };

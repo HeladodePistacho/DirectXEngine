@@ -31,10 +31,12 @@ void Scene::Draw(Render & ren)
 	}
 }
 
-void Scene::AddEntity()
+Entity& Scene::AddEntity()
 {
 	Entity* new_entity = new Entity();
 	entities.push_back(new_entity);
+
+	return (*new_entity);
 }
 
 void Scene::DeleteEntity(Entity& entity_to_delete)

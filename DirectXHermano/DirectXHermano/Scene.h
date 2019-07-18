@@ -15,7 +15,8 @@ public:
 	void Update();
 	void Draw(Render& ren);
 
-	void AddEntity();
+	void SetSelectedEntity(Entity& entity);
+	Entity& AddEntity();
 	void DeleteEntity(Entity&);
 
 private:

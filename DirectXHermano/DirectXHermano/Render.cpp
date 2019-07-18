@@ -60,18 +60,18 @@ Render::Render(HWND window_handle, int width, int height)
 	view_port.TopLeftX = 0;
 	view_port.TopLeftY = 0;
 	direct_context->RSSetViewports(1u, &view_port);
-
-	main_camera = new Camera((*this), view_port.Width, view_port.Height);
 }
 
 Render::~Render()
 {
-	if (main_camera)
-		delete main_camera;
+	
 }
 
 void Render::EndFrame()
 {
+	//Camera reset
+	render_camera->needs_update = false;
+
 	HRESULT hr;
 
 	//Swaps buffers -> 1u = 60fps, 2u = 30fps
@@ -243,5 +243,11 @@ void Render::DrawTestTriangle(float angle, float x, float y)
 	//
 	//direct_context->DrawIndexed((UINT)std::size(indices_data), 0u, 0u );
 
-	main_camera->BindAll(*this);
+	//main_camera->BindAll(*this);
+}
+
+void Render::SetCamera(Camera & cam)
+{
+	render_camera = &cam;
+	render_camera->needs_update = true;
 }

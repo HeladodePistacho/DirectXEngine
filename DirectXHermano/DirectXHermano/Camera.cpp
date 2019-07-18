@@ -1,67 +1,46 @@
 #include "Camera.h"
 
+//-DirectX::XM_PI/18.0f
+//DirectX::XM_PI / 2.0f
 
+Camera::Camera(float width, float height) : yaw(0), pitch(0), fov((1.0f/2.0f)*DirectX::XM_PI), position(0.0f, 0.0f, 5.0f), z_near(0.5f), z_far(25.0f), aspect_ratio(width / height) {}
 
-Camera::Camera(Render& ren, float width, float height) : yaw(0), pitch(0), fov((1.0f/2.0f)*DirectX::XM_PI), position(0.0f, 1.0f, 0.0f), z_near(0.5f), z_far(25.0f)
+Camera::Camera(const Camera & cam)
 {
-	//Set the buffers
-	DirectX::XMMATRIX world = DirectX::XMMatrixTranspose(
-		DirectX::XMMatrixRotationRollPitchYaw(pitch, yaw, 0.0f) *
-		DirectX::XMMatrixTranslation(position.x, position.y, position.z)
-	);
-	world_matrix = new ConstBuffer<DirectX::XMMATRIX>(ren, world, BUFFER_TYPE::VERTEX_SHADER_BUFFER);
-
-	DirectX::XMMATRIX view = DirectX::XMMatrixTranspose(world);
-	view_matrix = new ConstBuffer<DirectX::XMMATRIX>(ren, view, BUFFER_TYPE::VERTEX_SHADER_BUFFER);
-
-	DirectX::XMMATRIX perspective = DirectX::XMMatrixPerspectiveFovLH(fov, width / height, z_near, z_far);
-	perspective_matrix = new ConstBuffer<DirectX::XMMATRIX>(ren, perspective, BUFFER_TYPE::VERTEX_SHADER_BUFFER);
-
-	transform trans = 
-	{
-		{ DirectX::XMMatrixTranspose(DirectX::XMMatrixRotationRollPitchYaw(pitch, yaw, 0.0f) *
-			DirectX::XMMatrixTranslation(position.x, position.y, position.z))},
-		{ DirectX::XMMatrixTranspose(DirectX::XMMatrixPerspectiveFovLH(fov, width / height, z_near, z_far)) }
-	};
-
-	trans_bufer = new ConstBuffer<transform>(ren, trans, BUFFER_TYPE::VERTEX_SHADER_BUFFER);
+	yaw = cam.yaw;
+	pitch = cam.pitch;
+	fov = cam.fov;
+	position = cam.position;
+	z_near = cam.z_near;
+	z_far = cam.z_far;
+	aspect_ratio = cam.aspect_ratio;
 }
 
 Camera::~Camera()
 {
-	if (world_matrix)
-	{
-		delete world_matrix;
-		world_matrix = nullptr;
-	}
-
-	if (view_matrix)
-	{
-		delete view_matrix;
-		view_matrix = nullptr;
-	}
-
-	if (perspective_matrix)
-	{
-		delete perspective_matrix;
-		perspective_matrix = nullptr;
-	}
+	
 }
 
-void Camera::BindAll(Render & ren)
+Camera& Camera::operator=(const Camera & cam)
 {
-	trans_bufer->Bind(ren);
-	//BindViewMatrix(ren);
-	//BindProjectionMatrix(ren);
+	Camera ret(cam);
+	return ret;
 }
 
-void Camera::BindViewMatrix(Render & ren)
+void Camera::Move(DirectX::XMFLOAT3 movement)
 {
-	view_matrix->Bind(ren);
+	position.x += movement.x;
+	position.y += movement.y;
+	position.z += movement.z;
+
+	needs_update = true;
 }
 
-void Camera::BindProjectionMatrix(Render & ren)
+void Camera::Move(float x, float y, float z)
 {
-	perspective_matrix->Bind(ren);
-}
+	position.x += x;
+	position.y += y;
+	position.z += z;
 
+	needs_update = true;
+}
