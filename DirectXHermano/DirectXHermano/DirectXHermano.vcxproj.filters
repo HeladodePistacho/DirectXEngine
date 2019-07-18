@@ -34,6 +34,9 @@
     <Filter Include="Archivos de código fuente\Scene">
       <UniqueIdentifier>{3ef9aab6-9bbd-4517-82b2-d78287660f9d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Archivos de código fuente\Imgui">
+      <UniqueIdentifier>{e989e774-1dfc-4782-b75a-e6f1b3509273}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ErrorHandling.cpp">
@@ -83,6 +86,24 @@
     </ClCompile>
     <ClCompile Include="Mesh.cpp">
       <Filter>Archivos de código fuente\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui_demo.cpp">
+      <Filter>Archivos de código fuente\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui_draw.cpp">
+      <Filter>Archivos de código fuente\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui_impl_dx11.cpp">
+      <Filter>Archivos de código fuente\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui_impl_win32.cpp">
+      <Filter>Archivos de código fuente\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui_widgets.cpp">
+      <Filter>Archivos de código fuente\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui.cpp">
+      <Filter>Archivos de código fuente\Imgui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

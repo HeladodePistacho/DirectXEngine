@@ -9,6 +9,7 @@ class Camera;
 class Render
 {
 	friend class Bindable;
+	friend class DirectXApp;
 public:
 	Render(HWND window_handle, int width, int height);
 	Render(const Render&) = delete;
@@ -25,6 +26,7 @@ public:
 
 	const Camera& GetCamera() const { return (*render_camera); }
 	void SetCamera(Camera& cam);
+
 private:
 	Microsoft::WRL::ComPtr<ID3D11Device> direct_device;
 	Microsoft::WRL::ComPtr<IDXGISwapChain> direct_swap;

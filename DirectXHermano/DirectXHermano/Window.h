@@ -36,6 +36,7 @@ public:
 	KeyBoard keyboard;
 	Mouse	 mouse;
 	Render&  GetRender() const { return *window_render; }
+	HWND GetHandler() const { return window_handle; }
 
 	void SetWindowTitle(const char* name);
 	static int ProcessMessages();
