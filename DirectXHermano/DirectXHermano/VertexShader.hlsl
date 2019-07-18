@@ -7,16 +7,18 @@ struct VSOUT
 
 cbuffer trans_buffer
 {
+	matrix model_matrix;
 	matrix view_matrix;
 	matrix projection_matrix;
 };
 
 VSOUT main(float3 position : Position)
 {
-	matrix mvp = mul(view_matrix, projection_matrix);
+	matrix model_view = mul(model_matrix, view_matrix);
+	matrix model_view_projection = mul(model_view, projection_matrix);
 
 	VSOUT vertex_out;
-	vertex_out.position = mul(float4(position, 1.0f), mvp);
+	vertex_out.position = mul(float4(position, 1.0f), model_view_projection);
 	vertex_out.color = float3(position.xyz);
 
 	return vertex_out;
