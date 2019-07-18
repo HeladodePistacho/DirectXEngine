@@ -35,16 +35,10 @@ public:
 	void Update(Render& ren, const CLASS& buffer)
 	{
 		D3D11_MAPPED_SUBRESOURCE mapped_subresource;
-
+		
 		GetContext(ren)->Map(constant_buffer, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mapped_subresource);
-
-		if (constant_buffer)
-		{
-			delete constant_buffer;
-			constant_buffer = nullptr;
-		}
-
-		memcpy(mapped_subresource.pData, constant_buffer, sizeof(buffer));
+		
+		memcpy(mapped_subresource.pData, &buffer, sizeof(buffer));
 		GetContext(ren)->Unmap(constant_buffer, 0u);
 	}
 
