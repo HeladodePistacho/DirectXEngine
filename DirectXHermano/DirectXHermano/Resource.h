@@ -2,7 +2,7 @@
 
 enum RESOURCE_TYPE
 {
-	UNDEFINED = 0,
+	RESOURCE_UNDEFINED = 0,
 	MESH,
 	TEXTURE,
 	SHADER
@@ -16,6 +16,6 @@ public:
 	RESOURCE_TYPE GetType() const { return type; }
 
 private:
-	RESOURCE_TYPE type = UNDEFINED;
+	RESOURCE_TYPE type = RESOURCE_UNDEFINED;
 	bool needs_load = true;
 };
