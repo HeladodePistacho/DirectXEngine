@@ -3,6 +3,8 @@
 #include <DirectXMath.h>
 #include "ConstBuffers.h"
 
+class Mesh;
+
 class Transform
 {
 public:
@@ -24,10 +26,33 @@ private:
 	bool needs_update = false;
 };
 
+class MeshRenderer
+{
+public:
+	struct matrix_buffers
+	{
+		DirectX::XMMATRIX model;
+		DirectX::XMMATRIX view;
+		DirectX::XMMATRIX projection;
+	};
+
+public:
+	MeshRenderer();
+	~MeshRenderer();
+
+	void Draw(Render& ren);
+	
+	void PrepareMatrices(Render& ren);
+	void SetMesh(const Mesh* mesh) { mesh_to_draw = (Mesh*)mesh; }
+private:
+	ConstBuffer<matrix_buffers>* matrices = nullptr;
+	Mesh* mesh_to_draw = nullptr;
+};
+
 class Entity
 {
 public:
-	Entity() = default;
+	Entity();
 	~Entity();
 
 	void Update();
@@ -35,9 +60,12 @@ public:
 
 	bool IsDeleted() { return needs_delete; }
 	void Delete();
+
+	MeshRenderer& GetMeshRenderer() const { return (*mesh_render); }
 private:
 	bool needs_delete = false;
 
 	Transform* transform = nullptr;
+	MeshRenderer* mesh_render = nullptr;
 
 };

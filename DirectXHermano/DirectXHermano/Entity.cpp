@@ -1,4 +1,6 @@
 #include "Entity.h"
+#include "Mesh.h"
+#include "Camera.h"
 
 //----------------------------------- TRANSFORM ------------------------------------------------
 Transform::Transform() : position(0.0f, 0.0f, 0.0f), rotation_euler(0.0f, 0.0f, 0.0f), scale(1.0f, 1.0f, 1.0f), rotation_quaternion(DirectX::XMQuaternionRotationRollPitchYaw(rotation_euler.x, rotation_euler.y, rotation_euler.z))
@@ -24,7 +26,65 @@ void Transform::BuildMatrix()
 }
 
 //----------------------------------- TRANSFORM ------------------------------------------------
+
+//----------------------------------- MESH RENDERER ---------------------------------------------
+MeshRenderer::MeshRenderer()
+{
+
+}
+
+MeshRenderer::~MeshRenderer()
+{
+	if (mesh_to_draw)
+		mesh_to_draw = nullptr;
+
+	if (matrices)
+	{
+		delete matrices;
+		matrices = nullptr;
+	}
+}
+
+void MeshRenderer::PrepareMatrices(Render& ren)
+{
+	Camera cam = ren.GetCamera();
+
+	if (ren.GetCamera().needs_update)
+	{
+		matrix_buffers new_matrices = 
+		{
+			{DirectX::XMMatrixIdentity()},
+			{DirectX::XMMatrixTranspose(DirectX::XMMatrixRotationRollPitchYaw(cam.yaw, cam.pitch, 0.0f) * DirectX::XMMatrixTranslation(cam.position.x, cam.position.y, cam.position.z))},
+			{DirectX::XMMatrixTranspose(DirectX::XMMatrixPerspectiveFovLH(cam.fov, cam.aspect_ratio, cam.z_near, cam.z_far))}
+		};
+
+		if (!matrices)
+			matrices = new ConstBuffer<matrix_buffers>(ren, new_matrices, BUFFER_TYPE::VERTEX_SHADER_BUFFER); 
+		else {
+			matrices->Update(ren, new_matrices);
+		}
+	}
+
+	matrices->Bind(ren);
+}
+
+void MeshRenderer::Draw(Render & ren)
+{
+	if (mesh_to_draw)
+	{
+		PrepareMatrices(ren);
+		mesh_to_draw->Draw(ren);
+	}
+}
+
+
 //-----------------------------------  ENTITY   -------------------------------------------------
+
+Entity::Entity()
+{
+	transform = new Transform();
+	mesh_render = new MeshRenderer();
+}
 
 Entity::~Entity()
 {
@@ -41,9 +101,12 @@ void Entity::Update()
 
 void Entity::Draw(Render & ren)
 {
+	mesh_render->Draw(ren);
 }
 
 void Entity::Delete()
 {
 	needs_delete = true;
 }
+
+
