@@ -54,7 +54,7 @@ void MeshRenderer::PrepareMatrices(Render& ren)
 		matrix_buffers new_matrices = 
 		{
 			{DirectX::XMMatrixIdentity()},
-			{DirectX::XMMatrixTranspose(DirectX::XMMatrixRotationRollPitchYaw(cam.yaw, cam.pitch, 0.0f) * DirectX::XMMatrixTranslation(cam.position.x, cam.position.y, cam.position.z))},
+			{DirectX::XMMatrixTranspose(DirectX::XMMatrixTranslation(cam.position.x, cam.position.y, cam.position.z) * DirectX::XMMatrixRotationRollPitchYaw(cam.yaw, cam.pitch, cam.roll))},
 			{DirectX::XMMatrixTranspose(DirectX::XMMatrixPerspectiveFovLH(cam.fov, cam.aspect_ratio, cam.z_near, cam.z_far))}
 		};
 

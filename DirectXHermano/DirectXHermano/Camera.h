@@ -11,10 +11,13 @@ public:
 
 	Camera& operator=(const Camera& cam);
 
+	void DrawUI();
 	void Move(DirectX::XMFLOAT3);
 	void Move(float, float, float);
+	void Rotate(int, int);
+	void ResetRotation();
 
-	float yaw, pitch; //in radians
+	float yaw, pitch, roll; //in radians
 	float fov; //in radians
 	float aspect_ratio;
 	float z_near, z_far;

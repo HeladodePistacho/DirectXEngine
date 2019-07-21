@@ -5,6 +5,7 @@
 #include "Mesh.h"
 #include "ShaderProgram.h"
 #include "Entity.h"
+#include <math.h>
 
 //imgui
 #include "ImGui/imconfig.h"
@@ -12,22 +13,11 @@
 #include "ImGui\imgui_impl_dx11.h"
 #include "ImGui\imgui_impl_win32.h"
 
-DirectXApp::DirectXApp() : window(800, 600, "DirectX Engine")
+DirectXApp::DirectXApp() : imgui_manager(), window(1024, 1024, "DirectX Engine")
 {
 	scene_camera = new Camera(window.GetWidth(), window.GetHeight());
 	scene = new Scene();
-	resource_manager = new ResourceManager();
-
-	//Imgui Start
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
-
-	//Setup WIN32 and D3D11 bindings 
-	ImGui_ImplWin32_Init(window.GetHandler());
-	ImGui_ImplDX11_Init(window.GetRender().direct_device.Get(), window.GetRender().direct_context.Get());
-
-	io.Fonts->AddFontDefault();
+	resource_manager = new ResourceManager();	
 }
 
 int DirectXApp::Start()
@@ -45,35 +35,33 @@ int DirectXApp::Start()
 	while (true)
 	{	
 		if (Window::ProcessMessages() != MESSAGE_OK)
-			return -1;
+			return 1;
 
-		if (window.keyboard.KeyIsPressed(VK_SPACE))
-			return 2;
+		//if (window.keyboard.KeyIsPressed(VK_SPACE))
+		//	return 2;
 	
-
-		CameraControls();
-
+		BeginFrame();
 		Update(1.0f);
 		Draw(1.0f);
+		EndFrame();
 	}
-
-	//Close ImGui
-	ImGui_ImplDX11_Shutdown();
-	ImGui_ImplWin32_Shutdown();
-	ImGui::DestroyContext();
 
 	return 3;
 }
 
-void DirectXApp::Update(float dt)
+void DirectXApp::BeginFrame()
 {
+	window.GetRender().ClearBuffer(0.5f, 0.5f, 0.5f);
+
 	//Begin Frame
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
+}
 
-	window.GetRender().ClearBuffer(0.5f, 0.5f, 0.5f);
-	
+void DirectXApp::Update(float dt)
+{	
+	CameraControls();
 	scene->Update();
 
 	//Set Camera
@@ -81,6 +69,17 @@ void DirectXApp::Update(float dt)
 	{
 		window.GetRender().SetCamera((*scene_camera));
 	}
+
+	Draw(dt);
+}
+
+void DirectXApp::EndFrame()
+{
+	//ImGui
+	ImGui::Render();
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+	window.GetRender().EndFrame();
 }
 
 void DirectXApp::Draw(float dt)
@@ -93,38 +92,59 @@ void DirectXApp::Draw(float dt)
 	);
 	
 	scene->Draw(window.GetRender());
-
-	ImGui::Begin("Test window");
-	if (ImGui::Button("TestButton"))
-	{
-		scene_camera->Move(0.0f, 0.0f, -0.5f);
-	}
-	ImGui::End();
-
-	//ImGui
-	ImGui::Render();
-	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-
-	window.GetRender().EndFrame();
 }
 
 void DirectXApp::CameraControls()
 {
+	float yaw = scene_camera->yaw;
+	float pitch = scene_camera->pitch;
+	float roll = scene_camera->roll;
+
+	//Panning
 	if (window.keyboard.KeyIsPressed('W'))
-		scene_camera->Move(0.0f, 0.0f, -0.5f);
+		scene_camera->Move( cos(roll) * sin(pitch),
+							(-sin(yaw) - sin(roll)),
+							-cos(yaw) * cos(pitch));
 
 	if (window.keyboard.KeyIsPressed('S'))
-		scene_camera->Move(0.0f, 0.0f, 0.5f);
+		scene_camera->Move( -cos(yaw) * sin(pitch),
+							sin(yaw) + sin(roll),
+							cos(yaw) * cos(pitch));
 
 	if (window.keyboard.KeyIsPressed('A'))
-		scene_camera->Move(0.5f, 0.0f, 0.0f);
+		scene_camera->Move(	cos(yaw) * cos(pitch),
+							(-sin(yaw) - sin(roll)),
+							cos(roll) * sin(pitch));
 
 	if (window.keyboard.KeyIsPressed('D'))
-		scene_camera->Move(-0.5f, 0.0f, 0.0f);
+		scene_camera->Move( -cos(yaw) * cos(pitch),
+							(-sin(yaw) - sin(roll)),
+							-cos(roll) * sin(pitch));
 
 	if (window.keyboard.KeyIsPressed('Q'))
 		scene_camera->Move(0.0f, -0.5f, 0.0f);
 
 	if (window.keyboard.KeyIsPressed('E'))
 		scene_camera->Move(0.0f, 0.5f, 0.0f);
+
+	if (window.keyboard.KeyIsPressed('R'))
+		scene_camera->ResetRotation();
+
+	
+	if (window.mouse.LeftIsPressed() && window.keyboard.KeyIsPressed(VK_SPACE))
+	{
+     		int mouse_x = window.mouse.GetPosX();
+		int mouse_y = window.mouse.GetPosY();
+		
+		int mouse_delta_x = last_mouse_pos_x - mouse_x;
+		int mouse_delta_y = last_mouse_pos_y - mouse_y;
+
+		scene_camera->Rotate(mouse_delta_y, mouse_delta_x);
+	}
+
+	scene_camera->DrawUI();
+
+	//mouse stuff
+	last_mouse_pos_x = window.mouse.GetPosX();
+	last_mouse_pos_y = window.mouse.GetPosY();
 }
