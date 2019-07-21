@@ -52,7 +52,7 @@ private:
 class Entity
 {
 public:
-	Entity();
+	Entity(int id);
 	~Entity();
 
 	void Update();
@@ -62,8 +62,18 @@ public:
 	void Delete();
 
 	MeshRenderer& GetMeshRenderer() const { return (*mesh_render); }
+
+	const char* GetName() const { return name.c_str(); }
+
+	bool IsSelected() const { return is_selected; }
+	void SetSelected(bool selected) { is_selected = selected; }
+
+	void DrawUI();
 private:
+	std::string name;
+
 	bool needs_delete = false;
+	bool is_selected = false;
 
 	Transform* transform = nullptr;
 	MeshRenderer* mesh_render = nullptr;

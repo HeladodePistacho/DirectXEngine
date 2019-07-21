@@ -13,7 +13,7 @@
 #include "ImGui\imgui_impl_dx11.h"
 #include "ImGui\imgui_impl_win32.h"
 
-DirectXApp::DirectXApp() : imgui_manager(), window(1024, 1024, "DirectX Engine")
+DirectXApp::DirectXApp() : imgui_manager(), window(1920, 1080, "DirectX Engine")
 {
 	scene_camera = new Camera(window.GetWidth(), window.GetHeight());
 	scene = new Scene();
@@ -29,6 +29,9 @@ int DirectXApp::Start()
 	Entity* ent = &scene->AddEntity();
 	ent->GetMeshRenderer().SetMesh(&resource_manager->GetCube());
 
+	scene->AddEntity();
+	scene->AddEntity();
+
 	//Messages queue
 	int get_result = 0;
 
@@ -36,9 +39,6 @@ int DirectXApp::Start()
 	{	
 		if (Window::ProcessMessages() != MESSAGE_OK)
 			return 1;
-
-		//if (window.keyboard.KeyIsPressed(VK_SPACE))
-		//	return 2;
 	
 		BeginFrame();
 		Update(1.0f);
@@ -69,8 +69,6 @@ void DirectXApp::Update(float dt)
 	{
 		window.GetRender().SetCamera((*scene_camera));
 	}
-
-	Draw(dt);
 }
 
 void DirectXApp::EndFrame()

@@ -19,6 +19,7 @@ public:
 	Entity& AddEntity();
 	void DeleteEntity(Entity&);
 
+	void DrawUI();
 private:
 	Entity* selected_entity = nullptr;
 	std::vector<Entity*> entities;

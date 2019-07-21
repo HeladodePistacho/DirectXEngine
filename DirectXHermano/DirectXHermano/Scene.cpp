@@ -1,5 +1,6 @@
 #include "Scene.h"
 #include "Entity.h"
+#include "ImGui/imgui.h"
 
 Scene::~Scene()
 {
@@ -29,11 +30,13 @@ void Scene::Draw(Render & ren)
 	{
 		(*iter)->Draw(ren);
 	}
+
+	DrawUI();
 }
 
 Entity& Scene::AddEntity()
 {
-	Entity* new_entity = new Entity();
+	Entity* new_entity = new Entity(entities.size());
 	entities.push_back(new_entity);
 
 	return (*new_entity);
@@ -42,6 +45,31 @@ Entity& Scene::AddEntity()
 void Scene::DeleteEntity(Entity& entity_to_delete)
 {
 	entity_to_delete.Delete();
+}
+
+void Scene::DrawUI()
+{
+	ImGui::Begin("Scene Window");
+
+	for (std::vector<Entity*>::iterator iter = entities.begin(); iter != entities.end(); iter++)
+	{
+		if (ImGui::Selectable((*iter)->GetName(), (*iter)->IsSelected()))
+		{
+			if (selected_entity)
+				selected_entity->SetSelected(false);
+
+			selected_entity = (*iter);
+			selected_entity->SetSelected(true);
+		}
+	}
+
+	ImGui::Begin("Inspector");
+	if (selected_entity)
+		selected_entity->DrawUI();
+	ImGui::End();
+
+
+	ImGui::End();
 }
 
 void Scene::DeleteEntities()

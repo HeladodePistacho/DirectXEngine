@@ -1,6 +1,7 @@
 #include "Entity.h"
 #include "Mesh.h"
 #include "Camera.h"
+#include "ImGui\imgui.h"
 
 //----------------------------------- TRANSFORM ------------------------------------------------
 Transform::Transform() : position(0.0f, 0.0f, 0.0f), rotation_euler(0.0f, 0.0f, 0.0f), scale(1.0f, 1.0f, 1.0f), rotation_quaternion(DirectX::XMQuaternionRotationRollPitchYaw(rotation_euler.x, rotation_euler.y, rotation_euler.z))
@@ -80,10 +81,14 @@ void MeshRenderer::Draw(Render & ren)
 
 //-----------------------------------  ENTITY   -------------------------------------------------
 
-Entity::Entity()
+Entity::Entity(int id)
 {
 	transform = new Transform();
 	mesh_render = new MeshRenderer();
+
+	char buffer[50];
+	sprintf_s(buffer, "Entity_%i", id);
+	name = buffer;
 }
 
 Entity::~Entity()
@@ -107,6 +112,11 @@ void Entity::Draw(Render & ren)
 void Entity::Delete()
 {
 	needs_delete = true;
+}
+
+void Entity::DrawUI()
+{
+	ImGui::Text("I am %s", name.c_str());
 }
 
 
