@@ -1,7 +1,7 @@
 #include "Entity.h"
-#include "Mesh.h"
 #include "Camera.h"
 #include "ImGui\imgui.h"
+#include "MeshRenderer.h"
 
 //----------------------------------- TRANSFORM ------------------------------------------------
 Transform::Transform() : position(0.0f, 0.0f, 0.0f), rotation_euler(0.0f, 0.0f, 0.0f), scale(1.0f, 1.0f, 1.0f), rotation_quaternion(DirectX::XMQuaternionRotationRollPitchYaw(rotation_euler.x, rotation_euler.y, rotation_euler.z))
@@ -19,64 +19,49 @@ void Transform::Update()
 
 void Transform::BuildMatrix()
 {
+	rotation_quaternion = DirectX::XMQuaternionRotationRollPitchYaw(rotation_euler.x, rotation_euler.y, rotation_euler.z);
+
 	model_matrix = DirectX::XMMatrixTranspose(
 		DirectX::XMMatrixRotationQuaternion(rotation_quaternion) *
-		DirectX::XMMatrixScaling(scale.x, scale.y, scale.z) *
+		DirectX::XMMatrixScaling(scale.x, scale.y, scale.z) * 
 		DirectX::XMMatrixTranslation(position.x, position.y, position.z)
-	);
+		);
+}
+
+void Transform::DrawTransformUI()
+{
+	if(ImGui::TreeNode("Transform"))
+	{
+		ImGui::Text("Position ");
+		ImGui::PushItemWidth(50);
+		if (ImGui::DragFloat("X##position", &position.x, 0.5f, 0.0f, 0.0f, "%.2f")) needs_update = true;
+		ImGui::SameLine();
+		if (ImGui::DragFloat("Y##position", &position.y, 0.5f, 0.0f, 0.0f, "%.2f")) needs_update = true;
+		ImGui::SameLine();
+		if (ImGui::DragFloat("Z##position", &position.z, 0.5f, 0.0f, 0.0f, "%.2f")) needs_update = true;
+
+		ImGui::Text("Rotation ");
+		if (ImGui::DragFloat("X##rotation", &rotation_euler.x, 0.5f, 0.0f, 0.0f, "%.2f")) needs_update = true;
+		ImGui::SameLine();
+		if (ImGui::DragFloat("Y##rotation", &rotation_euler.y, 0.5f, 0.0f, 0.0f, "%.2f")) needs_update = true;
+		ImGui::SameLine();
+		if (ImGui::DragFloat("Z##rotation", &rotation_euler.z, 0.5f, 0.0f, 0.0f, "%.2f")) needs_update = true;
+
+		ImGui::Text("Scale ");
+		if (ImGui::DragFloat("X##scale", &scale.x, 0.5f, 0.0f, 0.0f, "%.2f")) needs_update = true;
+		ImGui::SameLine();
+		if (ImGui::DragFloat("Y##scale", &scale.y, 0.5f, 0.0f, 0.0f, "%.2f")) needs_update = true;
+		ImGui::SameLine();
+		if (ImGui::DragFloat("Z##scale", &scale.z, 0.5f, 0.0f, 0.0f, "%.2f")) needs_update = true;
+		ImGui::PopItemWidth();
+
+		ImGui::TreePop();
+	}
 }
 
 //----------------------------------- TRANSFORM ------------------------------------------------
 
 //----------------------------------- MESH RENDERER ---------------------------------------------
-MeshRenderer::MeshRenderer()
-{
-
-}
-
-MeshRenderer::~MeshRenderer()
-{
-	if (mesh_to_draw)
-		mesh_to_draw = nullptr;
-
-	if (matrices)
-	{
-		delete matrices;
-		matrices = nullptr;
-	}
-}
-
-void MeshRenderer::PrepareMatrices(Render& ren)
-{
-	Camera cam = ren.GetCamera();
-
-	if (ren.GetCamera().needs_update)
-	{
-		matrix_buffers new_matrices = 
-		{
-			{DirectX::XMMatrixIdentity()},
-			{DirectX::XMMatrixTranspose(DirectX::XMMatrixTranslation(cam.position.x, cam.position.y, cam.position.z) * DirectX::XMMatrixRotationRollPitchYaw(cam.yaw, cam.pitch, cam.roll))},
-			{DirectX::XMMatrixTranspose(DirectX::XMMatrixPerspectiveFovLH(cam.fov, cam.aspect_ratio, cam.z_near, cam.z_far))}
-		};
-
-		if (!matrices)
-			matrices = new ConstBuffer<matrix_buffers>(ren, new_matrices, BUFFER_TYPE::VERTEX_SHADER_BUFFER); 
-		else {
-			matrices->Update(ren, new_matrices);
-		}
-	}
-
-	matrices->Bind(ren);
-}
-
-void MeshRenderer::Draw(Render & ren)
-{
-	if (mesh_to_draw)
-	{
-		PrepareMatrices(ren);
-		mesh_to_draw->Draw(ren);
-	}
-}
 
 
 //-----------------------------------  ENTITY   -------------------------------------------------
@@ -84,7 +69,7 @@ void MeshRenderer::Draw(Render & ren)
 Entity::Entity(int id)
 {
 	transform = new Transform();
-	mesh_render = new MeshRenderer();
+	mesh_render = new MeshRenderer(this);
 
 	char buffer[50];
 	sprintf_s(buffer, "Entity_%i", id);
@@ -102,6 +87,7 @@ Entity::~Entity()
 
 void Entity::Update()
 {
+	transform->Update();
 }
 
 void Entity::Draw(Render & ren)
@@ -116,7 +102,9 @@ void Entity::Delete()
 
 void Entity::DrawUI()
 {
-	ImGui::Text("I am %s", name.c_str());
+	ImGui::Text(name.c_str());
+
+	transform->DrawTransformUI();
 }
 
 

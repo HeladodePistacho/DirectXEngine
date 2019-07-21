@@ -5,13 +5,14 @@
 #include "Mesh.h"
 #include "ShaderProgram.h"
 #include "Entity.h"
+#include "MeshRenderer.h"
 #include <math.h>
 
 //imgui
 #include "ImGui/imconfig.h"
-#include "ImGui\imgui.h"
-#include "ImGui\imgui_impl_dx11.h"
-#include "ImGui\imgui_impl_win32.h"
+#include "ImGui/imgui.h"
+#include "ImGui/imgui_impl_dx11.h"
+#include "ImGui/imgui_impl_win32.h"
 
 DirectXApp::DirectXApp() : imgui_manager(), window(1920, 1080, "DirectX Engine")
 {

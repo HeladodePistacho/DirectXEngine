@@ -108,6 +108,9 @@
     <ClCompile Include="ImGuiManager.cpp">
       <Filter>Archivos de código fuente\Imgui</Filter>
     </ClCompile>
+    <ClCompile Include="MeshRenderer.cpp">
+      <Filter>Archivos de código fuente\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">
@@ -175,6 +178,9 @@
     </ClInclude>
     <ClInclude Include="ImGuiManager.h">
       <Filter>Archivos de código fuente\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshRenderer.h">
+      <Filter>Archivos de encabezado\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

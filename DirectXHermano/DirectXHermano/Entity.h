@@ -3,7 +3,7 @@
 #include <DirectXMath.h>
 #include "ConstBuffers.h"
 
-class Mesh;
+class MeshRenderer;
 
 class Transform
 {
@@ -14,6 +14,10 @@ public:
 	void Update();
 	void BuildMatrix();
 
+	void DrawTransformUI();
+
+	bool NeedsUpdate() const { return needs_update; }
+	DirectX::XMMATRIX GetMatrix() { needs_update = false;  return model_matrix; }
 private:
 	DirectX::XMMATRIX model_matrix;
 
@@ -24,29 +28,6 @@ private:
 	DirectX::XMVECTOR rotation_quaternion;
 
 	bool needs_update = false;
-};
-
-class MeshRenderer
-{
-public:
-	struct matrix_buffers
-	{
-		DirectX::XMMATRIX model;
-		DirectX::XMMATRIX view;
-		DirectX::XMMATRIX projection;
-	};
-
-public:
-	MeshRenderer();
-	~MeshRenderer();
-
-	void Draw(Render& ren);
-	
-	void PrepareMatrices(Render& ren);
-	void SetMesh(const Mesh* mesh) { mesh_to_draw = (Mesh*)mesh; }
-private:
-	ConstBuffer<matrix_buffers>* matrices = nullptr;
-	Mesh* mesh_to_draw = nullptr;
 };
 
 class Entity
@@ -69,6 +50,8 @@ public:
 	void SetSelected(bool selected) { is_selected = selected; }
 
 	void DrawUI();
+
+	Transform* GetTransform() { return transform; }
 private:
 	std::string name;
 
