@@ -2,6 +2,8 @@
 #include "ErrorHandling.h"
 #include <DirectXMath.h>
 #include "Camera.h"
+#include "ImGui\imgui.h"
+#include "ImGui\imgui_impl_dx11.h"
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
@@ -60,11 +62,14 @@ Render::Render(HWND window_handle, int width, int height)
 	view_port.TopLeftX = 0;
 	view_port.TopLeftY = 0;
 	direct_context->RSSetViewports(1u, &view_port);
+
+	//Load Imgui
+	ImGui_ImplDX11_Init(direct_device.Get(), direct_context.Get());
 }
 
 Render::~Render()
 {
-	
+	ImGui_ImplDX11_Shutdown();
 }
 
 void Render::EndFrame()

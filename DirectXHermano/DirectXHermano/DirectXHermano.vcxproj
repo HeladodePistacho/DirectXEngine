@@ -124,6 +124,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="ErrorHandling.cpp" />
+    <ClCompile Include="ImGuiManager.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
     <ClCompile Include="ImGui\imgui_demo.cpp" />
     <ClCompile Include="ImGui\imgui_draw.cpp" />
@@ -150,6 +151,7 @@
     <ClInclude Include="Entity.h" />
     <ClInclude Include="ErrorHandling.h" />
     <ClInclude Include="Fast.h" />
+    <ClInclude Include="ImGuiManager.h" />
     <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="InputLayout.h" />
     <ClInclude Include="KeyBoard.h" />

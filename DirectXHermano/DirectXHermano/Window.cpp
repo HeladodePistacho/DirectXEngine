@@ -1,5 +1,7 @@
 #include "Window.h"
 #include "ErrorHandling.h"
+#include "ImGui\imgui.h"
+#include "ImGui\imgui_impl_win32.h"
 
 //----------------------WINDOW CLASS-----------------------
 Window::WindowClass Window::WindowClass::singleton_window_class;
@@ -59,12 +61,16 @@ Window::Window(int _width, int _height, const char* name)
 
 	ShowWindow(window_handle, SW_SHOWDEFAULT);
 
+	//Im GUI handler
+	ImGui_ImplWin32_Init(window_handle);
+
 	//Create graphics object
 	window_render = new Render(window_handle, width, height);
 }
 
 Window::~Window()
 {
+	ImGui_ImplWin32_Shutdown();
 	DestroyWindow(window_handle);
 
 	if (window_render)
@@ -128,6 +134,9 @@ LRESULT WINAPI Window::HandleMsgThunk(HWND handle, UINT message, WPARAM w_param,
 
 LRESULT Window::HanldeMessage(HWND handle, UINT message, WPARAM w_param, LPARAM l_param)
 {
+	if (ImGui_ImplWin32_WndProcHandler(handle, message, w_param, l_param))
+		return true;
+
 	switch (message)
 	{
 	case WM_CLOSE:

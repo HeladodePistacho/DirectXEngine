@@ -105,6 +105,9 @@
     <ClCompile Include="ImGui\imgui.cpp">
       <Filter>Archivos de código fuente\Imgui</Filter>
     </ClCompile>
+    <ClCompile Include="ImGuiManager.cpp">
+      <Filter>Archivos de código fuente\Imgui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">
@@ -169,6 +172,9 @@
     </ClInclude>
     <ClInclude Include="Resource.h">
       <Filter>Archivos de encabezado\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiManager.h">
+      <Filter>Archivos de código fuente\Imgui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
