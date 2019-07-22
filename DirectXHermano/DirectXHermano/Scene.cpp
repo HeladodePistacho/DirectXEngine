@@ -51,6 +51,20 @@ void Scene::DrawUI()
 {
 	ImGui::Begin("Scene Window");
 
+	if (ImGui::Button("Add Entity"))
+	{
+		AddEntity();
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Remove Entity"))
+	{
+		if (selected_entity)
+		{
+			DeleteEntity((*selected_entity));
+			selected_entity = nullptr;
+		}
+	}
+
 	for (std::vector<Entity*>::iterator iter = entities.begin(); iter != entities.end(); iter++)
 	{
 		if (ImGui::Selectable((*iter)->GetName(), (*iter)->IsSelected()))
