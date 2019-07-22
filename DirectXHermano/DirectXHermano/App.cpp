@@ -91,6 +91,7 @@ void DirectXApp::Draw(float dt)
 	);
 	
 	scene->Draw(window.GetRender());
+	scene->DrawUI(*resource_manager);
 }
 
 void DirectXApp::CameraControls()

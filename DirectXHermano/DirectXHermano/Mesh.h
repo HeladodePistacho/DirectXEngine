@@ -24,7 +24,7 @@ private:
 class Mesh : public Resource
 {
 public:
-	Mesh();
+	Mesh(std::string _name);
 	Mesh(const char* path);
 	~Mesh();
 

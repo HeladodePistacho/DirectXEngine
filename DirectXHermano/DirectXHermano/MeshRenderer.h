@@ -4,6 +4,7 @@
 
 class Mesh;
 class Entity;
+class ResourceManager;
 
 class MeshRenderer
 {
@@ -24,6 +25,7 @@ public:
 	void PrepareMatrices(Render& ren);
 	void SetMesh(const Mesh* mesh) { mesh_to_draw = (Mesh*)mesh; }
 
+	void DrawMeshRendererUI(ResourceManager& res_manager);
 private:
 	Entity* parent = nullptr;
 

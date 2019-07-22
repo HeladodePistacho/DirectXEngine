@@ -3,6 +3,8 @@
 
 class Render;
 class Entity;
+class ResourceManager;
+
 class Scene
 {
 public:
@@ -19,7 +21,7 @@ public:
 	Entity& AddEntity();
 	void DeleteEntity(Entity&);
 
-	void DrawUI();
+	void DrawUI(ResourceManager&);
 private:
 	Entity* selected_entity = nullptr;
 	std::vector<Entity*> entities;

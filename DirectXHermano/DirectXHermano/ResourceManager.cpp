@@ -5,6 +5,7 @@
 #include "Topology.h"
 #include "InputLayout.h"
 #include "ShaderProgram.h"
+#include "ImGui/imgui.h"
 
 ResourceManager::~ResourceManager()
 {
@@ -22,6 +23,20 @@ void ResourceManager::Start(Render& ren)
 	//Load Basic meshes
 	LoadShaders(ren);
 	LoadCube(ren);
+}
+
+Mesh& ResourceManager::DrawMeshesUI()
+{
+	for (std::vector<Resource*>::iterator iter = resources.begin(); iter != resources.end(); iter++)
+	{
+		if ((*iter)->GetType() == RESOURCE_TYPE::MESH)
+		{
+			if (ImGui::Selectable((*iter)->GetName()))
+			{
+				return *(Mesh*)(*iter);
+			}
+		}
+	}
 }
 
 void ResourceManager::LoadShaders(Render& ren)
@@ -83,7 +98,8 @@ void ResourceManager::LoadCube(Render& ren)
 	new_submesh->AddBind(new_inputlayout);
 	new_submesh->AddIndices(new_indexbuffer);
 
-	Mesh* new_mesh = new Mesh();
+	//std::string name = "Cube Mesh";
+	Mesh* new_mesh = new Mesh((std::string)"Cube Mesh");
 	new_mesh->AddSubmesh(new_submesh);
 	
 	resources.push_back(new_mesh);

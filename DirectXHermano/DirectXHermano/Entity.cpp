@@ -2,6 +2,7 @@
 #include "Camera.h"
 #include "ImGui\imgui.h"
 #include "MeshRenderer.h"
+#include "ResourceManager.h"
 
 //----------------------------------- TRANSFORM ------------------------------------------------
 Transform::Transform() : position(0.0f, 0.0f, 0.0f), rotation_euler(0.0f, 0.0f, 0.0f), scale(1.0f, 1.0f, 1.0f), rotation_quaternion(DirectX::XMQuaternionRotationRollPitchYaw(rotation_euler.x, rotation_euler.y, rotation_euler.z))
@@ -100,11 +101,12 @@ void Entity::Delete()
 	needs_delete = true;
 }
 
-void Entity::DrawUI()
+void Entity::DrawUI(ResourceManager& res)
 {
 	ImGui::Text(name.c_str());
 
 	transform->DrawTransformUI();
+	mesh_render->DrawMeshRendererUI(res);
 }
 
 

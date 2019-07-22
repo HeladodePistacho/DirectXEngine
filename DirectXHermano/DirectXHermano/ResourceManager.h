@@ -18,6 +18,7 @@ public:
 	Mesh& GetCube() const { return (*cube_mesh); }
 	ShaderProgram& GetShader() const { return (*mesh_shader); }
 
+	Mesh& DrawMeshesUI();
 private:
 	std::vector<Resource*> resources;
 

@@ -76,7 +76,7 @@ private:
 class ShaderProgram : public Bindable, public Resource
 {
 public:
-	ShaderProgram(Render& ren, LPCWSTR vertex_name, LPCWSTR pixel_name) : Resource(RESOURCE_TYPE::SHADER)
+	ShaderProgram(Render& ren, LPCWSTR vertex_name, LPCWSTR pixel_name) : Resource(RESOURCE_TYPE::SHADER, "")
 	{
 		vertex_shader = new VertexShader(ren, vertex_name);
 		pixel_shader = new PixelShader(ren, pixel_name);

@@ -2,6 +2,8 @@
 #include "MeshRenderer.h"
 #include "Mesh.h"
 #include "Camera.h"
+#include "ResourceManager.h"
+#include "ImGui\imgui.h"
 
 MeshRenderer::MeshRenderer(Entity* _parent) : parent(_parent)
 {
@@ -24,7 +26,7 @@ void MeshRenderer::PrepareMatrices(Render& ren)
 {
 	Camera cam = ren.GetCamera();
 
-	if (ren.GetCamera().needs_update || parent->GetTransform()->NeedsUpdate())
+	if (matrices == nullptr || ren.GetCamera().needs_update || parent->GetTransform()->NeedsUpdate())
 	{
 		matrix_buffers new_matrices =
 		{
@@ -41,6 +43,39 @@ void MeshRenderer::PrepareMatrices(Render& ren)
 	}
 
 	matrices->Bind(ren);
+}
+
+void MeshRenderer::DrawMeshRendererUI(ResourceManager& res_manager)
+{
+	if (ImGui::TreeNode("Mesh Renderer"))
+	{
+
+		if (mesh_to_draw)
+		{
+			if (ImGui::BeginCombo("Mesh: ", mesh_to_draw->GetName(), ImGuiComboFlags_::ImGuiComboFlags_None))
+			{
+				Mesh lol = res_manager.DrawMeshesUI();
+				ImGui::EndCombo();
+			}
+		}
+		else
+		{
+			if (ImGui::BeginCombo("Mesh: ", "No Mesh Selected"))
+			{
+
+				Mesh* tmp = &res_manager.DrawMeshesUI();
+				if (tmp != nullptr)
+					mesh_to_draw = tmp;
+				ImGui::EndCombo();
+			}
+		}
+
+		
+
+		//
+
+		ImGui::TreePop();
+	}
 }
 
 void MeshRenderer::Draw(Render & ren)

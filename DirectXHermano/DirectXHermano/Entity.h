@@ -4,6 +4,7 @@
 #include "ConstBuffers.h"
 
 class MeshRenderer;
+class ResourceManager;
 
 class Transform
 {
@@ -49,7 +50,7 @@ public:
 	bool IsSelected() const { return is_selected; }
 	void SetSelected(bool selected) { is_selected = selected; }
 
-	void DrawUI();
+	void DrawUI(ResourceManager&);
 
 	Transform* GetTransform() { return transform; }
 private:

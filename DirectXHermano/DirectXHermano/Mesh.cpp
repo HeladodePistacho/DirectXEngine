@@ -41,11 +41,11 @@ void Submesh::AddIndices(const IndexBuffer* bind)
 //--------------------------- SUBMESH ------------------------
 
 //---------------------------  MESH   ------------------------
-Mesh::Mesh() : Resource(RESOURCE_TYPE::MESH)
+Mesh::Mesh(std::string _name) : Resource(RESOURCE_TYPE::MESH, _name)
 {
 }
 
-Mesh::Mesh(const char* path) : Resource(RESOURCE_TYPE::MESH)
+Mesh::Mesh(const char* path) : Resource(RESOURCE_TYPE::MESH, path)
 {
 
 }

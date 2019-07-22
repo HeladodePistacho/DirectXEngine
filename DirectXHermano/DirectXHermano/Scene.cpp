@@ -30,8 +30,6 @@ void Scene::Draw(Render & ren)
 	{
 		(*iter)->Draw(ren);
 	}
-
-	DrawUI();
 }
 
 Entity& Scene::AddEntity()
@@ -47,7 +45,7 @@ void Scene::DeleteEntity(Entity& entity_to_delete)
 	entity_to_delete.Delete();
 }
 
-void Scene::DrawUI()
+void Scene::DrawUI(ResourceManager& res)
 {
 	ImGui::Begin("Scene Window");
 
@@ -79,7 +77,7 @@ void Scene::DrawUI()
 
 	ImGui::Begin("Inspector");
 	if (selected_entity)
-		selected_entity->DrawUI();
+		selected_entity->DrawUI(res);
 	ImGui::End();
 
 
