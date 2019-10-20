@@ -1,6 +1,13 @@
 #include "Mesh.h"
 #include "IndexBuffer.h"
 
+#pragma comment(lib, "assimpd.lib")
+#pragma comment(lib, "assimp.lib")
+#include "Assimp/include/assimp/scene.h"
+#include "Assimp/include/assimp/Importer.hpp"
+#include "Assimp/include/assimp/postprocess.h"
+#include "Assimp/include/assimp/mesh.h"
+
 //--------------------------- SUBMESH ------------------------
 Submesh::~Submesh()
 {
@@ -47,7 +54,10 @@ Mesh::Mesh(std::string _name) : Resource(RESOURCE_TYPE::MESH, _name)
 
 Mesh::Mesh(const char* path) : Resource(RESOURCE_TYPE::MESH, path)
 {
-
+	//Load Mesh
+	//Assimp::Importer importer;
+	//
+	//fopen(path, )
 }
 
 Mesh::~Mesh()

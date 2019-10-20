@@ -7,6 +7,7 @@
 #include "ShaderProgram.h"
 #include "ImGui/imgui.h"
 
+
 ResourceManager::~ResourceManager()
 {
 	for (int i = 0; i < resources.size(); i++)
@@ -37,6 +38,13 @@ Mesh& ResourceManager::DrawMeshesUI()
 			}
 		}
 	}
+}
+
+void ResourceManager::ImportMesh(const char* path)
+{
+	Mesh* new_mesh = new Mesh(path);
+
+	resources.push_back(new_mesh);
 }
 
 void ResourceManager::LoadShaders(Render& ren)
@@ -107,3 +115,4 @@ void ResourceManager::LoadCube(Render& ren)
 	//Test
 	cube_mesh = new_mesh;
 }
+

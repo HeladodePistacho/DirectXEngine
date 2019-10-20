@@ -19,6 +19,8 @@ public:
 	ShaderProgram& GetShader() const { return (*mesh_shader); }
 
 	Mesh& DrawMeshesUI();
+
+	void ImportMesh(const char* path);
 private:
 	std::vector<Resource*> resources;
 
