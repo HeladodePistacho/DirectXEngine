@@ -1,12 +1,13 @@
 #include "Mesh.h"
 #include "IndexBuffer.h"
 
-#pragma comment(lib, "assimpd.lib")
-#pragma comment(lib, "assimp.lib")
-#include "Assimp/include/assimp/scene.h"
-#include "Assimp/include/assimp/Importer.hpp"
-#include "Assimp/include/assimp/postprocess.h"
-#include "Assimp/include/assimp/mesh.h"
+//#pragma comment(lib, "assimpd.lib")
+#pragma comment(lib, "Assimp/libx86/assimp.lib")
+#include "Assimp/include/scene.h"
+#include "Assimp/include/Importer.hpp"
+#include "Assimp/include/postprocess.h"
+#include "Assimp/include/mesh.h"
+
 
 //--------------------------- SUBMESH ------------------------
 Submesh::~Submesh()
