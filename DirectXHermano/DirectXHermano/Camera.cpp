@@ -69,7 +69,10 @@ void Camera::Move(float x, float y, float z)
 
 void Camera::Rotate(int y_desplace, int x_displace)
 {
-	yaw += (y_desplace * 0.016f) * cos(pitch);
+	// = 0.0f;
+
+
+     	yaw += (y_desplace * 0.016f) * cos(pitch);
 	if (abs(yaw) > (0.5f * DirectX::XM_PI))
 	{
 		if (yaw > 0.0f)
@@ -77,17 +80,16 @@ void Camera::Rotate(int y_desplace, int x_displace)
 		else yaw = -(0.5f * DirectX::XM_PI); 
 	}
 
-	roll += (y_desplace * 0.016f) * sin(pitch);
-	if (abs(roll) > (0.5f * DirectX::XM_PI))
-	{
-		if (roll > 0.0f)
-			roll = (0.5f * DirectX::XM_PI);
-		else roll = -(0.5f * DirectX::XM_PI);
-	}
+	//roll += (y_desplace * 0.016f) * sin(pitch);
+	//if (abs(roll) > (0.5f * DirectX::XM_PI))
+	//{
+	//	if (roll > 0.0f)
+	//		roll = (0.5f * DirectX::XM_PI);
+	//	else roll = -(0.5f * DirectX::XM_PI);
+	//}
 
 	
-	pitch += (x_displace * 0.016f);
-	
+	pitch += (x_displace * 0.016f);	
 	if (abs(pitch) > (2 * DirectX::XM_PI))
 	{
 		pitch = 0.0f;

@@ -102,24 +102,24 @@ void DirectXApp::CameraControls()
 
 	//Panning
 	if (window.keyboard.KeyIsPressed('W'))
-		scene_camera->Move( cos(roll) * sin(pitch),
-							(-sin(yaw) - sin(roll)),
-							-cos(yaw) * cos(pitch));
+		scene_camera->Move(-cos(yaw) * sin(pitch),
+							sin(yaw),
+						   -cos(yaw) * cos(pitch));
 
 	if (window.keyboard.KeyIsPressed('S'))
-		scene_camera->Move( -cos(yaw) * sin(pitch),
-							sin(yaw) + sin(roll),
+		scene_camera->Move( cos(yaw) * sin(pitch),
+							-sin(yaw) ,
 							cos(yaw) * cos(pitch));
 
 	if (window.keyboard.KeyIsPressed('A'))
 		scene_camera->Move(	cos(yaw) * cos(pitch),
-							(-sin(yaw) - sin(roll)),
-							cos(roll) * sin(pitch));
+							0.0f,
+							cos(yaw) * -sin(pitch));
 
 	if (window.keyboard.KeyIsPressed('D'))
 		scene_camera->Move( -cos(yaw) * cos(pitch),
-							(-sin(yaw) - sin(roll)),
-							-cos(roll) * sin(pitch));
+							0.0f,
+							cos(yaw) * sin(pitch));
 
 	if (window.keyboard.KeyIsPressed('Q'))
 		scene_camera->Move(0.0f, -0.5f, 0.0f);
@@ -133,13 +133,13 @@ void DirectXApp::CameraControls()
 	
 	if (window.mouse.LeftIsPressed() && window.keyboard.KeyIsPressed(VK_SPACE))
 	{
-     		int mouse_x = window.mouse.GetPosX();
+     	int mouse_x = window.mouse.GetPosX();
 		int mouse_y = window.mouse.GetPosY();
 		
 		int mouse_delta_x = last_mouse_pos_x - mouse_x;
 		int mouse_delta_y = last_mouse_pos_y - mouse_y;
 
-		scene_camera->Rotate(mouse_delta_y, mouse_delta_x);
+		scene_camera->Rotate(-mouse_delta_y, mouse_delta_x);
 	}
 
 	scene_camera->DrawUI();
