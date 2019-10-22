@@ -139,7 +139,7 @@ void DirectXApp::CameraControls()
 		int mouse_delta_x = last_mouse_pos_x - mouse_x;
 		int mouse_delta_y = last_mouse_pos_y - mouse_y;
 
-		scene_camera->Rotate(-mouse_delta_y, mouse_delta_x);
+		scene_camera->Rotate(-mouse_delta_y, -mouse_delta_x);
 	}
 
 	scene_camera->DrawUI();
