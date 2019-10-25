@@ -2,6 +2,7 @@
 #include "ErrorHandling.h"
 #include "ImGui\imgui.h"
 #include "ImGui\imgui_impl_win32.h"
+#include <shellapi.h>
 
 //----------------------WINDOW CLASS-----------------------
 Window::WindowClass Window::WindowClass::singleton_window_class;
@@ -60,6 +61,8 @@ Window::Window(int _width, int _height, const char* name)
 	//throw error;
 
 	ShowWindow(window_handle, SW_SHOWDEFAULT);
+
+	DragAcceptFiles(window_handle, TRUE);
 
 	//Im GUI handler
 	ImGui_ImplWin32_Init(window_handle);
@@ -230,6 +233,27 @@ LRESULT Window::HanldeMessage(HWND handle, UINT message, WPARAM w_param, LPARAM 
 		
 		break;
 	}
+
+	case WM_DROPFILES:
+		
+		UINT num_files = DragQueryFile((HDROP)w_param, 0xFFFFFFFF, NULL, 0);
+
+		for (int i = 0; i < num_files; i++)
+		{
+			UINT path_size = DragQueryFile((HDROP)w_param, i, NULL, 0);
+
+			if (path_size == 0)
+				continue;
+
+			char* file_path = new char[path_size + 1];
+			DragQueryFile((HDROP)w_param, i, file_path, path_size);
+
+			
+			delete[] file_path;
+		}
+
+		DragFinish((HDROP)w_param);
+		break;
 	}
 	return DefWindowProc(handle, message, w_param, l_param);
 }
