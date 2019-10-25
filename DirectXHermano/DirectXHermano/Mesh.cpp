@@ -86,4 +86,12 @@ void Mesh::AddSubmesh(const Submesh* new_submesh)
 		meshes.push_back((Submesh*)new_submesh);
 }
 
+void Mesh::AddSubmesh(std::vector<Submesh*> new_submeshes)
+{
+	for (std::vector<Submesh*>::iterator item = new_submeshes.begin(); item != new_submeshes.end(); item++)
+	{
+		if (*item)
+			meshes.push_back((*item));
+	}
+}
 

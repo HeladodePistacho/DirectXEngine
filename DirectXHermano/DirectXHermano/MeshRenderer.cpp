@@ -54,7 +54,9 @@ void MeshRenderer::DrawMeshRendererUI(ResourceManager& res_manager)
 		{
 			if (ImGui::BeginCombo("Mesh: ", mesh_to_draw->GetName(), ImGuiComboFlags_::ImGuiComboFlags_None))
 			{
-				Mesh lol = res_manager.DrawMeshesUI();
+				Mesh* selected_mesh = &res_manager.DrawMeshesUI();
+				if (!selected_mesh)
+					mesh_to_draw = selected_mesh;
 				ImGui::EndCombo();
 			}
 		}

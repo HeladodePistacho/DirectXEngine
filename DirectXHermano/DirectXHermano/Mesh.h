@@ -31,6 +31,7 @@ public:
 	void Draw(Render& ren);
 
 	void AddSubmesh(const Submesh*);
+	void AddSubmesh(std::vector<Submesh*>);
 
 private:
 	std::vector<Submesh*> meshes;

@@ -1,10 +1,17 @@
 #pragma once
 #include <vector>
+#include <queue>
 
 class Render;
+
 class Resource;
 class ShaderProgram;
 class Mesh;
+class Submesh;
+
+class aiScene;
+class aiNode;
+class aiMesh;
 
 class ResourceManager
 {
@@ -20,7 +27,8 @@ public:
 
 	Mesh& DrawMeshesUI();
 
-	void ImportMesh(const char* path);
+	void ImportResource(const char* path, Render& ren);
+
 private:
 	std::vector<Resource*> resources;
 
@@ -30,4 +38,10 @@ private:
 
 	void LoadShaders(Render& ren);
 	void LoadCube(Render& ren);
+
+	//Mesh load stuff
+	void ImportMesh(const char* path, Render& ren);
+	std::vector<Submesh*> ProcessNode(const aiScene* scene, aiNode* node, Render& ren);
+	Submesh* ProcessMesh(const aiScene* scene, aiMesh* mesh, Render& ren);
+	std::queue<aiNode*> nodes;
 };

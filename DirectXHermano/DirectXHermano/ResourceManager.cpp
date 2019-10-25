@@ -1,3 +1,4 @@
+#include <iostream>
 #include "ResourceManager.h"
 #include "Mesh.h"
 #include "VertexBuffer.h"
@@ -7,6 +8,13 @@
 #include "ShaderProgram.h"
 #include "ImGui/imgui.h"
 
+
+//Assimp
+#pragma comment(lib, "Assimp/libx86/assimp.lib")
+#include "Assimp/include/scene.h"
+#include "Assimp/include/Importer.hpp"
+#include "Assimp/include/postprocess.h"
+#include "Assimp/include/mesh.h"
 
 ResourceManager::~ResourceManager()
 {
@@ -24,6 +32,7 @@ void ResourceManager::Start(Render& ren)
 	//Load Basic meshes
 	LoadShaders(ren);
 	LoadCube(ren);
+	ImportMesh("C:/Users/Usuari/Documents/GitHub/CuteEngine/CuteEngine/Resources/Models/Patrick/Patrick.obj", ren);
 }
 
 Mesh& ResourceManager::DrawMeshesUI()
@@ -40,9 +49,48 @@ Mesh& ResourceManager::DrawMeshesUI()
 	}
 }
 
-void ResourceManager::ImportMesh(const char* path)
+void ResourceManager::ImportResource(const char * path, Render & ren)
 {
+	ImportMesh(path, ren);
+}
+
+void ResourceManager::ImportMesh(const char* path, Render& ren)
+{
+	//new Mesh
 	Mesh* new_mesh = new Mesh(path);
+
+	//Load Mesh from assimp
+	Assimp::Importer importer;
+
+	const aiScene* scene= importer.ReadFile(path, aiProcess_Triangulate |
+		aiProcess_GenSmoothNormals |
+		aiProcess_FixInfacingNormals |
+		aiProcess_JoinIdenticalVertices |
+		aiProcess_PreTransformVertices |
+		//aiProcess_RemoveRedundantMaterials |
+		aiProcess_SortByPType |
+		aiProcess_ImproveCacheLocality |
+		aiProcess_FlipUVs |
+		aiProcess_OptimizeMeshes);
+
+	//Check for errors
+	if (!scene || !scene->mRootNode || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE)
+	{
+		std::cout << "ASSIMP ERROR: " << importer.GetErrorString() << std::endl;
+		return;
+	}
+
+	//Load each node from scene
+	nodes.push(scene->mRootNode);
+	while (!nodes.empty())
+	{
+		new_mesh->AddSubmesh(ProcessNode(scene, nodes.front(), ren));
+
+		for (int i = 0; i < nodes.front()->mNumChildren; i++)
+			nodes.push(nodes.front()->mChildren[i]);
+
+		nodes.pop();
+	}
 
 	resources.push_back(new_mesh);
 }
@@ -116,3 +164,57 @@ void ResourceManager::LoadCube(Render& ren)
 	cube_mesh = new_mesh;
 }
 
+std::vector<Submesh*> ResourceManager::ProcessNode(const aiScene* scene, aiNode* node, Render& ren)
+{
+	std::vector<Submesh*> ret;
+
+	for (int i = 0; i < node->mNumMeshes; i++)
+	{
+		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
+		ret.push_back(ProcessMesh(scene, mesh, ren));
+	}
+
+	return ret;
+}
+
+Submesh* ResourceManager::ProcessMesh(const aiScene * scene, aiMesh * mesh, Render& ren)
+{
+	Submesh* new_submesh = new Submesh();
+	std::vector<Vertex> vertices;
+
+	for (int i = 0; i < mesh->mNumVertices; i++)
+	{
+		Vertex new_vertex;
+		new_vertex.position = { mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z };
+
+		//Add more stuff such as Normals/TexCoords...
+		vertices.push_back(new_vertex);
+	}
+
+	std::vector<unsigned short> indices;
+	for (int i = 0; i < mesh->mNumFaces; i++)
+	{
+		aiFace poligon_face = mesh->mFaces[i];
+
+		for (int k = 0; k < poligon_face.mNumIndices; k++)
+			indices.push_back(poligon_face.mIndices[k]);
+	}
+	std::cout << indices.size() << std::endl;
+
+	std::vector<D3D11_INPUT_ELEMENT_DESC> layout =
+	{
+		{ "Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+	};
+
+	VertexBuffer* new_vertexbuffer = new VertexBuffer(ren, vertices);
+	IndexBuffer* new_indexbuffer = new IndexBuffer(ren, indices);
+	Topology* new_topology = new Topology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	InputLayout* new_inputlayout = new InputLayout(ren, layout, mesh_shader->GetVertexByteCode());
+
+	new_submesh->AddBind(new_vertexbuffer);
+	new_submesh->AddIndices(new_indexbuffer);
+	new_submesh->AddBind(new_topology);
+	new_submesh->AddBind(new_inputlayout);
+
+	return new_submesh;
+}
