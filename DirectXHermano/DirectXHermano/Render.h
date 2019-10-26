@@ -32,6 +32,7 @@ private:
 	Microsoft::WRL::ComPtr<IDXGISwapChain> direct_swap;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> direct_context;
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> direct_render_target;
+	ID3D11DepthStencilView* direct_depth = nullptr;
 
 	D3D11_VIEWPORT view_port;
 

@@ -16,8 +16,8 @@ Render::Render(HWND window_handle, int width, int height)
 
 	//Holds information configuration for D3D
 	DXGI_SWAP_CHAIN_DESC descriptor;
-	descriptor.BufferDesc.Width = 0;
-	descriptor.BufferDesc.Height = 0;
+	descriptor.BufferDesc.Width = width;
+	descriptor.BufferDesc.Height = height;
 	descriptor.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
 	descriptor.BufferDesc.RefreshRate.Numerator = 0;
 	descriptor.BufferDesc.RefreshRate.Denominator = 0;
@@ -52,7 +52,44 @@ Render::Render(HWND window_handle, int width, int height)
 		//throw error;
 	}
 
-	direct_context->OMSetRenderTargets(1u, direct_render_target.GetAddressOf(), nullptr);
+	
+
+	//Set Depth test
+	D3D11_DEPTH_STENCIL_DESC depth_stencil_descriptor = {};
+	depth_stencil_descriptor.DepthEnable = TRUE;
+	depth_stencil_descriptor.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	depth_stencil_descriptor.DepthFunc = D3D11_COMPARISON_LESS;
+	depth_stencil_descriptor.StencilEnable = FALSE;
+
+	ID3D11DepthStencilState* depth_stencil_state = nullptr;
+	direct_device->CreateDepthStencilState(&depth_stencil_descriptor, &depth_stencil_state);
+
+	//Bind depth state to context
+	direct_context->OMSetDepthStencilState(depth_stencil_state, 1u);
+
+	//Create depth texture
+	ID3D11Texture2D* depth_texture;
+	D3D11_TEXTURE2D_DESC depth_texture_descriptor = {};
+	depth_texture_descriptor.Width = width;
+	depth_texture_descriptor.Height = height;
+	depth_texture_descriptor.MipLevels = 1u;
+	depth_texture_descriptor.ArraySize = 1u;
+	depth_texture_descriptor.Format = DXGI_FORMAT_D32_FLOAT;
+	depth_texture_descriptor.SampleDesc.Count = 1u;
+	depth_texture_descriptor.SampleDesc.Quality = 0u;
+	depth_texture_descriptor.Usage = D3D11_USAGE_DEFAULT;
+	depth_texture_descriptor.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	
+	direct_device->CreateTexture2D(&depth_texture_descriptor, nullptr, &depth_texture);
+
+	//Create View of depth texture
+	D3D11_DEPTH_STENCIL_VIEW_DESC depth_stencil_view_descriptor = {};
+	depth_stencil_view_descriptor.Format = DXGI_FORMAT_D32_FLOAT;
+	depth_stencil_view_descriptor.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+	depth_stencil_view_descriptor.Texture2D.MipSlice = 0u;
+
+	direct_device->CreateDepthStencilView(depth_texture, &depth_stencil_view_descriptor, &direct_depth);
+	direct_context->OMSetRenderTargets(1u, direct_render_target.GetAddressOf(), direct_depth);
 
 	//Set viewport settings
 	view_port.Width = width;
@@ -70,6 +107,7 @@ Render::Render(HWND window_handle, int width, int height)
 Render::~Render()
 {
 	ImGui_ImplDX11_Shutdown();
+	
 }
 
 void Render::EndFrame()
@@ -95,6 +133,7 @@ void Render::ClearBuffer(float r, float g, float b)
 {
 	const float color[] = { r, g, b, 1.0 };
 	direct_context->ClearRenderTargetView(direct_render_target.Get(), color);
+	direct_context->ClearDepthStencilView(direct_depth, D3D11_CLEAR_DEPTH, 1.0f, 0u);
 }
 
 void Render::DrawTestTriangle(float angle, float x, float y)
