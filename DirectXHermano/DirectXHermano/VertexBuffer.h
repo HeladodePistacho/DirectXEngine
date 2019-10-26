@@ -7,7 +7,7 @@ struct Vertex
 	struct
 	{
 		float x, y, z;
-	} position;
+	} position, normal;	
 };
 
 class VertexBuffer : public Bindable

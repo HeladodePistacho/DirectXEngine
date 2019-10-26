@@ -42,9 +42,8 @@ Mesh& ResourceManager::DrawMeshesUI()
 		if ((*iter)->GetType() == RESOURCE_TYPE::MESH)
 		{
 			if (ImGui::Selectable((*iter)->GetName()))
-			{
 				return *(Mesh*)(*iter);
-			}
+			
 		}
 	}
 }
@@ -117,14 +116,41 @@ void ResourceManager::LoadCube(Render& ren)
 	//Cube Vertices
 	std::vector<Vertex> vertices = 
 	{
-		{ -1.0f, -1.0f, -1.0f },
-		{ -1.0f,  1.0f, -1.0f },
-		{  1.0f,  1.0f, -1.0f },
-		{  1.0f, -1.0f, -1.0f },
-		{ -1.0f, -1.0f,  1.0f },
-		{ -1.0f,  1.0f,  1.0f },
-		{  1.0f,  1.0f,  1.0f },
-		{  1.0f, -1.0f,  1.0f }
+		//Back
+		{ { -1.0f, -1.0f, -1.0f }, { 0.0f, 0.0f, -1.0f } },
+		{ { -1.0f,  1.0f, -1.0f }, { 0.0f, 0.0f, -1.0f } },
+		{ { 1.0f,  1.0f, -1.0f },  { 0.0f, 0.0f, -1.0f } },
+		{ { 1.0f, -1.0f, -1.0f },  { 0.0f, 0.0f, -1.0f } },
+
+		//Front
+		{{ -1.0f, -1.0f,  1.0f }, {0.0f, 0.0f, 1.0f}},
+		{{ -1.0f,  1.0f,  1.0f }, {0.0f, 0.0f, 1.0f}},
+		{{  1.0f,  1.0f,  1.0f }, {0.0f, 0.0f, 1.0f}},
+		{{  1.0f, -1.0f,  1.0f }, {0.0f, 0.0f, 1.0f}},
+
+		//Right
+		{ { 1.0f,  1.0f, -1.0f },{ 1.0f, 0.0f, 0.0f } },
+		{ { 1.0f, -1.0f, -1.0f },{ 1.0f, 0.0f, 0.0f } },
+		{ { 1.0f,  1.0f,  1.0f },{ 1.0f, 0.0f, 0.0f } },
+		{ { 1.0f, -1.0f,  1.0f },{ 1.0f, 0.0f, 0.0f } },
+
+		//Left
+		{ { -1.0f, -1.0f, -1.0f },{ -1.0f, 0.0f, 0.0f } },
+		{ { -1.0f,  1.0f, -1.0f },{ -1.0f, 0.0f, 0.0f } },
+		{ { -1.0f, -1.0f,  1.0f },{ -1.0f, 0.0f, 0.0f } },
+		{ { -1.0f,  1.0f,  1.0f },{ -1.0f, 0.0f, 0.0f } },
+
+		//Up
+		{ { -1.0f,  1.0f, -1.0f },{ 0.0f, 1.0f, 0.0f } },
+		{ { 1.0f,  1.0f, -1.0f }, { 0.0f, 1.0f, 0.0f } },
+		{ { -1.0f,  1.0f,  1.0f },{ 0.0f, 1.0f, 0.0f } },
+		{ { 1.0f,  1.0f,  1.0f }, { 0.0f, 1.0f, 0.0f } },
+
+		//Down
+		{ { -1.0f, -1.0f, -1.0f },{ 0.0f, -1.0f, 0.0f } },
+		{ { 1.0f, -1.0f, -1.0f }, { 0.0f, -1.0f, 0.0f } },
+		{ { -1.0f, -1.0f,  1.0f },{ 0.0f, -1.0f, 0.0f } },
+		{ { 1.0f, -1.0f,  1.0f }, { 0.0f, -1.0f, 0.0f } },
 	};
 
 	//Cube Index Buffer
@@ -133,25 +159,26 @@ void ResourceManager::LoadCube(Render& ren)
 		//Back
 		0, 1, 2, 0, 2, 3,
 
-		//Right
-		3, 2, 6, 3, 6, 7,
-
 		//Front
 		7, 6, 5, 7, 5, 4,
 
+		//Right
+		9, 8, 10, 9, 10, 11,
+
 		//Left
-		4, 5, 1, 4, 1, 0,
+		14, 15, 13, 14, 13, 12,
 
 		//Up
-		2, 1, 5, 2, 5, 6,
+		16, 18, 19, 16, 19, 17,
 
 		//Down
-		3, 7, 4, 3, 4, 0
+		20, 21, 23, 20, 23, 22
 	};
 
 	std::vector<D3D11_INPUT_ELEMENT_DESC> layout =
 	{
-		{ "Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		{ "Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "Normal", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(float) * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 
 	VertexBuffer* new_vertexbuffer = new VertexBuffer(ren, vertices);
@@ -198,7 +225,7 @@ Submesh* ResourceManager::ProcessMesh(const aiScene * scene, aiMesh * mesh, Rend
 	{
 		Vertex new_vertex;
 		new_vertex.position = { mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z };
-
+		new_vertex.normal = { mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z };
 		//Add more stuff such as Normals/TexCoords...
 		vertices.push_back(new_vertex);
 	}
@@ -215,7 +242,8 @@ Submesh* ResourceManager::ProcessMesh(const aiScene * scene, aiMesh * mesh, Rend
 
 	std::vector<D3D11_INPUT_ELEMENT_DESC> layout =
 	{
-		{ "Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		{ "Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "Normal", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(float) * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 
 	VertexBuffer* new_vertexbuffer = new VertexBuffer(ren, vertices);
