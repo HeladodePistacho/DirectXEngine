@@ -5,6 +5,10 @@ File::File(char* path) : path(path)
 {
 	std::string file_path = path;
 
+	//Check if is a file or directory
+	if (file_path.find_last_of('.') == -1)
+		return;
+
 	std::string file_extension = file_path.substr(file_path.find_last_of('.'));
 
 	if (file_extension == ".fbx" || file_extension == ".FBX")
