@@ -68,6 +68,7 @@ void ResourceManager::ImportResource(const File* file, Render & ren)
 void ResourceManager::ImportMesh(const char* path, Render& ren)
 {
 	//new Mesh
+	std::string name = path;
 	Mesh* new_mesh = new Mesh(path);
 
 	//Load Mesh from assimp
@@ -166,7 +167,7 @@ void ResourceManager::LoadCube(Render& ren)
 	new_submesh->AddIndices(new_indexbuffer);
 
 	//std::string name = "Cube Mesh";
-	Mesh* new_mesh = new Mesh((std::string)"Cube Mesh");
+	Mesh* new_mesh = new Mesh((std::string)"/Cube Mesh");
 	new_mesh->AddSubmesh(new_submesh);
 	
 	resources.push_back(new_mesh);

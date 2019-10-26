@@ -11,7 +11,12 @@ enum RESOURCE_TYPE
 class Resource
 {
 public:
-	Resource(RESOURCE_TYPE _type, std::string _name) : type(_type), name(_name) {}
+	Resource(RESOURCE_TYPE _type, std::string _path) : type(_type), path(_path) 
+	{
+		if(path.find_last_of('/') != -1)
+			name = path.substr(path.find_last_of('/') + 1);	
+		else name = path.substr(path.find_last_of('\\') + 1);
+	}
 
 	RESOURCE_TYPE GetType() const { return type; }
 
@@ -21,4 +26,5 @@ private:
 	bool needs_load = true;
 
 	std::string name;
+	std::string path;
 };
