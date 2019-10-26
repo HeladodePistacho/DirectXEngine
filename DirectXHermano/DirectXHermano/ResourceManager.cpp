@@ -7,7 +7,7 @@
 #include "InputLayout.h"
 #include "ShaderProgram.h"
 #include "ImGui/imgui.h"
-
+#include "FileDrop.h"
 
 //Assimp
 #pragma comment(lib, "Assimp/libx86/assimp.lib")
@@ -49,9 +49,20 @@ Mesh& ResourceManager::DrawMeshesUI()
 	}
 }
 
-void ResourceManager::ImportResource(const char * path, Render & ren)
+void ResourceManager::ImportResource(const File* file, Render & ren)
 {
-	ImportMesh(path, ren);
+	switch (file->GetType())
+	{
+	case FILE_TYPE::FBX:
+	case FILE_TYPE::OBJ:
+		ImportMesh(file->GetPath(), ren);
+		break;
+
+	case FILE_TYPE::PNG:
+
+		break;
+	}
+	
 }
 
 void ResourceManager::ImportMesh(const char* path, Render& ren)

@@ -8,6 +8,7 @@ class Resource;
 class ShaderProgram;
 class Mesh;
 class Submesh;
+class File;
 
 class aiScene;
 class aiNode;
@@ -27,7 +28,7 @@ public:
 
 	Mesh& DrawMeshesUI();
 
-	void ImportResource(const char* path, Render& ren);
+	void ImportResource(const File* file, Render& ren);
 
 private:
 	std::vector<Resource*> resources;

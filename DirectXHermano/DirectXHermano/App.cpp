@@ -58,6 +58,13 @@ void DirectXApp::BeginFrame()
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
+
+	//Check for Dropped Files
+	while (window.dropper.AnyDroppedFiles())
+	{
+		resource_manager->ImportResource(window.dropper.GetFile(), window.GetRender());
+		window.dropper.RemoveFile();
+	}
 }
 
 void DirectXApp::Update(float dt)

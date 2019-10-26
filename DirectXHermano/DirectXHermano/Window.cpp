@@ -246,10 +246,12 @@ LRESULT Window::HanldeMessage(HWND handle, UINT message, WPARAM w_param, LPARAM 
 				continue;
 
 			char* file_path = new char[path_size + 1];
-			DragQueryFile((HDROP)w_param, i, file_path, path_size);
+			DragQueryFile((HDROP)w_param, i, file_path, path_size + 1);
 
 			
-			delete[] file_path;
+			File* new_file = new File(file_path);
+
+			dropper.AddDroppedFile(new_file);
 		}
 
 		DragFinish((HDROP)w_param);

@@ -4,6 +4,7 @@
 
 #include "KeyBoard.h"
 #include "Mouse.h"
+#include "FileDrop.h"
 #include "Render.h"
 
 class Window
@@ -35,6 +36,8 @@ public:
 
 	KeyBoard keyboard;
 	Mouse	 mouse;
+	DropManager dropper;
+
 	Render&  GetRender() const { return *window_render; }
 	HWND GetHandler() const { return window_handle; }
 
