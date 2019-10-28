@@ -16,7 +16,13 @@ public:
 	void AddBind(const Bindable* bind);
 	void AddIndices(const IndexBuffer* bind);
 
+	int GetNumVertices() const;
+	int GetNumIndices() const;
+	void AddInfo(int vertices, int indices);
+
 private:
+	int num_vertices = 0;
+	int num_indices = 0;
 	const IndexBuffer* indexes = nullptr;
 	std::vector<Bindable*> binders;
 };
@@ -32,6 +38,10 @@ public:
 
 	void AddSubmesh(const Submesh*);
 	void AddSubmesh(std::vector<Submesh*>);
+
+	int GetNumSubmeshes() const;
+	int GetNumAllVertices() const;
+	int GetNumAllIndices() const;
 
 private:
 	std::vector<Submesh*> meshes;

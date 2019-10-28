@@ -49,20 +49,23 @@ void MeshRenderer::DrawMeshRendererUI(ResourceManager& res_manager)
 {
 	if (ImGui::TreeNode("Mesh Renderer"))
 	{
-
+		ImGui::Text("Mesh:");
+		ImGui::SameLine();
 		if (mesh_to_draw)
 		{
-			if (ImGui::BeginCombo("Mesh: ", mesh_to_draw->GetName(), ImGuiComboFlags_::ImGuiComboFlags_None))
+			if (ImGui::BeginCombo(" ", mesh_to_draw->GetName(), ImGuiComboFlags_::ImGuiComboFlags_None))
 			{
 				Mesh* selected_mesh = &res_manager.DrawMeshesUI();
-				if (!selected_mesh)
+				if (selected_mesh)
 					mesh_to_draw = selected_mesh;
 				ImGui::EndCombo();
 			}
+
+			ImGui::Text("Num Submeshes: %i \nNum Vertices: %i \nNum Indices: %i", mesh_to_draw->GetNumSubmeshes(), mesh_to_draw->GetNumAllVertices(), mesh_to_draw->GetNumAllIndices());
 		}
 		else
 		{
-			if (ImGui::BeginCombo("Mesh: ", "No Mesh Selected"))
+			if (ImGui::BeginCombo(" " , "No Mesh Selected"))
 			{
 
 				Mesh* tmp = &res_manager.DrawMeshesUI();

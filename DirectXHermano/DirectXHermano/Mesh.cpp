@@ -46,6 +46,22 @@ void Submesh::AddIndices(const IndexBuffer* bind)
 	}
 }
 
+int Submesh::GetNumVertices() const
+{
+	return num_vertices;
+}
+
+int Submesh::GetNumIndices() const
+{
+	return num_indices;
+}
+
+void Submesh::AddInfo(int vertices, int indices)
+{
+	num_vertices = vertices;
+	num_indices = indices;
+}
+
 //--------------------------- SUBMESH ------------------------
 
 //---------------------------  MESH   ------------------------
@@ -93,5 +109,30 @@ void Mesh::AddSubmesh(std::vector<Submesh*> new_submeshes)
 		if (*item)
 			meshes.push_back((*item));
 	}
+}
+
+int Mesh::GetNumSubmeshes() const
+{
+	return meshes.size();
+}
+
+int Mesh::GetNumAllVertices() const
+{
+	int vertices = 0;
+
+	for (int i = 0; i < meshes.size(); i++)
+		vertices += meshes[i]->GetNumVertices();
+
+	return vertices;
+}
+
+int Mesh::GetNumAllIndices() const
+{
+	int indices = 0;
+
+	for (int i = 0; i < meshes.size(); i++)
+		indices += meshes[i]->GetNumIndices();
+
+	return indices;
 }
 
