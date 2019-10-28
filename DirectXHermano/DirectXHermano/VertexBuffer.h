@@ -8,6 +8,11 @@ struct Vertex
 	{
 		float x, y, z;
 	} position, normal;	
+
+	struct
+	{
+		float u, v;
+	}texture_coords;
 };
 
 class VertexBuffer : public Bindable

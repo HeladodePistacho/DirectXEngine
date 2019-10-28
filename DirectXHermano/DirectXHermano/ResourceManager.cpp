@@ -42,10 +42,11 @@ Mesh& ResourceManager::DrawMeshesUI()
 		if ((*iter)->GetType() == RESOURCE_TYPE::MESH)
 		{
 			if (ImGui::Selectable((*iter)->GetName()))
-				return *(Mesh*)(*iter);
-			
+			{
+				return *(Mesh*)(*iter);			
+			}		
 		}
-	}
+	}	
 }
 
 void ResourceManager::ImportResource(const File* file, Render & ren)
@@ -117,10 +118,10 @@ void ResourceManager::LoadCube(Render& ren)
 	std::vector<Vertex> vertices = 
 	{
 		//Back
-		{ { -1.0f, -1.0f, -1.0f }, { 0.0f, 0.0f, -1.0f } },
-		{ { -1.0f,  1.0f, -1.0f }, { 0.0f, 0.0f, -1.0f } },
-		{ { 1.0f,  1.0f, -1.0f },  { 0.0f, 0.0f, -1.0f } },
-		{ { 1.0f, -1.0f, -1.0f },  { 0.0f, 0.0f, -1.0f } },
+		{ { -1.0f, -1.0f, -1.0f }, { 0.0f, 0.0f, -1.0f }, { 0.0f, 0.0f} },
+		{ { -1.0f,  1.0f, -1.0f }, { 0.0f, 0.0f, -1.0f }, { 0.0f, 1.0f } },
+		{ { 1.0f,  1.0f, -1.0f },  { 0.0f, 0.0f, -1.0f }, { 1.0f, 1.0f } },
+		{ { 1.0f, -1.0f, -1.0f },  { 0.0f, 0.0f, -1.0f }, { 1.0f, 0.0f } },
 
 		//Front
 		{{ -1.0f, -1.0f,  1.0f }, {0.0f, 0.0f, 1.0f}},
@@ -192,6 +193,7 @@ void ResourceManager::LoadCube(Render& ren)
 	new_submesh->AddBind(new_topology);
 	new_submesh->AddBind(new_inputlayout);
 	new_submesh->AddIndices(new_indexbuffer);
+	new_submesh->AddInfo(vertices.size(), indices.size());
 
 	//std::string name = "Cube Mesh";
 	Mesh* new_mesh = new Mesh((std::string)"/Cube Mesh");
@@ -255,6 +257,7 @@ Submesh* ResourceManager::ProcessMesh(const aiScene * scene, aiMesh * mesh, Rend
 	new_submesh->AddIndices(new_indexbuffer);
 	new_submesh->AddBind(new_topology);
 	new_submesh->AddBind(new_inputlayout);
+	new_submesh->AddInfo(vertices.size(), indices.size());
 
 	return new_submesh;
 }
