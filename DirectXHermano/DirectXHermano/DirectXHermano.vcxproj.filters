@@ -114,6 +114,9 @@
     <ClCompile Include="FileDrop.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Archivos de código fuente\DirectX</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">
@@ -187,6 +190,9 @@
     </ClInclude>
     <ClInclude Include="FileDrop.h">
       <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Archivos de encabezado\DirectX</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -16,6 +16,10 @@
 #include "Assimp/include/postprocess.h"
 #include "Assimp/include/mesh.h"
 
+//image load
+#define STB_IMAGE_IMPLEMENTATION
+#include "STB Image/stb_image.h"
+
 ResourceManager::~ResourceManager()
 {
 	for (int i = 0; i < resources.size(); i++)
@@ -33,6 +37,12 @@ void ResourceManager::Start(Render& ren)
 	LoadShaders(ren);
 	LoadCube(ren);
 	ImportMesh("C:/Users/Usuari/Documents/GitHub/CuteEngine/CuteEngine/Resources/Models/Patrick/Patrick.obj", ren);
+
+	//IMAGE TESST
+	int width, height, color_channels;
+	unsigned char* data = stbi_load("C:/Users/Usuari/Desktop/unknown.png", &width, &height, &color_channels, 0);
+
+	int a = 0;
 }
 
 Mesh& ResourceManager::DrawMeshesUI()
