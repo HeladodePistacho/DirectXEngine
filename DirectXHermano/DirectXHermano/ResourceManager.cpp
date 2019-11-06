@@ -8,6 +8,8 @@
 #include "ShaderProgram.h"
 #include "ImGui/imgui.h"
 #include "FileDrop.h"
+#include "Texture.h"
+#include "Sampler.h"
 
 //Assimp
 #pragma comment(lib, "Assimp/libx86/assimp.lib")
@@ -38,10 +40,7 @@ void ResourceManager::Start(Render& ren)
 	LoadCube(ren);
 	ImportMesh("C:/Users/Usuari/Documents/GitHub/CuteEngine/CuteEngine/Resources/Models/Patrick/Patrick.obj", ren);
 
-	//IMAGE TESST
-	int width, height, color_channels;
-	unsigned char* data = stbi_load("C:/Users/Usuari/Desktop/unknown.png", &width, &height, &color_channels, 0);
-
+	
 	int a = 0;
 }
 
@@ -210,6 +209,16 @@ void ResourceManager::LoadCube(Render& ren)
 	Mesh* new_mesh = new Mesh((std::string)"/Cube Mesh");
 	new_mesh->AddSubmesh(new_submesh);
 	
+	//IMAGE TESST
+	int width, height, color_channels;
+	unsigned char* data = stbi_load("C:/Users/Usuari/Desktop/vivaelpanapen.jpg", &width, &height, &color_channels, 0);
+
+	Texture* test_text = new Texture(ren, data, width, height, color_channels);
+	Sampler* test_sampler = new Sampler(ren);
+
+	new_mesh->texture = test_text;
+	new_mesh->sampler = test_sampler;
+
 	resources.push_back(new_mesh);
 
 	//Test

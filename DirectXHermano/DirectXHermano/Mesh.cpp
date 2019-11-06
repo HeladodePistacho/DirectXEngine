@@ -8,6 +8,9 @@
 #include "Assimp/include/postprocess.h"
 #include "Assimp/include/mesh.h"
 
+//Test
+#include "Texture.h"
+#include "Sampler.h"
 
 //--------------------------- SUBMESH ------------------------
 Submesh::~Submesh()
@@ -90,6 +93,12 @@ Mesh::~Mesh()
 
 void Mesh::Draw(Render & ren)
 {
+	if (texture)
+		texture->Bind(ren);
+
+	if (sampler)
+		sampler->Bind(ren);
+
 	for (int i = 0; i < meshes.size(); i++)
 	{
 		meshes[i]->Draw(ren);

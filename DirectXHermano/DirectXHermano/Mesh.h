@@ -5,6 +5,9 @@
 
 class IndexBuffer;
 
+class Texture;
+class Sampler;
+
 class Submesh
 {
 public:
@@ -42,6 +45,10 @@ public:
 	int GetNumSubmeshes() const;
 	int GetNumAllVertices() const;
 	int GetNumAllIndices() const;
+
+	//Test
+	Texture* texture = nullptr;
+	Sampler* sampler = nullptr;
 
 private:
 	std::vector<Submesh*> meshes;

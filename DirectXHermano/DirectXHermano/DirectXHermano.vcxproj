@@ -141,6 +141,7 @@
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="Render.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="Sampler.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
@@ -166,6 +167,7 @@
     <ClInclude Include="Render.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="Sampler.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="ShaderProgram.h" />
     <ClInclude Include="Texture.h" />

@@ -8,6 +8,8 @@ Sampler::Sampler(Render & ren)
 	sampler_descriptor.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
 	sampler_descriptor.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
 	sampler_descriptor.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+
+	GetDevice(ren)->CreateSamplerState(&sampler_descriptor, &sampler_state);
 }
 
 Sampler::~Sampler()
@@ -18,5 +20,5 @@ Sampler::~Sampler()
 
 void Sampler::Bind(Render& ren)
 {
-
+	GetContext(ren)->PSSetSamplers(0u, 1u, &sampler_state);
 }
