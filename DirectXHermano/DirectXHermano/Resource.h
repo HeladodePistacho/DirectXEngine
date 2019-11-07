@@ -1,11 +1,13 @@
 #pragma once
+#include <string>
 
 enum RESOURCE_TYPE
 {
 	RESOURCE_UNDEFINED = 0,
 	MESH,
 	TEXTURE,
-	SHADER
+	SHADER,
+	MATERIAL
 };
 
 class Resource

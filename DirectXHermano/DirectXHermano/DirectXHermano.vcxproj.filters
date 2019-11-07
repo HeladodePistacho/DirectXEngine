@@ -120,6 +120,12 @@
     <ClCompile Include="Sampler.cpp">
       <Filter>Archivos de código fuente\DirectX</Filter>
     </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>Archivos de código fuente\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureResource.cpp">
+      <Filter>Archivos de código fuente\Resources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">
@@ -199,6 +205,12 @@
     </ClInclude>
     <ClInclude Include="Sampler.h">
       <Filter>Archivos de encabezado\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Archivos de encabezado\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureResource.h">
+      <Filter>Archivos de encabezado\Resources</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
