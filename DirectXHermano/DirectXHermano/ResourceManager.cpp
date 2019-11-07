@@ -10,6 +10,8 @@
 #include "FileDrop.h"
 #include "Texture.h"
 #include "Sampler.h"
+#include "Material.h"
+#include "TextureResource.h"
 
 //Assimp
 #pragma comment(lib, "Assimp/libx86/assimp.lib")
@@ -55,6 +57,22 @@ Mesh& ResourceManager::DrawMeshesUI()
 		if (ImGui::Selectable(lower->second->GetName()))
 		{
 			return *(Mesh*)lower->second;
+		}
+	}
+}
+
+Material& ResourceManager::DrawMaterialUI()
+{
+	std::multimap<RESOURCE_TYPE, Resource*>::iterator lower, up;
+
+	lower = mapped_resources.lower_bound(RESOURCE_TYPE::MATERIAL);
+	up = mapped_resources.upper_bound(RESOURCE_TYPE::MATERIAL);
+
+	for (; lower != up; lower++)
+	{
+		if (ImGui::Selectable(lower->second->GetName()))
+		{
+			return *(Material*)lower->second;
 		}
 	}
 }
@@ -220,8 +238,20 @@ void ResourceManager::LoadCube(Render& ren)
 	new_mesh->texture = test_text;
 	new_mesh->sampler = test_sampler;
 
-	std::pair<RESOURCE_TYPE, Resource*> map_element = { RESOURCE_TYPE::MESH, new_mesh };
-	mapped_resources.insert(map_element);
+	TextureResource* harambe_texture = new TextureResource("/Harambe.png");
+	harambe_texture->AddTexture(test_text);
+	harambe_texture->AddSampler(test_sampler);
+
+	Material* harambe_material = new Material("/Harambe_Material");
+	harambe_material->SetAlbedoTexture(harambe_texture);
+
+	std::pair<RESOURCE_TYPE, Resource*> map_element_mesh = { RESOURCE_TYPE::MESH, new_mesh };
+	std::pair<RESOURCE_TYPE, Resource*> map_element_texture = { RESOURCE_TYPE::TEXTURE, harambe_texture };
+	std::pair<RESOURCE_TYPE, Resource*> map_element_material = { RESOURCE_TYPE::MATERIAL, harambe_material };
+
+	mapped_resources.insert(map_element_mesh);
+	mapped_resources.insert(map_element_texture);
+	mapped_resources.insert(map_element_material);
 }
 
 std::vector<Submesh*> ResourceManager::ProcessNode(const aiScene* scene, aiNode* node, Render& ren)
