@@ -271,13 +271,21 @@ Submesh* ResourceManager::ProcessMesh(const aiScene * scene, aiMesh * mesh, Rend
 {
 	Submesh* new_submesh = new Submesh();
 	std::vector<Vertex> vertices;
+	bool has_text_coords = false;
 
 	for (int i = 0; i < mesh->mNumVertices; i++)
 	{
+		//Vertex position / Normals / Tex Coords
 		Vertex new_vertex;
 		new_vertex.position = { mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z };
 		new_vertex.normal = { mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z };
-		//Add more stuff such as Normals/TexCoords...
+
+		if (mesh->mTextureCoords[0])
+		{
+			has_text_coords = true;
+			new_vertex.texture_coords = { mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y };
+		}
+
 		vertices.push_back(new_vertex);
 	}
 
@@ -294,8 +302,11 @@ Submesh* ResourceManager::ProcessMesh(const aiScene * scene, aiMesh * mesh, Rend
 	std::vector<D3D11_INPUT_ELEMENT_DESC> layout =
 	{
 		{ "Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "Normal", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(float) * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		{ "Normal", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(float) * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
+
+	if (has_text_coords)
+		layout.push_back({ "TextureCoords", 0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(float) * 6, D3D11_INPUT_PER_VERTEX_DATA, 0 });
 
 	VertexBuffer* new_vertexbuffer = new VertexBuffer(ren, vertices);
 	IndexBuffer* new_indexbuffer = new IndexBuffer(ren, indices);
