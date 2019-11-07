@@ -12,6 +12,7 @@ class DirectXApp
 {
 public:
 	DirectXApp();
+	~DirectXApp();
 
 	int Start();
 private:

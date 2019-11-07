@@ -24,13 +24,13 @@
 
 ResourceManager::~ResourceManager()
 {
-	for (int i = 0; i < resources.size(); i++)
+	for (std::multimap<RESOURCE_TYPE, Resource*>::iterator iter = mapped_resources.begin(); iter != mapped_resources.end(); iter++)
 	{
-		delete resources[i];
-		resources[i] = nullptr;
+		delete iter->second;
+		iter->second = nullptr;
 	}
 
-	resources.erase(resources.begin(), resources.end());
+	mapped_resources.erase(mapped_resources.begin(), mapped_resources.end());
 }
 
 void ResourceManager::Start(Render& ren)
@@ -40,22 +40,23 @@ void ResourceManager::Start(Render& ren)
 	LoadCube(ren);
 	ImportMesh("C:/Users/Usuari/Documents/GitHub/CuteEngine/CuteEngine/Resources/Models/Patrick/Patrick.obj", ren);
 
-	
-	int a = 0;
+
 }
 
 Mesh& ResourceManager::DrawMeshesUI()
 {
-	for (std::vector<Resource*>::iterator iter = resources.begin(); iter != resources.end(); iter++)
-	{
-		if ((*iter)->GetType() == RESOURCE_TYPE::MESH)
+	std::multimap<RESOURCE_TYPE, Resource*>::iterator lower, up;
+
+	lower = mapped_resources.lower_bound(RESOURCE_TYPE::MESH);
+	up = mapped_resources.upper_bound(RESOURCE_TYPE::MESH);
+
+	for (; lower != up; lower++)
+	{		
+		if (ImGui::Selectable(lower->second->GetName()))
 		{
-			if (ImGui::Selectable((*iter)->GetName()))
-			{
-				return *(Mesh*)(*iter);			
-			}		
+			return *(Mesh*)lower->second;
 		}
-	}	
+	}
 }
 
 void ResourceManager::ImportResource(const File* file, Render & ren)
@@ -112,8 +113,8 @@ void ResourceManager::ImportMesh(const char* path, Render& ren)
 
 		nodes.pop();
 	}
-
-	resources.push_back(new_mesh);
+	std::pair<RESOURCE_TYPE, Resource*> map_element = { RESOURCE_TYPE::MESH, new_mesh };
+	mapped_resources.insert(map_element);
 }
 
 void ResourceManager::LoadShaders(Render& ren)
@@ -164,7 +165,7 @@ void ResourceManager::LoadCube(Render& ren)
 	};
 
 	//Cube Index Buffer
-	std::vector<unsigned short> indices = 
+	std::vector<unsigned short> indices =
 	{
 		//Back
 		0, 1, 2, 0, 2, 3,
@@ -208,10 +209,10 @@ void ResourceManager::LoadCube(Render& ren)
 	//std::string name = "Cube Mesh";
 	Mesh* new_mesh = new Mesh((std::string)"/Cube Mesh");
 	new_mesh->AddSubmesh(new_submesh);
-	
+
 	//IMAGE TESST
 	int width, height, color_channels;
-	unsigned char* data = stbi_load("C:/Users/Usuari/Desktop/vivaelpanapen.jpg", &width, &height, &color_channels, 0);
+	unsigned char* data = stbi_load("C:/Users/Usuari/Desktop/unknown.png", &width, &height, &color_channels, 0);
 
 	Texture* test_text = new Texture(ren, data, width, height, color_channels);
 	Sampler* test_sampler = new Sampler(ren);
@@ -219,10 +220,8 @@ void ResourceManager::LoadCube(Render& ren)
 	new_mesh->texture = test_text;
 	new_mesh->sampler = test_sampler;
 
-	resources.push_back(new_mesh);
-
-	//Test
-	cube_mesh = new_mesh;
+	std::pair<RESOURCE_TYPE, Resource*> map_element = { RESOURCE_TYPE::MESH, new_mesh };
+	mapped_resources.insert(map_element);
 }
 
 std::vector<Submesh*> ResourceManager::ProcessNode(const aiScene* scene, aiNode* node, Render& ren)

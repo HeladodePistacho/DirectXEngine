@@ -21,6 +21,13 @@ DirectXApp::DirectXApp() : imgui_manager(), window(1920, 1080, "DirectX Engine")
 	resource_manager = new ResourceManager();	
 }
 
+DirectXApp::~DirectXApp()
+{
+	delete scene_camera;
+	delete scene;
+	delete resource_manager;
+}
+
 int DirectXApp::Start()
 {
 	//Load Resources Before Loop
