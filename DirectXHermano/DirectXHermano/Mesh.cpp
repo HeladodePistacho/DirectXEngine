@@ -74,10 +74,6 @@ Mesh::Mesh(std::string _name) : Resource(RESOURCE_TYPE::MESH, _name)
 
 Mesh::Mesh(const char* path) : Resource(RESOURCE_TYPE::MESH, path)
 {
-	//Load Mesh
-	//Assimp::Importer importer;
-	//
-	//fopen(path, )
 }
 
 Mesh::~Mesh()
@@ -93,12 +89,6 @@ Mesh::~Mesh()
 
 void Mesh::DrawAll(Render & ren)
 {
-	//if (texture)
-	//	texture->Bind(ren);
-	//
-	//if (sampler)
-	//	sampler->Bind(ren);
-
 	for (int i = 0; i < meshes.size(); i++)
 	{
 		meshes[i]->Draw(ren);

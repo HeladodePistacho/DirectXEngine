@@ -40,9 +40,8 @@ void ResourceManager::Start(Render& ren)
 	//Load Basic meshes
 	LoadShaders(ren);
 	LoadCube(ren);
-	ImportMesh("C:/Users/Usuari/Documents/GitHub/CuteEngine/CuteEngine/Resources/Models/Patrick/Patrick.obj", ren);
-
-
+	actual_resource_path = "C:/Users/Usuari/Documents/GitHub/CuteEngine/CuteEngine/Resources/Models/Patrick/Patrick.obj";
+	ImportMesh(actual_resource_path, ren);
 }
 
 Mesh& ResourceManager::DrawMeshesUI()
@@ -79,11 +78,12 @@ Material& ResourceManager::DrawMaterialUI()
 
 void ResourceManager::ImportResource(const File* file, Render & ren)
 {
+	actual_resource_path = file->GetPath();
 	switch (file->GetType())
 	{
 	case FILE_TYPE::FBX:
 	case FILE_TYPE::OBJ:
-		ImportMesh(file->GetPath(), ren);
+		ImportMesh(actual_resource_path, ren);
 		break;
 
 	case FILE_TYPE::PNG:
@@ -229,14 +229,9 @@ void ResourceManager::LoadCube(Render& ren)
 	new_mesh->AddSubmesh(new_submesh);
 
 	//IMAGE TESST
-	int width, height, color_channels;
-	unsigned char* data = stbi_load("C:/Users/Usuari/Desktop/unknown.png", &width, &height, &color_channels, 0);
-
-	Texture* test_text = new Texture(ren, data, width, height, color_channels);
+	actual_resource_path = "C:/Users/Usuari/Desktop/unknown.png";
+	Texture* test_text = ImportImage("unknown.png", ren);
 	Sampler* test_sampler = new Sampler(ren);
-
-	new_mesh->texture = test_text;
-	new_mesh->sampler = test_sampler;
 
 	TextureResource* harambe_texture = new TextureResource("/Harambe.png");
 	harambe_texture->AddTexture(test_text);
@@ -262,6 +257,37 @@ std::vector<Submesh*> ResourceManager::ProcessNode(const aiScene* scene, aiNode*
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
 		ret.push_back(ProcessMesh(scene, mesh, ren));
+
+		
+		//Load Materials
+		if (scene->HasMaterials())
+		{		
+			aiMaterial* mesh_material = scene->mMaterials[mesh->mMaterialIndex];
+
+			//Create Material
+			aiString material_name;
+			aiGetMaterialString(mesh_material, AI_MATKEY_NAME, &material_name);
+			
+			Material* new_material = new Material(material_name.C_Str());
+
+			//Look For Difuse Texture
+			aiString texture_path;
+			if (aiGetMaterialTexture(mesh_material, aiTextureType_DIFFUSE, 0, &texture_path) == aiReturn_SUCCESS)
+			{
+				//Load the Texture
+				TextureResource* new_texture = new TextureResource(texture_path.C_Str());
+				new_texture->AddTexture(ImportImage(texture_path.C_Str(), ren));
+				new_texture->AddSampler(new Sampler(ren));
+
+				//Add the albedo to the Material
+				new_material->SetAlbedoTexture(new_texture);
+
+				//Add the texture to resources
+				mapped_resources.insert(std::pair<RESOURCE_TYPE, Resource*>(TEXTURE, new_texture));
+			}
+
+			mapped_resources.insert(std::pair<RESOURCE_TYPE, Resource*>(MATERIAL, new_material));
+		}
 	}
 
 	return ret;
@@ -320,4 +346,25 @@ Submesh* ResourceManager::ProcessMesh(const aiScene * scene, aiMesh * mesh, Rend
 	new_submesh->AddInfo(vertices.size(), indices.size());
 
 	return new_submesh;
+}
+
+Texture* ResourceManager::ImportImage(const char * path, Render & ren)
+{
+	//IMAGE load
+	std::string full_texture_path = actual_resource_path;
+	
+	if (full_texture_path.find_last_of('/') != -1)
+		full_texture_path.erase(full_texture_path.find_last_of('/') + 1);
+	else full_texture_path.erase(full_texture_path.find_last_of('\\') + 1);
+		
+	full_texture_path.append(path);
+	
+	int width, height, color_channels;
+	unsigned char* data = stbi_load(full_texture_path.c_str(), &width, &height, &color_channels, 4);
+
+	if (data != nullptr)
+	{
+		Texture* texture = new Texture(ren, data, width, height, color_channels);
+		return texture;
+	}
 }

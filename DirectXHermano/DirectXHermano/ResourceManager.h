@@ -10,6 +10,7 @@ class ShaderProgram;
 class Mesh;
 class Submesh;
 class Material;
+class Texture;
 class File;
 
 class aiScene;
@@ -43,9 +44,16 @@ private:
 	void LoadShaders(Render& ren);
 	void LoadCube(Render& ren);
 
+	//Import stuff
+	const char* actual_resource_path = nullptr;
+
 	//Mesh load stuff
 	void ImportMesh(const char* path, Render& ren);
 	std::vector<Submesh*> ProcessNode(const aiScene* scene, aiNode* node, Render& ren);
 	Submesh* ProcessMesh(const aiScene* scene, aiMesh* mesh, Render& ren);
 	std::queue<aiNode*> nodes;
+
+	//Image Load Sruff
+	Texture* ImportImage(const char* path, Render& ren);
+	
 };
