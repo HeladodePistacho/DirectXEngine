@@ -1,10 +1,11 @@
 #pragma once
 #include <vector>
 #include <queue>
+#include <map>
+#include "Resource.h"
 
 class Render;
 
-class Resource;
 class ShaderProgram;
 class Mesh;
 class Submesh;
@@ -31,7 +32,7 @@ public:
 	void ImportResource(const File* file, Render& ren);
 
 private:
-	std::vector<Resource*> resources;
+	std::multimap<RESOURCE_TYPE, Resource*> mapped_resources;
 
 	//Test
 	ShaderProgram* mesh_shader = nullptr;
