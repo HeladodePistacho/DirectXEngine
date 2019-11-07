@@ -9,6 +9,7 @@ class Render;
 class ShaderProgram;
 class Mesh;
 class Submesh;
+class Material;
 class File;
 
 class aiScene;
@@ -28,6 +29,7 @@ public:
 	ShaderProgram& GetShader() const { return (*mesh_shader); }
 
 	Mesh& DrawMeshesUI();
+	Material& DrawMaterialUI();
 
 	void ImportResource(const File* file, Render& ren);
 

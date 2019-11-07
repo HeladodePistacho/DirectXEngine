@@ -4,6 +4,7 @@
 #include "Camera.h"
 #include "ResourceManager.h"
 #include "ImGui\imgui.h"
+#include "Material.h"
 
 MeshRenderer::MeshRenderer(Entity* _parent) : parent(_parent)
 {
@@ -50,7 +51,6 @@ void MeshRenderer::DrawMeshRendererUI(ResourceManager& res_manager)
 	if (ImGui::TreeNode("Mesh Renderer"))
 	{
 		ImGui::Text("Mesh:");
-		ImGui::SameLine();
 		if (mesh_to_draw)
 		{
 			if (ImGui::BeginCombo(" ", mesh_to_draw->GetName(), ImGuiComboFlags_::ImGuiComboFlags_None))
@@ -75,7 +75,19 @@ void MeshRenderer::DrawMeshRendererUI(ResourceManager& res_manager)
 			}
 		}
 
-		
+		ImGui::Separator();
+		ImGui::Text("Material");
+
+		for (int i = 0; i < meshes_materials.size(); i++)
+			ImGui::Text(meshes_materials[i]->GetName());
+
+		if (ImGui::BeginCombo(" ##material", "Add Material", ImGuiComboFlags_::ImGuiComboFlags_None))
+		{
+			Material* tmp = &res_manager.DrawMaterialUI();
+			AddMaterial(tmp);
+
+			ImGui::EndCombo();
+		}
 
 		//
 
@@ -83,11 +95,25 @@ void MeshRenderer::DrawMeshRendererUI(ResourceManager& res_manager)
 	}
 }
 
+void MeshRenderer::AddMaterial(Material * new_mat)
+{
+	if (new_mat)
+		meshes_materials.push_back(new_mat);
+}
+
 void MeshRenderer::Draw(Render & ren)
 {
 	if (mesh_to_draw)
 	{
 		PrepareMatrices(ren);
-		mesh_to_draw->Draw(ren);
+
+		//Same number of meshes and materials
+		for (int i = 0; i < mesh_to_draw->GetNumSubmeshes(); i++)
+		{
+			if(!meshes_materials.empty() && i < meshes_materials.size())
+				meshes_materials[i]->BindTexture(ren, TEXTURE_TYPE::ALBEDO);
+
+			mesh_to_draw->DrawSubMesh(ren, i);
+		}
 	}
 }

@@ -37,7 +37,8 @@ public:
 	Mesh(const char* path);
 	~Mesh();
 
-	void Draw(Render& ren);
+	void DrawAll(Render& ren);
+	void DrawSubMesh(Render& ren, int index);
 
 	void AddSubmesh(const Submesh*);
 	void AddSubmesh(std::vector<Submesh*>);

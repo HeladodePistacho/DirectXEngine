@@ -91,18 +91,24 @@ Mesh::~Mesh()
 	meshes.erase(meshes.begin(), meshes.end());
 }
 
-void Mesh::Draw(Render & ren)
+void Mesh::DrawAll(Render & ren)
 {
-	if (texture)
-		texture->Bind(ren);
-
-	if (sampler)
-		sampler->Bind(ren);
+	//if (texture)
+	//	texture->Bind(ren);
+	//
+	//if (sampler)
+	//	sampler->Bind(ren);
 
 	for (int i = 0; i < meshes.size(); i++)
 	{
 		meshes[i]->Draw(ren);
 	}
+}
+
+void Mesh::DrawSubMesh(Render & ren, int index)
+{
+	if(index < meshes.size())
+		meshes[index]->Draw(ren);
 }
 
 void Mesh::AddSubmesh(const Submesh* new_submesh)
