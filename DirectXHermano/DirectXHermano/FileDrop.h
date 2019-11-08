@@ -6,7 +6,8 @@ enum FILE_TYPE
 	INVALID,
 	FBX,
 	OBJ,
-	PNG
+	PNG,
+	JPG
 };
 
 class File

@@ -19,6 +19,9 @@ File::File(char* path) : path(path)
 
 	if (file_extension == ".png" || file_extension == ".PNG")
 		type = FILE_TYPE::PNG;
+
+	if (file_extension == ".jpg" || file_extension == ".JPG")
+		type = FILE_TYPE::JPG;
 }
 
 File::~File()
