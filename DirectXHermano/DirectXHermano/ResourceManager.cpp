@@ -278,6 +278,7 @@ void ResourceManager::LoadCube(Render& ren)
 	harambe_texture->AddSampler(test_sampler);
 
 	Material* harambe_material = new Material("/Harambe_Material");
+	harambe_material->InitColorBuffer(ren);
 	harambe_material->SetAlbedoTexture(harambe_texture);
 
 	std::pair<RESOURCE_TYPE, Resource*> map_element_mesh = { RESOURCE_TYPE::MESH, new_mesh };
@@ -393,8 +394,9 @@ const char* ResourceManager::ProcessMaterials(const aiScene * scene, aiNode * no
 			aiGetMaterialString(mesh_material, AI_MATKEY_NAME, &material_name);
 
 			Material* new_material = new Material(material_name.C_Str());
+			new_material->InitColorBuffer(ren);
 
-			//Look For Difuse Texture
+			//Look For Difuse Texture 
 			aiString texture_path;
 			if (aiGetMaterialTexture(mesh_material, aiTextureType_DIFFUSE, 0, &texture_path) == aiReturn_SUCCESS)
 			{
@@ -408,6 +410,13 @@ const char* ResourceManager::ProcessMaterials(const aiScene * scene, aiNode * no
 
 				//Add the texture to resources
 				mapped_resources.insert(std::pair<RESOURCE_TYPE, Resource*>(TEXTURE, new_texture));
+			}
+
+			//Look for Difuse Color
+			aiColor4D difuse_color;
+			if (aiGetMaterialColor(mesh_material, AI_MATKEY_COLOR_DIFFUSE, &difuse_color) == aiReturn_SUCCESS)
+			{
+				new_material->SetAlbedoColor(ren, difuse_color.r, difuse_color.g, difuse_color.b, difuse_color.a);
 			}
 
 			//Add Material and Preset to the Resources map

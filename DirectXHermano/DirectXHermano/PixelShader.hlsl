@@ -6,12 +6,18 @@ struct VSOUT
 	float2 texture_coords : Texcoord0;
 };
 
-Texture2D text;
+Texture2D albedo : register(t0);
 SamplerState samplerstate;
+
+cbuffer texture_colors
+{
+	float4 albedo_color;
+};
 
 float4 main(VSOUT vertex_out) : SV_Target
 {
-	return text.Sample(samplerstate, vertex_out.texture_coords);
+	//return albedo.Sample(samplerstate, vertex_out.texture_coords);
 	//return float4(vertex_out.texture_coords.x, vertex_out.texture_coords.y, 0.0f, 1.0f);
 	//return float4(vertex_out.color, 1.0f);
+	return float4(albedo_color);
 }
