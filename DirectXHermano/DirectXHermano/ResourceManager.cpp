@@ -157,6 +157,28 @@ void ResourceManager::ImportResource(const File* file, Render & ren)
 		break;
 
 	case FILE_TYPE::PNG:
+	case FILE_TYPE::JPG:
+		
+		//Check if the Texture is already loaded
+		TextureResource* new_texture = (TextureResource*)GetResourceByPath(actual_resource_path, TEXTURE);
+
+		if (new_texture != nullptr)
+			return;
+
+		//Check if there is problems with the importation
+		Texture* tmp = ImportImage(nullptr, ren);
+		if (tmp != nullptr)
+		{
+			//Create Texture
+			new_texture = new TextureResource(actual_resource_path);
+			Sampler* new_sampler = new Sampler(ren);
+
+			new_texture->AddTexture(tmp);
+			new_texture->AddSampler(new_sampler);
+
+			if (new_texture != nullptr)
+				mapped_resources.insert(std::pair<RESOURCE_TYPE, Resource*>(TEXTURE, new_texture));
+		}
 
 		break;
 	}
@@ -418,12 +440,15 @@ Texture* ResourceManager::ImportImage(const char * path, Render & ren)
 	//IMAGE load
 	std::string full_texture_path = actual_resource_path;
 	
-	if (full_texture_path.find_last_of('/') != -1)
-		full_texture_path.erase(full_texture_path.find_last_of('/') + 1);
-	else full_texture_path.erase(full_texture_path.find_last_of('\\') + 1);
-		
-	full_texture_path.append(path);
-	
+	if (path != nullptr)
+	{
+		if (full_texture_path.find_last_of('/') != -1)
+			full_texture_path.erase(full_texture_path.find_last_of('/') + 1);
+		else full_texture_path.erase(full_texture_path.find_last_of('\\') + 1);
+
+		full_texture_path.append(path);
+	}
+
 	int width, height, color_channels;
 	unsigned char* data = stbi_load(full_texture_path.c_str(), &width, &height, &color_channels, 4);
 
@@ -432,6 +457,8 @@ Texture* ResourceManager::ImportImage(const char * path, Render & ren)
 		Texture* texture = new Texture(ren, data, width, height, color_channels);
 		return texture;
 	}
+
+	return nullptr;
 }
 
 const char* ResourceManager::ProcessMaterials(const aiScene * scene, aiNode * node, Render & ren)
@@ -456,16 +483,20 @@ const char* ResourceManager::ProcessMaterials(const aiScene * scene, aiNode * no
 			aiString texture_path;
 			if (aiGetMaterialTexture(mesh_material, aiTextureType_DIFFUSE, 0, &texture_path) == aiReturn_SUCCESS)
 			{
-				//Load the Texture
-				TextureResource* new_texture = new TextureResource(texture_path.C_Str());
-				new_texture->AddTexture(ImportImage(texture_path.C_Str(), ren));
-				new_texture->AddSampler(new Sampler(ren));
+				//Check if the texture is already loaded
+				TextureResource* new_texture = GetTextureByName(texture_path.C_Str());
+				if (new_texture == nullptr)
+				{
+					//Load the Texture
+					new_texture = new TextureResource(texture_path.C_Str());
+					new_texture->AddTexture(ImportImage(texture_path.C_Str(), ren));
+					new_texture->AddSampler(new Sampler(ren));
 
+					//Add the texture to resources
+					mapped_resources.insert(std::pair<RESOURCE_TYPE, Resource*>(TEXTURE, new_texture));
+				}
 				//Add the albedo to the Material
 				new_material->SetAlbedoTexture(new_texture);
-
-				//Add the texture to resources
-				mapped_resources.insert(std::pair<RESOURCE_TYPE, Resource*>(TEXTURE, new_texture));
 			}
 
 			//Look for Difuse Color
@@ -480,4 +511,36 @@ const char* ResourceManager::ProcessMaterials(const aiScene * scene, aiNode * no
 			return new_material->GetName();
 		}
 	}
+}
+
+TextureResource* ResourceManager::GetTextureByName(const char* name)
+{
+	std::multimap<RESOURCE_TYPE, Resource*>::const_iterator lower, up;
+
+	lower = mapped_resources.lower_bound(RESOURCE_TYPE::TEXTURE);
+	up = mapped_resources.upper_bound(RESOURCE_TYPE::TEXTURE);
+
+	for (; lower != up; lower++)
+	{
+		if (strcmp(name, lower->second->GetName()) == 0)
+			return (TextureResource*)lower->second;
+		
+	}
+	return nullptr;
+}
+
+Resource* ResourceManager::GetResourceByPath(const char * full_path, RESOURCE_TYPE type)
+{
+	std::multimap<RESOURCE_TYPE, Resource*>::const_iterator lower, up;
+
+	lower = mapped_resources.lower_bound(type);
+	up = mapped_resources.upper_bound(type);
+
+	for (; lower != up; lower++)
+	{
+		if (lower->second->GetPath() == full_path)
+			return lower->second;
+
+	}
+	return nullptr;
 }

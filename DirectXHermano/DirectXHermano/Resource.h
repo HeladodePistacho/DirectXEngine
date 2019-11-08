@@ -24,6 +24,7 @@ public:
 	RESOURCE_TYPE GetType() const { return type; }
 
 	const char* GetName() const { return name.c_str(); }
+	std::string GetPath() const { return path; }
 private:
 	RESOURCE_TYPE type = RESOURCE_UNDEFINED;
 	bool needs_load = true;
