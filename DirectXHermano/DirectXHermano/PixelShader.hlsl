@@ -16,8 +16,8 @@ cbuffer texture_colors
 
 float4 main(VSOUT vertex_out) : SV_Target
 {
-	//return albedo.Sample(samplerstate, vertex_out.texture_coords);
+	return (albedo.Sample(samplerstate, vertex_out.texture_coords) * albedo_color);
 	//return float4(vertex_out.texture_coords.x, vertex_out.texture_coords.y, 0.0f, 1.0f);
 	//return float4(vertex_out.color, 1.0f);
-	return float4(albedo_color);
+	//return float4(albedo_color);
 }
