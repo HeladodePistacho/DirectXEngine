@@ -42,3 +42,46 @@ void Material::BindTexture(Render& ren, TEXTURE_TYPE type)
 	if(colors != nullptr)
 		colors->Bind(ren);
 }
+
+float* Material::GetColor(TEXTURE_TYPE color_type)
+{
+	switch (color_type)
+	{
+	case ALBEDO:
+		return albedo_color.components;
+		break;
+	case NORMAL:
+		break;
+	case HEIGHT:
+		break;
+	}
+}
+
+void Material::UpdateColor(TEXTURE_TYPE color_type, Render& ren)
+{
+	switch (color_type)
+	{
+	case ALBEDO:
+		colors->Update(ren, albedo_color);
+		break;
+	case NORMAL:
+		break;
+	case HEIGHT:
+		break;
+	}
+}
+
+ID3D11ShaderResourceView* Material::GetTexture(TEXTURE_TYPE texture_type) const
+{
+	switch (texture_type)
+	{
+	case ALBEDO:
+		return albedo_texture->GetTexture();
+		break;
+	case NORMAL:
+		break;
+	case HEIGHT:
+		break;
+	}
+	return nullptr;
+}

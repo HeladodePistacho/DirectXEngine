@@ -4,11 +4,12 @@
 #include <vector>
 
 class TextureResource;
+class ID3D11ShaderResourceView;
 class Render;
 
 struct Color
 {
-	float r, g, b, a;
+	float components[4];
 };
 
 enum TEXTURE_TYPE
@@ -30,6 +31,13 @@ public:
 	void InitColorBuffer(Render& ren);
 
 	void BindTexture(Render& ren, TEXTURE_TYPE);
+
+	float* GetColor(TEXTURE_TYPE);
+	void UpdateColor(TEXTURE_TYPE, Render&);
+
+	//test
+	ID3D11ShaderResourceView* GetTexture(TEXTURE_TYPE) const;
+
 private:
 	TextureResource* albedo_texture = nullptr;
 	Color albedo_color;

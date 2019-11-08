@@ -83,7 +83,11 @@ void MeshRenderer::DrawMeshRendererUI(ResourceManager& res_manager)
 		ImGui::Text("Material");
 
 		for (int i = 0; i < meshes_materials.size(); i++)
-			ImGui::Text(meshes_materials[i]->GetName());
+		{
+			if (ImGui::Selectable(meshes_materials[i]->GetName()))
+				res_manager.SetMaterialToModify(meshes_materials[i]);		
+		}
+		
 
 		if (ImGui::BeginCombo(" ##material", "Add Material", ImGuiComboFlags_::ImGuiComboFlags_None))
 		{

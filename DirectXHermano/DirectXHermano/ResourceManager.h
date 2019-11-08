@@ -11,6 +11,7 @@ class Mesh;
 class Submesh;
 class Material;
 class Texture;
+class TextureResource;
 class Preset;
 class File;
 
@@ -33,10 +34,14 @@ public:
 	const Mesh* DrawMeshesUI() const;
 	const Material* DrawMaterialUI() const;
 	const Preset* DrawPresetsUI()const;
+	const TextureResource* DrawTextureUI() const;
+
+	void DrawMaterialEditorUI(Render& ren);
 
 	void ImportResource(const File* file, Render& ren);
 
 	Material* GetMaterialByName(std::string name) const;
+	void SetMaterialToModify(Material* current_mat);
 
 private:
 	std::multimap<RESOURCE_TYPE, Resource*> mapped_resources;
@@ -60,5 +65,8 @@ private:
 	//Image Load Sruff
 	Texture* ImportImage(const char* path, Render& ren);
 	const char* ProcessMaterials(const aiScene* scene, aiNode* node, Render& ren);
+
+	//Material editor
+	Material* material_to_modify = nullptr;
 	
 };

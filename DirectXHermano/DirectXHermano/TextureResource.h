@@ -14,6 +14,8 @@ public:
 	void AddSampler(Sampler* new_sampler);
 	void Bind(Render& ren);
 
+	ID3D11ShaderResourceView* GetTexture();
+
 private:
 	Texture* texture = nullptr;
 	Sampler* texture_sampler = nullptr;

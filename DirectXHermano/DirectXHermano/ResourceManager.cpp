@@ -96,6 +96,56 @@ const Preset* ResourceManager::DrawPresetsUI() const
 	return nullptr;
 }
 
+const TextureResource * ResourceManager::DrawTextureUI() const
+{
+	std::multimap<RESOURCE_TYPE, Resource*>::const_iterator lower, up;
+
+	lower = mapped_resources.lower_bound(RESOURCE_TYPE::TEXTURE);
+	up = mapped_resources.upper_bound(RESOURCE_TYPE::TEXTURE);
+
+	for (; lower != up; lower++)
+	{
+		if (ImGui::Selectable(lower->second->GetName()))
+		{
+			return (TextureResource*)lower->second;
+		}
+	}
+	return nullptr;
+}
+
+void ResourceManager::DrawMaterialEditorUI(Render& ren)
+{
+	ImGui::Begin("Material Editor");
+
+	ImGui::Text("Material Editor: ");
+	ImGui::Separator();
+
+	if (material_to_modify != nullptr)
+	{
+		ImGui::Text("Diffuse: ");
+		ImGui::Image(material_to_modify->GetTexture(TEXTURE_TYPE::ALBEDO), ImVec2(50.0f, 50.0f));
+
+		ImGui::SameLine();
+		if (ImGui::BeginCombo(" ##difuse texture selector", "Select Texture", ImGuiComboFlags_::ImGuiComboFlags_None))
+		{
+			const TextureResource* tmp = DrawTextureUI();
+
+			if (tmp != nullptr)
+				material_to_modify->SetAlbedoTexture((TextureResource*)tmp);
+
+			ImGui::EndCombo();
+		}
+
+		ImGui::Text("Color:"); ImGui::SameLine();
+		if (ImGui::ColorEdit4(" ##difuse color", material_to_modify->GetColor(TEXTURE_TYPE::ALBEDO)))
+			material_to_modify->UpdateColor(TEXTURE_TYPE::ALBEDO, ren);
+
+		ImGui::Separator();
+	}
+
+	ImGui::End();
+}
+
 void ResourceManager::ImportResource(const File* file, Render & ren)
 {
 	actual_resource_path = file->GetPath();
@@ -127,6 +177,12 @@ Material* ResourceManager::GetMaterialByName(std::string name) const
 	}
 
 	return nullptr;
+}
+
+void ResourceManager::SetMaterialToModify(Material * current_mat)
+{
+	if (current_mat != nullptr)
+		material_to_modify = current_mat;
 }
 
 void ResourceManager::ImportMesh(const char* path, Render& ren)
