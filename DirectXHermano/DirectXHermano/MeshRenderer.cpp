@@ -7,7 +7,7 @@
 #include "Material.h"
 #include "Preset.h"
 
-MeshRenderer::MeshRenderer(Entity* _parent) : parent(_parent)
+MeshRenderer::MeshRenderer(Entity* _parent) : parent(_parent), mesh_to_draw(nullptr)
 {
 
 }
@@ -54,13 +54,13 @@ void MeshRenderer::DrawMeshRendererUI(ResourceManager& res_manager)
 		//Meshrenderer MESH UI 
 		ImGui::Separator();
 		ImGui::Text("Mesh:");
-		if (mesh_to_draw)
+		if (mesh_to_draw != nullptr)
 		{
 			if (ImGui::BeginCombo(" ", mesh_to_draw->GetName(), ImGuiComboFlags_::ImGuiComboFlags_None))
 			{
-				Mesh* selected_mesh = &res_manager.DrawMeshesUI();
+				const Mesh* selected_mesh = res_manager.DrawMeshesUI();
 				if (selected_mesh)
-					mesh_to_draw = selected_mesh;
+					mesh_to_draw = (Mesh*)selected_mesh;
 				ImGui::EndCombo();
 			}
 
@@ -71,9 +71,9 @@ void MeshRenderer::DrawMeshRendererUI(ResourceManager& res_manager)
 			if (ImGui::BeginCombo(" " , "No Mesh Selected"))
 			{
 
-				Mesh* tmp = &res_manager.DrawMeshesUI();
+				const Mesh* tmp = res_manager.DrawMeshesUI();
 				if (tmp != nullptr)
-					mesh_to_draw = tmp;
+					mesh_to_draw = (Mesh*)tmp;
 				ImGui::EndCombo();
 			}
 		}
@@ -87,8 +87,8 @@ void MeshRenderer::DrawMeshRendererUI(ResourceManager& res_manager)
 
 		if (ImGui::BeginCombo(" ##material", "Add Material", ImGuiComboFlags_::ImGuiComboFlags_None))
 		{
-			Material* tmp = &res_manager.DrawMaterialUI();
-			AddMaterial(tmp);
+			const Material* tmp = res_manager.DrawMaterialUI();
+			AddMaterial((Material*)tmp);
 
 			ImGui::EndCombo();
 		}
@@ -110,11 +110,11 @@ void MeshRenderer::DrawMeshRendererUI(ResourceManager& res_manager)
 		ImGui::Text("Load Preset");
 		if (ImGui::BeginCombo(" ##preset", "Load Preset", ImGuiComboFlags_::ImGuiComboFlags_None))
 		{
-			Preset* tmp = &res_manager.DrawPresetsUI();
+			const Preset* tmp = res_manager.DrawPresetsUI();
 			
-			if (tmp)
+			if (tmp != nullptr)
 			{
-				LoadPreset(*tmp, res_manager);
+				LoadPreset(*(Preset*)tmp, res_manager);
 			}
 
 			ImGui::EndCombo();
@@ -132,7 +132,7 @@ void MeshRenderer::AddMaterial(Material * new_mat)
 
 void MeshRenderer::Draw(Render & ren)
 {
-	if (mesh_to_draw)
+	if (mesh_to_draw != nullptr)
 	{
 		PrepareMatrices(ren);
 

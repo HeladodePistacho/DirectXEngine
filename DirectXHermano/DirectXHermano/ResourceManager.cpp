@@ -45,9 +45,9 @@ void ResourceManager::Start(Render& ren)
 	ImportMesh(actual_resource_path, ren);
 }
 
-Mesh& ResourceManager::DrawMeshesUI()
+const Mesh* ResourceManager::DrawMeshesUI() const
 {
-	std::multimap<RESOURCE_TYPE, Resource*>::iterator lower, up;
+	std::multimap<RESOURCE_TYPE, Resource*>::const_iterator lower, up;
 
 	lower = mapped_resources.lower_bound(RESOURCE_TYPE::MESH);
 	up = mapped_resources.upper_bound(RESOURCE_TYPE::MESH);
@@ -56,14 +56,15 @@ Mesh& ResourceManager::DrawMeshesUI()
 	{		
 		if (ImGui::Selectable(lower->second->GetName()))
 		{
-			return *(Mesh*)lower->second;
+			return (Mesh*)lower->second;
 		}
 	}
+	return nullptr;
 }
 
-Material& ResourceManager::DrawMaterialUI()
+const Material* ResourceManager::DrawMaterialUI() const
 {
-	std::multimap<RESOURCE_TYPE, Resource*>::iterator lower, up;
+	std::multimap<RESOURCE_TYPE, Resource*>::const_iterator lower, up;
 
 	lower = mapped_resources.lower_bound(RESOURCE_TYPE::MATERIAL);
 	up = mapped_resources.upper_bound(RESOURCE_TYPE::MATERIAL);
@@ -72,14 +73,15 @@ Material& ResourceManager::DrawMaterialUI()
 	{
 		if (ImGui::Selectable(lower->second->GetName()))
 		{
-			return *(Material*)lower->second;
+			return (Material*)lower->second;
 		}
 	}
+	return nullptr;
 }
 
-Preset & ResourceManager::DrawPresetsUI()
+const Preset* ResourceManager::DrawPresetsUI() const
 {
-	std::multimap<RESOURCE_TYPE, Resource*>::iterator lower, up;
+	std::multimap<RESOURCE_TYPE, Resource*>::const_iterator lower, up;
 
 	lower = mapped_resources.lower_bound(RESOURCE_TYPE::PRESET);
 	up = mapped_resources.upper_bound(RESOURCE_TYPE::PRESET);
@@ -88,9 +90,10 @@ Preset & ResourceManager::DrawPresetsUI()
 	{
 		if (ImGui::Selectable(lower->second->GetName()))
 		{
-			return *(Preset*)lower->second;
+			return (Preset*)lower->second;
 		}
 	}
+	return nullptr;
 }
 
 void ResourceManager::ImportResource(const File* file, Render & ren)

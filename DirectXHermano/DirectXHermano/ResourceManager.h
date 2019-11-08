@@ -30,9 +30,9 @@ public:
 	Mesh& GetCube() const { return (*cube_mesh); }
 	ShaderProgram& GetShader() const { return (*mesh_shader); }
 
-	Mesh& DrawMeshesUI();
-	Material& DrawMaterialUI();
-	Preset& DrawPresetsUI();
+	const Mesh* DrawMeshesUI() const;
+	const Material* DrawMaterialUI() const;
+	const Preset* DrawPresetsUI()const;
 
 	void ImportResource(const File* file, Render& ren);
 
