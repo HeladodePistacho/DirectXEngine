@@ -58,7 +58,7 @@ void MeshRenderer::DrawMeshRendererUI(ResourceManager& res_manager)
 		{
 			if (ImGui::BeginCombo(" ", mesh_to_draw->GetName(), ImGuiComboFlags_::ImGuiComboFlags_None))
 			{
-				const Mesh* selected_mesh = res_manager.DrawMeshesUI();
+				const Mesh* selected_mesh = (Mesh*)res_manager.DrawResourceSelectableUI(MESH);
 				if (selected_mesh)
 					mesh_to_draw = (Mesh*)selected_mesh;
 				ImGui::EndCombo();
@@ -71,7 +71,7 @@ void MeshRenderer::DrawMeshRendererUI(ResourceManager& res_manager)
 			if (ImGui::BeginCombo(" " , "No Mesh Selected"))
 			{
 
-				const Mesh* tmp = res_manager.DrawMeshesUI();
+				const Mesh* tmp = (Mesh*)res_manager.DrawResourceSelectableUI(MESH);
 				if (tmp != nullptr)
 					mesh_to_draw = (Mesh*)tmp;
 				ImGui::EndCombo();
@@ -91,7 +91,7 @@ void MeshRenderer::DrawMeshRendererUI(ResourceManager& res_manager)
 
 		if (ImGui::BeginCombo(" ##material", "Add Material", ImGuiComboFlags_::ImGuiComboFlags_None))
 		{
-			const Material* tmp = res_manager.DrawMaterialUI();
+			const Material* tmp = (Material*)res_manager.DrawResourceSelectableUI(MATERIAL);
 			AddMaterial((Material*)tmp);
 
 			ImGui::EndCombo();
@@ -114,7 +114,7 @@ void MeshRenderer::DrawMeshRendererUI(ResourceManager& res_manager)
 		ImGui::Text("Load Preset");
 		if (ImGui::BeginCombo(" ##preset", "Load Preset", ImGuiComboFlags_::ImGuiComboFlags_None))
 		{
-			const Preset* tmp = res_manager.DrawPresetsUI();
+			const Preset* tmp = (Preset*)res_manager.DrawResourceSelectableUI(PRESET);
 			
 			if (tmp != nullptr)
 			{

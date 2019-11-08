@@ -45,74 +45,6 @@ void ResourceManager::Start(Render& ren)
 	ImportMesh(actual_resource_path, ren);
 }
 
-const Mesh* ResourceManager::DrawMeshesUI() const
-{
-	std::multimap<RESOURCE_TYPE, Resource*>::const_iterator lower, up;
-
-	lower = mapped_resources.lower_bound(RESOURCE_TYPE::MESH);
-	up = mapped_resources.upper_bound(RESOURCE_TYPE::MESH);
-
-	for (; lower != up; lower++)
-	{		
-		if (ImGui::Selectable(lower->second->GetName()))
-		{
-			return (Mesh*)lower->second;
-		}
-	}
-	return nullptr;
-}
-
-const Material* ResourceManager::DrawMaterialUI() const
-{
-	std::multimap<RESOURCE_TYPE, Resource*>::const_iterator lower, up;
-
-	lower = mapped_resources.lower_bound(RESOURCE_TYPE::MATERIAL);
-	up = mapped_resources.upper_bound(RESOURCE_TYPE::MATERIAL);
-
-	for (; lower != up; lower++)
-	{
-		if (ImGui::Selectable(lower->second->GetName()))
-		{
-			return (Material*)lower->second;
-		}
-	}
-	return nullptr;
-}
-
-const Preset* ResourceManager::DrawPresetsUI() const
-{
-	std::multimap<RESOURCE_TYPE, Resource*>::const_iterator lower, up;
-
-	lower = mapped_resources.lower_bound(RESOURCE_TYPE::PRESET);
-	up = mapped_resources.upper_bound(RESOURCE_TYPE::PRESET);
-
-	for (; lower != up; lower++)
-	{
-		if (ImGui::Selectable(lower->second->GetName()))
-		{
-			return (Preset*)lower->second;
-		}
-	}
-	return nullptr;
-}
-
-const TextureResource * ResourceManager::DrawTextureUI() const
-{
-	std::multimap<RESOURCE_TYPE, Resource*>::const_iterator lower, up;
-
-	lower = mapped_resources.lower_bound(RESOURCE_TYPE::TEXTURE);
-	up = mapped_resources.upper_bound(RESOURCE_TYPE::TEXTURE);
-
-	for (; lower != up; lower++)
-	{
-		if (ImGui::Selectable(lower->second->GetName()))
-		{
-			return (TextureResource*)lower->second;
-		}
-	}
-	return nullptr;
-}
-
 void ResourceManager::DrawMaterialEditorUI(Render& ren)
 {
 	ImGui::Begin("Material Editor");
@@ -128,7 +60,7 @@ void ResourceManager::DrawMaterialEditorUI(Render& ren)
 		ImGui::SameLine();
 		if (ImGui::BeginCombo(" ##difuse texture selector", "Select Texture", ImGuiComboFlags_::ImGuiComboFlags_None))
 		{
-			const TextureResource* tmp = DrawTextureUI();
+			const TextureResource* tmp = (TextureResource*)DrawResourceSelectableUI(TEXTURE);
 
 			if (tmp != nullptr)
 				material_to_modify->SetAlbedoTexture((TextureResource*)tmp);
@@ -484,7 +416,7 @@ const char* ResourceManager::ProcessMaterials(const aiScene * scene, aiNode * no
 			if (aiGetMaterialTexture(mesh_material, aiTextureType_DIFFUSE, 0, &texture_path) == aiReturn_SUCCESS)
 			{
 				//Check if the texture is already loaded
-				TextureResource* new_texture = GetTextureByName(texture_path.C_Str());
+				TextureResource* new_texture = (TextureResource*)GetResourceByName(texture_path.C_Str(), TEXTURE);
 				if (new_texture == nullptr)
 				{
 					//Load the Texture
@@ -513,22 +445,6 @@ const char* ResourceManager::ProcessMaterials(const aiScene * scene, aiNode * no
 	}
 }
 
-TextureResource* ResourceManager::GetTextureByName(const char* name)
-{
-	std::multimap<RESOURCE_TYPE, Resource*>::const_iterator lower, up;
-
-	lower = mapped_resources.lower_bound(RESOURCE_TYPE::TEXTURE);
-	up = mapped_resources.upper_bound(RESOURCE_TYPE::TEXTURE);
-
-	for (; lower != up; lower++)
-	{
-		if (strcmp(name, lower->second->GetName()) == 0)
-			return (TextureResource*)lower->second;
-		
-	}
-	return nullptr;
-}
-
 Resource* ResourceManager::GetResourceByPath(const char * full_path, RESOURCE_TYPE type)
 {
 	std::multimap<RESOURCE_TYPE, Resource*>::const_iterator lower, up;
@@ -541,6 +457,38 @@ Resource* ResourceManager::GetResourceByPath(const char * full_path, RESOURCE_TY
 		if (lower->second->GetPath() == full_path)
 			return lower->second;
 
+	}
+	return nullptr;
+}
+
+Resource* ResourceManager::GetResourceByName(const char * name, RESOURCE_TYPE type)
+{
+	std::multimap<RESOURCE_TYPE, Resource*>::const_iterator lower, up;
+
+	lower = mapped_resources.lower_bound(type);
+	up = mapped_resources.upper_bound(type);
+
+	for (; lower != up; lower++)
+	{
+		if (strcmp(lower->second->GetName(), name) == 0)
+			return lower->second;
+
+	}
+	return nullptr;
+}
+
+Resource* ResourceManager::DrawResourceSelectableUI(RESOURCE_TYPE type)
+{
+	std::multimap<RESOURCE_TYPE, Resource*>::const_iterator lower, up;
+
+	lower = mapped_resources.lower_bound(type);
+	up = mapped_resources.upper_bound(type);
+
+	for (; lower != up; lower++)
+	{
+		if (ImGui::Selectable(lower->second->GetName()))
+			return lower->second;
+		
 	}
 	return nullptr;
 }
