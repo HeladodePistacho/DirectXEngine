@@ -93,6 +93,18 @@ void MeshRenderer::DrawMeshRendererUI(ResourceManager& res_manager)
 			ImGui::EndCombo();
 		}
 
+		if (ImGui::Button("Erase Material"))
+		{
+			if(!meshes_materials.empty())
+				meshes_materials.pop_back();
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Delete All Materials"))
+			meshes_materials.clear();
+
+
 		//Meshrenderer Presets UI
 		ImGui::Separator();
 		ImGui::Text("Load Preset");
