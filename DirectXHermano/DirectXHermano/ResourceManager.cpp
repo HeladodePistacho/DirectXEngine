@@ -12,6 +12,7 @@
 #include "Sampler.h"
 #include "Material.h"
 #include "TextureResource.h"
+#include "Preset.h"
 
 //Assimp
 #pragma comment(lib, "Assimp/libx86/assimp.lib")
@@ -76,6 +77,22 @@ Material& ResourceManager::DrawMaterialUI()
 	}
 }
 
+Preset & ResourceManager::DrawPresetsUI()
+{
+	std::multimap<RESOURCE_TYPE, Resource*>::iterator lower, up;
+
+	lower = mapped_resources.lower_bound(RESOURCE_TYPE::PRESET);
+	up = mapped_resources.upper_bound(RESOURCE_TYPE::PRESET);
+
+	for (; lower != up; lower++)
+	{
+		if (ImGui::Selectable(lower->second->GetName()))
+		{
+			return *(Preset*)lower->second;
+		}
+	}
+}
+
 void ResourceManager::ImportResource(const File* file, Render & ren)
 {
 	actual_resource_path = file->GetPath();
@@ -91,6 +108,22 @@ void ResourceManager::ImportResource(const File* file, Render & ren)
 		break;
 	}
 	
+}
+
+Material* ResourceManager::GetMaterialByName(std::string name) const
+{
+	std::multimap<RESOURCE_TYPE, Resource*>::const_iterator lower, up;
+
+	lower = mapped_resources.lower_bound(RESOURCE_TYPE::MATERIAL);
+	up = mapped_resources.upper_bound(RESOURCE_TYPE::MATERIAL);
+
+	for (; lower != up; lower++)
+	{
+		if (name == lower->second->GetName())
+			return (Material*)lower->second;
+	}
+
+	return nullptr;
 }
 
 void ResourceManager::ImportMesh(const char* path, Render& ren)
@@ -122,15 +155,19 @@ void ResourceManager::ImportMesh(const char* path, Render& ren)
 
 	//Load each node from scene
 	nodes.push(scene->mRootNode);
+
+	Preset* new_preset = new Preset(actual_resource_path);
 	while (!nodes.empty())
 	{
 		new_mesh->AddSubmesh(ProcessNode(scene, nodes.front(), ren));
+		new_preset->AddMaterialName(ProcessMaterials(scene, nodes.front(), ren));
 
 		for (int i = 0; i < nodes.front()->mNumChildren; i++)
 			nodes.push(nodes.front()->mChildren[i]);
 
 		nodes.pop();
 	}
+	mapped_resources.insert(std::pair<RESOURCE_TYPE, Resource*>(PRESET, new_preset));
 	std::pair<RESOURCE_TYPE, Resource*> map_element = { RESOURCE_TYPE::MESH, new_mesh };
 	mapped_resources.insert(map_element);
 }
@@ -252,42 +289,10 @@ void ResourceManager::LoadCube(Render& ren)
 std::vector<Submesh*> ResourceManager::ProcessNode(const aiScene* scene, aiNode* node, Render& ren)
 {
 	std::vector<Submesh*> ret;
-
 	for (int i = 0; i < node->mNumMeshes; i++)
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
 		ret.push_back(ProcessMesh(scene, mesh, ren));
-
-		
-		//Load Materials
-		if (scene->HasMaterials())
-		{		
-			aiMaterial* mesh_material = scene->mMaterials[mesh->mMaterialIndex];
-
-			//Create Material
-			aiString material_name;
-			aiGetMaterialString(mesh_material, AI_MATKEY_NAME, &material_name);
-			
-			Material* new_material = new Material(material_name.C_Str());
-
-			//Look For Difuse Texture
-			aiString texture_path;
-			if (aiGetMaterialTexture(mesh_material, aiTextureType_DIFFUSE, 0, &texture_path) == aiReturn_SUCCESS)
-			{
-				//Load the Texture
-				TextureResource* new_texture = new TextureResource(texture_path.C_Str());
-				new_texture->AddTexture(ImportImage(texture_path.C_Str(), ren));
-				new_texture->AddSampler(new Sampler(ren));
-
-				//Add the albedo to the Material
-				new_material->SetAlbedoTexture(new_texture);
-
-				//Add the texture to resources
-				mapped_resources.insert(std::pair<RESOURCE_TYPE, Resource*>(TEXTURE, new_texture));
-			}
-
-			mapped_resources.insert(std::pair<RESOURCE_TYPE, Resource*>(MATERIAL, new_material));
-		}
 	}
 
 	return ret;
@@ -366,5 +371,45 @@ Texture* ResourceManager::ImportImage(const char * path, Render & ren)
 	{
 		Texture* texture = new Texture(ren, data, width, height, color_channels);
 		return texture;
+	}
+}
+
+const char* ResourceManager::ProcessMaterials(const aiScene * scene, aiNode * node, Render & ren)
+{
+	for (int i = 0; i < node->mNumMeshes; i++)
+	{
+		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
+		
+		//Load Materials
+		if (scene->HasMaterials())
+		{
+			aiMaterial* mesh_material = scene->mMaterials[mesh->mMaterialIndex];
+
+			//Create Material
+			aiString material_name;
+			aiGetMaterialString(mesh_material, AI_MATKEY_NAME, &material_name);
+
+			Material* new_material = new Material(material_name.C_Str());
+
+			//Look For Difuse Texture
+			aiString texture_path;
+			if (aiGetMaterialTexture(mesh_material, aiTextureType_DIFFUSE, 0, &texture_path) == aiReturn_SUCCESS)
+			{
+				//Load the Texture
+				TextureResource* new_texture = new TextureResource(texture_path.C_Str());
+				new_texture->AddTexture(ImportImage(texture_path.C_Str(), ren));
+				new_texture->AddSampler(new Sampler(ren));
+
+				//Add the albedo to the Material
+				new_material->SetAlbedoTexture(new_texture);
+
+				//Add the texture to resources
+				mapped_resources.insert(std::pair<RESOURCE_TYPE, Resource*>(TEXTURE, new_texture));
+			}
+
+			//Add Material and Preset to the Resources map
+			mapped_resources.insert(std::pair<RESOURCE_TYPE, Resource*>(MATERIAL, new_material));
+			return new_material->GetName();
+		}
 	}
 }

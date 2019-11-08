@@ -7,6 +7,7 @@ class Mesh;
 class Entity;
 class ResourceManager;
 class Material;
+class Preset;
 
 class MeshRenderer
 {
@@ -36,4 +37,6 @@ private:
 	ConstBuffer<matrix_buffers>* matrices = nullptr;
 	Mesh* mesh_to_draw = nullptr;
 	std::vector<Material*> meshes_materials;
+
+	void LoadPreset(Preset& preset, ResourceManager& resources);
 };

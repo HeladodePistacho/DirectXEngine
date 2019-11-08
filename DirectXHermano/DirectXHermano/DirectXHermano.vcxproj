@@ -167,6 +167,7 @@
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshRenderer.h" />
     <ClInclude Include="Mouse.h" />
+    <ClInclude Include="Preset.h" />
     <ClInclude Include="Render.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourceManager.h" />

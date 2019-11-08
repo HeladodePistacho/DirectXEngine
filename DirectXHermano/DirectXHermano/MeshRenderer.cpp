@@ -5,6 +5,7 @@
 #include "ResourceManager.h"
 #include "ImGui\imgui.h"
 #include "Material.h"
+#include "Preset.h"
 
 MeshRenderer::MeshRenderer(Entity* _parent) : parent(_parent)
 {
@@ -50,6 +51,8 @@ void MeshRenderer::DrawMeshRendererUI(ResourceManager& res_manager)
 {
 	if (ImGui::TreeNode("Mesh Renderer"))
 	{
+		//Meshrenderer MESH UI 
+		ImGui::Separator();
 		ImGui::Text("Mesh:");
 		if (mesh_to_draw)
 		{
@@ -75,6 +78,7 @@ void MeshRenderer::DrawMeshRendererUI(ResourceManager& res_manager)
 			}
 		}
 
+		//Meshrenderer MATERIAL UI
 		ImGui::Separator();
 		ImGui::Text("Material");
 
@@ -89,7 +93,20 @@ void MeshRenderer::DrawMeshRendererUI(ResourceManager& res_manager)
 			ImGui::EndCombo();
 		}
 
-		//
+		//Meshrenderer Presets UI
+		ImGui::Separator();
+		ImGui::Text("Load Preset");
+		if (ImGui::BeginCombo(" ##preset", "Load Preset", ImGuiComboFlags_::ImGuiComboFlags_None))
+		{
+			Preset* tmp = &res_manager.DrawPresetsUI();
+			
+			if (tmp)
+			{
+				LoadPreset(*tmp, res_manager);
+			}
+
+			ImGui::EndCombo();
+		}
 
 		ImGui::TreePop();
 	}
@@ -115,5 +132,17 @@ void MeshRenderer::Draw(Render & ren)
 
 			mesh_to_draw->DrawSubMesh(ren, i);
 		}
+	}
+}
+
+void MeshRenderer::LoadPreset(Preset& preset, ResourceManager& resources)
+{
+	//Reset array
+	meshes_materials.clear();
+
+	//Load new materials
+	for (int i = 0; i < preset.GetNumMaterials(); i++)
+	{
+		AddMaterial(resources.GetMaterialByName(preset.GetMaterialAt(i)));
 	}
 }

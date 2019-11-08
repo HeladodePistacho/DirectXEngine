@@ -7,7 +7,8 @@ enum RESOURCE_TYPE
 	MESH,
 	TEXTURE,
 	SHADER,
-	MATERIAL
+	MATERIAL,
+	PRESET
 };
 
 class Resource

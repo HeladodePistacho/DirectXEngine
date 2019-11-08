@@ -11,6 +11,7 @@ class Mesh;
 class Submesh;
 class Material;
 class Texture;
+class Preset;
 class File;
 
 class aiScene;
@@ -31,8 +32,11 @@ public:
 
 	Mesh& DrawMeshesUI();
 	Material& DrawMaterialUI();
+	Preset& DrawPresetsUI();
 
 	void ImportResource(const File* file, Render& ren);
+
+	Material* GetMaterialByName(std::string name) const;
 
 private:
 	std::multimap<RESOURCE_TYPE, Resource*> mapped_resources;
@@ -55,5 +59,6 @@ private:
 
 	//Image Load Sruff
 	Texture* ImportImage(const char* path, Render& ren);
+	const char* ProcessMaterials(const aiScene* scene, aiNode* node, Render& ren);
 	
 };

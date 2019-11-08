@@ -212,6 +212,9 @@
     <ClInclude Include="TextureResource.h">
       <Filter>Archivos de encabezado\Resources</Filter>
     </ClInclude>
+    <ClInclude Include="Preset.h">
+      <Filter>Archivos de encabezado\Resources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="VertexShader.hlsl">
