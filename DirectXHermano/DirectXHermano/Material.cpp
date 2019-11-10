@@ -76,7 +76,8 @@ ID3D11ShaderResourceView* Material::GetTexture(TEXTURE_TYPE texture_type) const
 	switch (texture_type)
 	{
 	case ALBEDO:
-		return albedo_texture->GetTexture();
+		if(albedo_texture)
+			return albedo_texture->GetTexture();
 		break;
 	case NORMAL:
 		break;

@@ -35,5 +35,7 @@ void TextureResource::Bind(Render & ren)
 
 ID3D11ShaderResourceView* TextureResource::GetTexture()
 {
-	return texture->GetTexture();
+	if(texture)
+		return texture->GetTexture();
+	return nullptr;
 }

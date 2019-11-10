@@ -55,7 +55,10 @@ void ResourceManager::DrawMaterialEditorUI(Render& ren)
 	if (material_to_modify != nullptr)
 	{
 		ImGui::Text("Diffuse: ");
-		ImGui::Image(material_to_modify->GetTexture(TEXTURE_TYPE::ALBEDO), ImVec2(50.0f, 50.0f));
+		ID3D11ShaderResourceView* test = material_to_modify->GetTexture(TEXTURE_TYPE::ALBEDO);
+
+		if(test)
+			ImGui::Image(material_to_modify->GetTexture(TEXTURE_TYPE::ALBEDO), ImVec2(50.0f, 50.0f));
 
 		ImGui::SameLine();
 		if (ImGui::BeginCombo(" ##difuse texture selector", "Select Texture", ImGuiComboFlags_::ImGuiComboFlags_None))
@@ -162,6 +165,7 @@ void ResourceManager::ImportMesh(const char* path, Render& ren)
 	//Check for errors
 	if (!scene || !scene->mRootNode || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE)
 	{
+		const char* tmp = importer.GetErrorString();
 		std::cout << "ASSIMP ERROR: " << importer.GetErrorString() << std::endl;
 		return;
 	}
