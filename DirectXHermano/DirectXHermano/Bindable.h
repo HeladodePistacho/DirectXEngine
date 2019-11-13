@@ -6,6 +6,8 @@ class Bindable
 {
 public:
 	virtual void Bind(Render& ren) = 0;
+	virtual void BindSlot(Render& ren, unsigned int slot = 0u) {}
+
 	virtual ~Bindable() {};
 
 protected:

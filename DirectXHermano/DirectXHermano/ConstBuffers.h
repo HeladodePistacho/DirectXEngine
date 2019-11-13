@@ -25,7 +25,9 @@ public:
 		D3D11_SUBRESOURCE_DATA data = {};
 		data.pSysMem = &buffer;
 
-		if (FAILED(GetDevice(ren)->CreateBuffer(&descriptor, &data, &constant_buffer)))
+		HRESULT hr = GetDevice(ren)->CreateBuffer(&descriptor, &data, &constant_buffer);
+
+		if (FAILED(hr))
 		{
 			//custom_exception error("Render Error", "Triangle Indices Buffer Creation Failed");
 			//throw error;
@@ -61,9 +63,26 @@ public:
 		}
 	}
 
+	void BindSlot(Render& ren, unsigned int slot = 0) override
+	{
+		switch (type)
+		{
+		case UNDEFINED:
+		{
+			//custom_exception error("Render Error", "Undefined Constant Buffer type");
+			//throw error;
+		}
+		break;
+		case VERTEX_SHADER_BUFFER:
+			GetContext(ren)->VSSetConstantBuffers(slot, 1u, &constant_buffer);
+			break;
+		case PIXEL_SHADER_BUFFER:
+			GetContext(ren)->PSSetConstantBuffers(slot, 1u, &constant_buffer);
+			break;
+		}
+	}
+
 protected:
 	ID3D11Buffer* constant_buffer = nullptr;
 	BUFFER_TYPE type = UNDEFINED;
 };
-
-
