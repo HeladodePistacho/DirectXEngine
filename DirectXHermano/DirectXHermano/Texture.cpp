@@ -3,6 +3,8 @@
 Texture::Texture(Render & ren, unsigned char* data, unsigned int width, unsigned int height, unsigned int color_channels)
 {
 	if (color_channels == 3) color_channels = 4;
+	if (data == nullptr) is_empty = true;
+
 	D3D11_TEXTURE2D_DESC texture_descriptor = {};
 
 	texture_descriptor.Width = width;

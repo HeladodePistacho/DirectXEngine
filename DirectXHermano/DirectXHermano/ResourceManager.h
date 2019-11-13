@@ -52,6 +52,7 @@ private:
 
 	void LoadShaders(Render& ren);
 	void LoadCube(Render& ren);
+	void LoadNullTexture(Render& ren);
 
 	//Import stuff
 	const char* actual_resource_path = nullptr;
@@ -63,6 +64,7 @@ private:
 	std::queue<aiNode*> nodes;
 
 	//Image Load Sruff
+	void ImportTexture(const char* path, Render& ren);
 	Texture* ImportImage(const char* path, Render& ren);
 	const char* ProcessMaterials(const aiScene* scene, aiNode* node, Render& ren);
 

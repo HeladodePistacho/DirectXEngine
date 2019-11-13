@@ -5,10 +5,36 @@ Material::Material(std::string path) : Resource(RESOURCE_TYPE::MATERIAL, path)
 {
 }
 
+Material::~Material()
+{
+	if (colors != nullptr)
+		delete colors;
+
+	if (use_colors != nullptr)
+		delete colors;
+}
+
 void Material::SetAlbedoTexture(TextureResource * new_albedo)
 {
 	if (new_albedo)
+	{
 		albedo_texture = new_albedo;
+
+		Texture* tmp = albedo_texture->GetTextureBindable();
+		if (tmp->IsNull())
+		{
+			use_only_colors.components[0] = 1.0f;
+			needs_update = true;
+		}
+		else
+		{
+			if (use_only_colors.components[0] > 0.0)
+			{
+				use_only_colors.components[0] = -1.0f;
+				needs_update = true;
+			}
+		}
+	}
 }
 
 void Material::SetAlbedoColor(Render& ren, float r, float g, float b, float a)
@@ -21,7 +47,7 @@ void Material::SetAlbedoColor(Render& ren, float r, float g, float b, float a)
 void Material::InitColorBuffer(Render & ren)
 {
 	albedo_color = { 1.0f, 1.0f, 1.0f, 1.0f };
-	use_only_colors = { 1.0f, 1.0f, 1.0f, 1.0f };
+	use_only_colors = { -1.0f, -1.0f, -1.0f, -1.0f };
 
 	if (colors == nullptr)
 		colors = new ConstBuffer<Color>(ren, albedo_color, BUFFER_TYPE::PIXEL_SHADER_BUFFER);
@@ -32,6 +58,9 @@ void Material::InitColorBuffer(Render & ren)
 
 void Material::BindTexture(Render& ren, TEXTURE_TYPE type)
 {
+	if (needs_update)
+		Update(ren);
+
 	switch (type)
 	{
 	case ALBEDO:
@@ -62,6 +91,18 @@ float* Material::GetColor(TEXTURE_TYPE color_type)
 	case HEIGHT:
 		break;
 	}
+}
+
+void Material::Update(Render & ren)
+{
+	UpdateColorUsage(ren);
+
+	needs_update = false;
+}
+
+void Material::UpdateColorUsage(Render & ren)
+{
+	use_colors->Update(ren, use_only_colors);
 }
 
 void Material::UpdateColor(TEXTURE_TYPE color_type, Render& ren)

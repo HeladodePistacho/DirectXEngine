@@ -33,7 +33,12 @@ void TextureResource::Bind(Render & ren)
 		texture_sampler->Bind(ren);
 }
 
-ID3D11ShaderResourceView* TextureResource::GetTexture()
+Texture * TextureResource::GetTextureBindable() const
+{
+	return texture;
+}
+
+ID3D11ShaderResourceView* TextureResource::GetTexture() const
 {
 	if(texture)
 		return texture->GetTexture();

@@ -38,6 +38,7 @@ public:
 	//test
 	ID3D11ShaderResourceView* GetTexture(TEXTURE_TYPE) const;
 
+	void SetNeedsUpdate(bool state) { needs_update = state; }
 private:
 	TextureResource* albedo_texture = nullptr;
 	Color albedo_color;
@@ -47,4 +48,10 @@ private:
 
 	ConstBuffer<Color>* colors = nullptr;
 	ConstBuffer<Color>* use_colors = nullptr;
+
+	//Update Elements
+	bool needs_update = false;
+	void Update(Render& ren);
+	void UpdateColorUsage(Render& ren);
+
 };

@@ -41,8 +41,12 @@ void ResourceManager::Start(Render& ren)
 	//Load Basic meshes
 	LoadShaders(ren);
 	LoadCube(ren);
+
 	actual_resource_path = "C:/Users/Usuari/Documents/GitHub/CuteEngine/CuteEngine/Resources/Models/Patrick/Patrick.obj";
 	ImportMesh(actual_resource_path, ren);
+
+	//Load Null Texture
+	LoadNullTexture(ren);
 }
 
 void ResourceManager::DrawMaterialEditorUI(Render& ren)
@@ -59,6 +63,7 @@ void ResourceManager::DrawMaterialEditorUI(Render& ren)
 		{
 			Material* new_material = new Material(material_name_buffer);
 			new_material->InitColorBuffer(ren);
+			new_material->SetAlbedoTexture((TextureResource*)GetResourceByName("Null Texture", RESOURCE_TYPE::TEXTURE));
 
 			mapped_resources.insert(std::pair<RESOURCE_TYPE, Resource*>(MATERIAL, new_material));
 			material_to_modify = new_material;
@@ -108,27 +113,7 @@ void ResourceManager::ImportResource(const File* file, Render & ren)
 
 	case FILE_TYPE::PNG:
 	case FILE_TYPE::JPG:
-		
-		//Check if the Texture is already loaded
-		TextureResource* new_texture = (TextureResource*)GetResourceByPath(actual_resource_path, TEXTURE);
-
-		if (new_texture != nullptr)
-			return;
-
-		//Check if there is problems with the importation
-		Texture* tmp = ImportImage(nullptr, ren);
-		if (tmp != nullptr)
-		{
-			//Create Texture
-			new_texture = new TextureResource(actual_resource_path);
-			Sampler* new_sampler = new Sampler(ren);
-
-			new_texture->AddTexture(tmp);
-			new_texture->AddSampler(new_sampler);
-
-			if (new_texture != nullptr)
-				mapped_resources.insert(std::pair<RESOURCE_TYPE, Resource*>(TEXTURE, new_texture));
-		}
+		ImportTexture(actual_resource_path, ren);
 
 		break;
 	}
@@ -321,6 +306,16 @@ void ResourceManager::LoadCube(Render& ren)
 	mapped_resources.insert(map_element_material);
 }
 
+void ResourceManager::LoadNullTexture(Render& ren)
+{
+	TextureResource* null_texture = new TextureResource("/Null Texture");
+
+	Texture* null_text = new Texture(ren, nullptr, 0, 0, 0);
+	null_texture->AddTexture(null_text);
+
+	mapped_resources.insert(std::pair<RESOURCE_TYPE, Resource*>(TEXTURE, null_texture));
+}
+
 std::vector<Submesh*> ResourceManager::ProcessNode(const aiScene* scene, aiNode* node, Render& ren)
 {
 	std::vector<Submesh*> ret;
@@ -386,6 +381,30 @@ Submesh* ResourceManager::ProcessMesh(const aiScene * scene, aiMesh * mesh, Rend
 	new_submesh->AddInfo(vertices.size(), indices.size());
 
 	return new_submesh;
+}
+
+void ResourceManager::ImportTexture(const char * path, Render & ren)
+{
+	//Check if the Texture is already loaded
+	TextureResource* new_texture = (TextureResource*)GetResourceByPath(actual_resource_path, TEXTURE);
+
+	if (new_texture != nullptr)
+		return;
+
+	//Check if there is problems with the importation
+	Texture* tmp = ImportImage(nullptr, ren);
+	if (tmp != nullptr)
+	{
+		//Create Texture
+		new_texture = new TextureResource(actual_resource_path);
+		Sampler* new_sampler = new Sampler(ren);
+
+		new_texture->AddTexture(tmp);
+		new_texture->AddSampler(new_sampler);
+
+		if (new_texture != nullptr)
+			mapped_resources.insert(std::pair<RESOURCE_TYPE, Resource*>(TEXTURE, new_texture));
+	}
 }
 
 Texture* ResourceManager::ImportImage(const char * path, Render & ren)
