@@ -23,7 +23,7 @@ class Material : public Resource
 {
 public:
 	Material(std::string path);
-	//~Material();
+	~Material();
 
 	void SetAlbedoTexture(TextureResource* new_albedo);
 	void SetAlbedoColor(Render& ren, float r, float g, float b, float a = 1.0f);
@@ -42,5 +42,9 @@ private:
 	TextureResource* albedo_texture = nullptr;
 	Color albedo_color;
 
+	//This holds the values to use or not the textures
+	Color use_only_colors;
+
 	ConstBuffer<Color>* colors = nullptr;
+	ConstBuffer<Color>* use_colors = nullptr;
 };

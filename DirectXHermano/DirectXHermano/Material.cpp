@@ -21,10 +21,13 @@ void Material::SetAlbedoColor(Render& ren, float r, float g, float b, float a)
 void Material::InitColorBuffer(Render & ren)
 {
 	albedo_color = { 1.0f, 1.0f, 1.0f, 1.0f };
+	use_only_colors = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 	if (colors == nullptr)
 		colors = new ConstBuffer<Color>(ren, albedo_color, BUFFER_TYPE::PIXEL_SHADER_BUFFER);
-	
+
+	if(use_colors == nullptr)
+		use_colors = new ConstBuffer<Color>(ren, use_only_colors, BUFFER_TYPE::PIXEL_SHADER_BUFFER);
 }
 
 void Material::BindTexture(Render& ren, TEXTURE_TYPE type)
@@ -39,8 +42,12 @@ void Material::BindTexture(Render& ren, TEXTURE_TYPE type)
 	default:
 		break;
 	}
+
 	if(colors != nullptr)
 		colors->Bind(ren);
+
+	if (use_colors != nullptr)
+		use_colors->BindSlot(ren, 1u);
 }
 
 float* Material::GetColor(TEXTURE_TYPE color_type)
