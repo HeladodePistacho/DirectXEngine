@@ -50,6 +50,21 @@ void ResourceManager::DrawMaterialEditorUI(Render& ren)
 	ImGui::Begin("Material Editor");
 
 	ImGui::Text("Material Editor: ");
+
+	ImGui::InputTextWithHint(" ##material editor creator", "Insert Material Name", material_name_buffer, 128);
+
+	if (ImGui::Button("Create Material"))
+	{
+		if (strlen(material_name_buffer) != 0)
+		{
+			Material* new_material = new Material(material_name_buffer);
+			new_material->InitColorBuffer(ren);
+
+			mapped_resources.insert(std::pair<RESOURCE_TYPE, Resource*>(MATERIAL, new_material));
+			material_to_modify = new_material;
+		}
+	}
+
 	ImGui::Separator();
 
 	if (material_to_modify != nullptr)
@@ -283,11 +298,13 @@ void ResourceManager::LoadCube(Render& ren)
 	new_mesh->AddSubmesh(new_submesh);
 
 	//IMAGE TESST
-	actual_resource_path = "C:/Users/Usuari/Desktop/unknown.png";
-	Texture* test_text = ImportImage("unknown.png", ren);
+	//actual_resource_path = "C:/Users/Usuari/Desktop/unknown.png";
+	actual_resource_path = "C:/Users/Th_Sola/Desktop/GameDev/uri.png";
+	Texture* test_text = ImportImage("uri.png", ren);
 	Sampler* test_sampler = new Sampler(ren);
 
-	TextureResource* harambe_texture = new TextureResource("/Harambe.png");
+	//TextureResource* harambe_texture = new TextureResource("/Harambe.png");
+	TextureResource* harambe_texture = new TextureResource("/Uri.png");
 	harambe_texture->AddTexture(test_text);
 	harambe_texture->AddSampler(test_sampler);
 

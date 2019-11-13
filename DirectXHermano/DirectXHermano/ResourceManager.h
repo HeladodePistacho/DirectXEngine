@@ -68,5 +68,6 @@ private:
 
 	//Material editor
 	Material* material_to_modify = nullptr;
-	
+	char material_name_buffer[128];
+
 };
