@@ -6,6 +6,30 @@
 
 class Camera;
 
+class RenderBuffer
+{
+public:
+	RenderBuffer(unsigned int num_targets);
+	~RenderBuffer();
+
+	bool LoadRenderTargets(ID3D11Device* device, int width, int height);
+	bool LoadDepth(ID3D11Device* device, int width, int height);
+
+	void SetRenderTargets(ID3D11DeviceContext* context);
+	void ClearRenderTargets(ID3D11DeviceContext* context);
+
+private:
+	unsigned int used_targets = 0;
+
+	ID3D11Texture2D* texture_array[D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT];
+	ID3D11RenderTargetView* view_array[D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT];
+	ID3D11ShaderResourceView* resource_view_array[D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT];
+
+	ID3D11DepthStencilView* depth = nullptr;
+	ID3D11Texture2D* depth_texture = nullptr;
+	D3D11_VIEWPORT view_port;
+};
+
 class Render
 {
 	friend class Bindable;
@@ -32,9 +56,18 @@ private:
 	Microsoft::WRL::ComPtr<IDXGISwapChain> direct_swap;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> direct_context;
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> direct_render_target;
-	ID3D11DepthStencilView* direct_depth = nullptr;
 
+	//Depth
+	ID3D11DepthStencilView* direct_depth = nullptr;
 	D3D11_VIEWPORT view_port;
 
 	Camera* render_camera = nullptr;
+
+	void LoadSwapChain(HWND window_handle, int width, int height);
+	void LoadRenderTargets(int widht, int height);
+	void LoadDepthBuffer(int width, int height);
+	void LoadViewport(int width, int height);
+
+	//Deferred
+	RenderBuffer* deferred_buffers = nullptr;
 };
