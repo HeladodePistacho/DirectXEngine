@@ -284,6 +284,15 @@ bool RenderBuffer::LoadRenderTargets(ID3D11Device* device, int width, int height
 		}
 	}
 
+	//Load The Sampler state
+	D3D11_SAMPLER_DESC sampler_descriptor = {};
+	sampler_descriptor.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	sampler_descriptor.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampler_descriptor.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampler_descriptor.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+
+	device->CreateSamplerState(&sampler_descriptor, &sampler_state);
+
 	//Set Up the Viewport
 	view_port.Width = width;
 	view_port.Height = height;

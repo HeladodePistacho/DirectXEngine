@@ -19,6 +19,7 @@ public:
 	void ClearRenderTargets(ID3D11DeviceContext* context);
 
 	ID3D11ShaderResourceView* GetShaderResourceView(unsigned int num_view) const;
+	ID3D11SamplerState* GetSamplerState() const { return sampler_state; }
 
 private:
 	unsigned int used_targets = 0;
@@ -26,6 +27,8 @@ private:
 	ID3D11Texture2D* texture_array[D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT];
 	ID3D11RenderTargetView* view_array[D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT];
 	ID3D11ShaderResourceView* resource_view_array[D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT];
+
+	ID3D11SamplerState* sampler_state = nullptr;
 
 	ID3D11DepthStencilView* depth = nullptr;
 	ID3D11Texture2D* depth_texture = nullptr;
