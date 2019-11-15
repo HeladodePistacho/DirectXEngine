@@ -43,16 +43,23 @@ public:
 	Material* GetMaterialByName(std::string name) const;
 	void SetMaterialToModify(Material* current_mat);
 
+	//Test for screeen
+	ShaderProgram* screen_shader = nullptr;
+	Mesh* screen_mesh = nullptr;
+
 private:
 	std::multimap<RESOURCE_TYPE, Resource*> mapped_resources;
 
 	//Test
 	ShaderProgram* mesh_shader = nullptr;
+	
+
 	Mesh* cube_mesh = nullptr;
 
 	void LoadShaders(Render& ren);
 	void LoadCube(Render& ren);
 	void LoadNullTexture(Render& ren);
+	void LoadPlane(Render& ren);
 
 	//Import stuff
 	const char* actual_resource_path = nullptr;

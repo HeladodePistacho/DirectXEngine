@@ -41,6 +41,7 @@ void ResourceManager::Start(Render& ren)
 	//Load Basic meshes
 	LoadShaders(ren);
 	LoadCube(ren);
+	LoadPlane(ren);
 
 	actual_resource_path = "C:/Users/Usuari/Documents/GitHub/CuteEngine/CuteEngine/Resources/Models/Patrick/Patrick.obj";
 	ImportMesh(actual_resource_path, ren);
@@ -97,6 +98,9 @@ void ResourceManager::DrawMaterialEditorUI(Render& ren)
 
 		ImGui::Separator();
 	}
+
+	ImGui::Image(ren.deferred_buffers->GetShaderResourceView(0), ImVec2(100.0f, 100.0f));
+	ImGui::Image(ren.deferred_buffers->GetShaderResourceView(1), ImVec2(100.0f, 100.0f));
 
 	ImGui::End();
 }
@@ -192,6 +196,7 @@ void ResourceManager::ImportMesh(const char* path, Render& ren)
 void ResourceManager::LoadShaders(Render& ren)
 {
 	mesh_shader = new ShaderProgram(ren, L"VertexShader.cso", L"PixelShader.cso");
+	screen_shader = new ShaderProgram(ren, L"ScreenVertexShader.cso", L"ScreenPixelShader.cso");
 }
 
 void ResourceManager::LoadCube(Render& ren)
@@ -206,7 +211,7 @@ void ResourceManager::LoadCube(Render& ren)
 		{ { 1.0f, -1.0f, -1.0f },  { 0.0f, 0.0f, -1.0f }, { 1.0f, 1.0f } },
 
 		//Front
-		{{ -1.0f, -1.0f,  1.0f }, {0.0f, 0.0f, 1.0f},  { 1.0f, 1.0f } },
+		{ { -1.0f, -1.0f,  1.0f }, {0.0f, 0.0f, 1.0f},  { 1.0f, 1.0f } },
 		{ { -1.0f,  1.0f,  1.0f },{ 0.0f, 0.0f, 1.0f },{ 1.0f, 0.0f } },
 		{ { 1.0f,  1.0f,  1.0f }, { 0.0f, 0.0f, 1.0f },{ 0.0f, 0.0f } },
 		{ { 1.0f, -1.0f,  1.0f }, { 0.0f, 0.0f, 1.0f },{ 0.0f, 1.0f } },
@@ -314,6 +319,48 @@ void ResourceManager::LoadNullTexture(Render& ren)
 	null_texture->AddTexture(null_text);
 
 	mapped_resources.insert(std::pair<RESOURCE_TYPE, Resource*>(TEXTURE, null_texture));
+}
+
+void ResourceManager::LoadPlane(Render & ren)
+{
+	std::vector<Vertex> plane_vertexs = 
+	{
+		{ { -1.0f, -1.0f,  0.0f }, { 0.0f, 0.0f, 1.0f }, { 1.0f, 1.0f } },
+		{ { -1.0f,  1.0f,  0.0f }, { 0.0f, 0.0f, 1.0f }, { 1.0f, 0.0f } },
+		{ {  1.0f,  1.0f,  0.0f }, { 0.0f, 0.0f, 1.0f }, { 0.0f, 0.0f } },
+		{ {  1.0f, -1.0f,  0.0f }, { 0.0f, 0.0f, 1.0f }, { 0.0f, 1.0f } },
+	};
+
+	std::vector<unsigned short> indices = { 3, 2, 1, 3, 1, 0 };
+
+	std::vector<D3D11_INPUT_ELEMENT_DESC> layout =
+	{
+		{ "Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "Normal", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(float) * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TextureCoords", 0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(float) * 6, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+	};
+
+	VertexBuffer* new_vertexbuffer = new VertexBuffer(ren, plane_vertexs);
+	IndexBuffer* new_indexbuffer = new IndexBuffer(ren, indices);
+	Topology* new_topology = new Topology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	InputLayout* new_inputlayout = new InputLayout(ren, layout, screen_shader->GetVertexByteCode());
+
+	Submesh* new_submesh = new Submesh();
+
+	new_submesh->AddBind(new_vertexbuffer);
+	new_submesh->AddBind(new_topology);
+	new_submesh->AddBind(new_inputlayout);
+	new_submesh->AddIndices(new_indexbuffer);
+	new_submesh->AddInfo(plane_vertexs.size(), indices.size());
+
+	//std::string name = "Cube Mesh";
+	Mesh* new_mesh = new Mesh((std::string)"/Plane Mesh");
+	new_mesh->AddSubmesh(new_submesh);
+
+	screen_mesh = new_mesh;
+
+	mapped_resources.insert(std::pair<RESOURCE_TYPE, Resource*>(RESOURCE_TYPE::MESH, new_mesh));
+
 }
 
 std::vector<Submesh*> ResourceManager::ProcessNode(const aiScene* scene, aiNode* node, Render& ren)
