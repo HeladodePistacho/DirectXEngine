@@ -18,6 +18,8 @@ public:
 	void SetRenderTargets(ID3D11DeviceContext* context);
 	void ClearRenderTargets(ID3D11DeviceContext* context);
 
+	ID3D11ShaderResourceView* GetShaderResourceView(unsigned int num_view) const;
+
 private:
 	unsigned int used_targets = 0;
 
@@ -51,6 +53,16 @@ public:
 	const Camera& GetCamera() const { return (*render_camera); }
 	void SetCamera(Camera& cam);
 
+	//Deferred Functions
+	void LoadDeferredRenderBuffers();
+	void ClearDeferredBuffers();
+	void SetDeferredRenderBuffers();
+
+	void SetDefaultRenderTarget();
+
+	//Deferred
+	RenderBuffer* deferred_buffers = nullptr;
+
 private:
 	Microsoft::WRL::ComPtr<ID3D11Device> direct_device;
 	Microsoft::WRL::ComPtr<IDXGISwapChain> direct_swap;
@@ -68,6 +80,5 @@ private:
 	void LoadDepthBuffer(int width, int height);
 	void LoadViewport(int width, int height);
 
-	//Deferred
-	RenderBuffer* deferred_buffers = nullptr;
+	
 };

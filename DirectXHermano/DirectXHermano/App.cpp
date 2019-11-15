@@ -43,6 +43,9 @@ int DirectXApp::Start()
 	//Messages queue
 	int get_result = 0;
 
+	//Render settings
+	window.GetRender().LoadDeferredRenderBuffers();
+
 	while (true)
 	{	
 		if (Window::ProcessMessages() != MESSAGE_OK)
@@ -104,7 +107,8 @@ void DirectXApp::Draw(float dt)
 		((window.mouse.GetPosY() / 561.0f) * -2.0f) + 1.0f
 	);
 	
-	scene->Draw(window.GetRender());
+	DoDeferred();
+	
 	scene->DrawUI(*resource_manager);
 	resource_manager->DrawMaterialEditorUI(window.GetRender());
 }
@@ -162,4 +166,21 @@ void DirectXApp::CameraControls()
 	//mouse stuff
 	last_mouse_pos_x = window.mouse.GetPosX();
 	last_mouse_pos_y = window.mouse.GetPosY();
+}
+
+//------------------------------ RENDER STUFF ---------------------------------------
+
+void DirectXApp::DoDeferred()
+{
+	//Set Render Targets
+	window.GetRender().SetDeferredRenderBuffers();
+
+	//Clear Buffers
+	window.GetRender().ClearDeferredBuffers();
+
+	//Draw Geometry
+	scene->Draw(window.GetRender());
+
+	//Return to default
+	window.GetRender().SetDefaultRenderTarget();
 }

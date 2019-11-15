@@ -75,6 +75,30 @@ void Render::SetCamera(Camera & cam)
 	render_camera->needs_update = true;
 }
 
+void Render::SetDeferredRenderBuffers()
+{
+	deferred_buffers->SetRenderTargets(direct_context.Get());
+}
+
+void Render::LoadDeferredRenderBuffers()
+{
+	deferred_buffers = new RenderBuffer(2);
+	deferred_buffers->LoadRenderTargets(direct_device.Get(), view_port.Width, view_port.Height);
+	deferred_buffers->LoadDepth(direct_device.Get(), view_port.Width, view_port.Height);
+}
+
+void Render::ClearDeferredBuffers()
+{
+	deferred_buffers->ClearRenderTargets(direct_context.Get());
+}
+
+void Render::SetDefaultRenderTarget()
+{
+	direct_context->OMSetRenderTargets(1u, direct_render_target.GetAddressOf(), direct_depth);
+	direct_context->RSSetViewports(1, &view_port);
+}
+
+
 void Render::LoadSwapChain(HWND window_handle, int width, int height)
 {
 	//Holds information configuration for D3D
@@ -320,6 +344,14 @@ void RenderBuffer::ClearRenderTargets(ID3D11DeviceContext * context)
 		context->ClearDepthStencilView(depth, D3D11_CLEAR_DEPTH, 1.0f, 0u);
 	}
 	
+}
+
+ID3D11ShaderResourceView* RenderBuffer::GetShaderResourceView(unsigned int num_view) const
+{
+	if (num_view < used_targets)
+	{
+		return resource_view_array[num_view];
+	}
 }
 
 
