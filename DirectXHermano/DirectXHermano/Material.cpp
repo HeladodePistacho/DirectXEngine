@@ -21,7 +21,7 @@ void Material::SetAlbedoTexture(TextureResource * new_albedo)
 		albedo_texture = new_albedo;
 
 		Texture* tmp = albedo_texture->GetTextureBindable();
-		if (tmp->IsNull())
+		if (tmp == nullptr || tmp->IsNull())
 		{
 			use_only_colors.components[0] = 1.0f;
 			needs_update = true;
