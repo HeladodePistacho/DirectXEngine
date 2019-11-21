@@ -7,7 +7,8 @@ class VertexShader : public Bindable
 public:
 	VertexShader(Render& ren, LPCWSTR name)
 	{
-		if (FAILED(D3DReadFileToBlob(name, &byte_code)))
+		HRESULT result = D3DReadFileToBlob(name, &byte_code);
+		if (FAILED(result))
 		{
 			//custom_exception error("RENDER ERROR", "VERTEX SHADER FAILED TO LOAD");
 			//throw error;
@@ -43,7 +44,8 @@ class PixelShader : public Bindable
 public:
 	PixelShader(Render& ren, LPCWSTR name)
 	{
-		if (FAILED(D3DReadFileToBlob(name, &byte_code)))
+		HRESULT result = D3DReadFileToBlob(name, &byte_code);
+		if (FAILED(result))
 		{
 			//custom_exception error("RENDER ERROR", "PIXEL SHADER FAILED TO LOAD");
 			//throw error;
