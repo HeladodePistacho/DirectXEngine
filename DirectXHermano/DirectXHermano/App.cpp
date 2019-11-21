@@ -62,9 +62,7 @@ int DirectXApp::Start()
 
 void DirectXApp::BeginFrame()
 {
-	window.GetRender().ClearBuffer(0.5f, 0.5f, 0.5f);
-
-	//Begin Frame
+	//imgui Begin Frame
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
@@ -100,15 +98,12 @@ void DirectXApp::EndFrame()
 
 void DirectXApp::Draw(float dt)
 {
-	resource_manager->GetShader().Bind(window.GetRender());
-	window.GetRender().DrawTestTriangle(
-		timer.Peek(),
-		((window.mouse.GetPosX() / 784.0f) * 2.0f) - 1.0f,
-		((window.mouse.GetPosY() / 561.0f) * -2.0f) + 1.0f
-	);
-	
+	//Create Deferred textures
 	DoDeferred();
-	
+
+	//Draw screen plane
+	DrawScreen();
+
 	scene->DrawUI(*resource_manager);
 	resource_manager->DrawMaterialEditorUI(window.GetRender());
 }
@@ -178,9 +173,30 @@ void DirectXApp::DoDeferred()
 	//Clear Buffers
 	window.GetRender().ClearDeferredBuffers();
 
+	//Bind mesh Shader
+	resource_manager->GetShader().Bind(window.GetRender());
+
 	//Draw Geometry
 	scene->Draw(window.GetRender());
 
 	//Return to default
 	window.GetRender().SetDefaultRenderTarget();
+}
+
+void DirectXApp::DrawScreen()
+{
+	//Clear main buffer
+	window.GetRender().ClearBuffer(0.5f, 0.5f, 0.5f);
+
+	//Bind screen shader
+	resource_manager->screen_shader->Bind(window.GetRender());
+
+	//Bind Color texture
+	ID3D11ShaderResourceView* tmp_texture = window.GetRender().deferred_buffers->GetShaderResourceView(0);
+	window.GetRender().direct_context->PSSetShaderResources(0u, 1u, &tmp_texture);
+
+	ID3D11SamplerState* tmp_sampler = window.GetRender().deferred_buffers->GetSamplerState();
+	window.GetRender().direct_context->PSSetSamplers(0u, 1u, &tmp_sampler);
+
+	resource_manager->screen_mesh->DrawAll(window.GetRender());
 }

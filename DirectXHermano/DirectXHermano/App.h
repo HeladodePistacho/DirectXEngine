@@ -37,5 +37,5 @@ private:
 
 	//Render Stuff
 	void DoDeferred();
-	void DrawGeometry();
+	void DrawScreen();
 };
