@@ -41,6 +41,11 @@ private:
 
 	//ImGui
 	void DrawApplicaionUI();
+	void DrawSceneUI();
+	void DrawMaterialEditorUI();
+
 	bool show_camera_window = false;
 	bool show_render_window = false;
+	bool show_scene_window = false;
+	bool show_material_editor = false;
 };

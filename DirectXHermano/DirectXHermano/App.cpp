@@ -104,9 +104,10 @@ void DirectXApp::Draw(float dt)
 	//Draw screen plane
 	DrawScreen();
 
+	//Draw UI
 	DrawApplicaionUI();
-	scene->DrawUI(*resource_manager);
-	resource_manager->DrawMaterialEditorUI(window.GetRender());
+	DrawSceneUI();
+	DrawMaterialEditorUI();
 }
 
 void DirectXApp::CameraControls()
@@ -203,6 +204,8 @@ void DirectXApp::DrawScreen()
 	resource_manager->screen_mesh->DrawAll(window.GetRender());
 }
 
+//------------------------------ UI -------------------------------------------------
+
 void DirectXApp::DrawApplicaionUI()
 {
 	if (ImGui::BeginMainMenuBar())
@@ -210,10 +213,14 @@ void DirectXApp::DrawApplicaionUI()
 
 		if (ImGui::BeginMenu("Application"))
 		{
-			if (ImGui::MenuItem("Camera"))
+			if (ImGui::MenuItem("Camera Window"))
 				show_camera_window = !show_camera_window;
 
-			ImGui::MenuItem("Render");
+			if (ImGui::MenuItem("Material Editor Window"))
+				show_material_editor = !show_material_editor;
+
+			if (ImGui::MenuItem("Scene Window"))
+				show_scene_window = !show_scene_window;
 
 			ImGui::EndMenu();
 		}
@@ -221,4 +228,16 @@ void DirectXApp::DrawApplicaionUI()
 
 		ImGui::EndMainMenuBar();
 	}
+}
+
+void DirectXApp::DrawSceneUI()
+{
+	if(show_scene_window)
+		scene->DrawUI(*resource_manager);
+}
+
+void DirectXApp::DrawMaterialEditorUI()
+{
+	if(show_material_editor)
+		resource_manager->DrawMaterialEditorUI(window.GetRender());
 }
