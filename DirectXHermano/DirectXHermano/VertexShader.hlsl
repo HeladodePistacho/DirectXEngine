@@ -7,7 +7,7 @@ struct VSIN
 
 struct VSOUT
 {
-	float3 color : Color;
+	float3 normal : Normal;
 	float4 position : SV_Position;
 	float2 texture_coords : Texcoord0;
 };
@@ -26,7 +26,7 @@ VSOUT main(VSIN vertex_shader_in)
 
 	VSOUT vertex_out;
 	vertex_out.position = mul(float4(vertex_shader_in.position, 1.0f), model_view_projection);
-	vertex_out.color = float3(vertex_shader_in.normal);
+	vertex_out.normal = float3(vertex_shader_in.normal);
 	vertex_out.texture_coords = vertex_shader_in.tex_coords;
 
 	return vertex_out;

@@ -1,7 +1,7 @@
 
 struct VSOUT
 {
-	float3 color : Color;
+	float3 normal : Normal;
 	float4 position : SV_Position;
 	float2 texture_coords : Texcoord0;
 };
@@ -9,7 +9,7 @@ struct VSOUT
 struct PSOUT
 {
 	float4 diffuse_color : SV_Target0;
-	float4 red_color : SV_Target1;
+	float4 normals : SV_Target1;
 };
 
 Texture2D albedo : register(t0);
@@ -34,7 +34,7 @@ PSOUT main(VSOUT vertex_out)
 		pixel_shader_out.diffuse_color = albedo_color;
 	else pixel_shader_out.diffuse_color = (albedo.Sample(samplerstate, vertex_out.texture_coords) * albedo_color);
 
-	pixel_shader_out.red_color = float4((albedo.Sample(samplerstate, vertex_out.texture_coords) * albedo_color).x, 0.0f, 0.0f, 1.0f);
+	pixel_shader_out.normals = float4(vertex_out.normal, 1.0f);
 
 	return pixel_shader_out;
 	//return float4(vertex_out.texture_coords.x, vertex_out.texture_coords.y, 0.0f, 1.0f);

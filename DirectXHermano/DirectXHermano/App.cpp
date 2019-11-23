@@ -203,6 +203,11 @@ void DirectXApp::DrawScreen()
 		tmp_texture = window.GetRender().deferred_buffers->GetShaderResourceView(0);
 		break;
 
+	case 1:
+		//Normals
+		tmp_texture = window.GetRender().deferred_buffers->GetShaderResourceView(1);
+		break;
+
 	case 2:
 		//Depth
 		tmp_texture = window.GetRender().deferred_buffers->GetDepthView();
@@ -243,6 +248,9 @@ void DirectXApp::DrawApplicaionUI()
 			{
 				if (ImGui::Selectable("Albedo", false, ImGuiSelectableFlags_::ImGuiSelectableFlags_None, ImVec2(100, 0)))
 					texture_type = 0;
+
+				if (ImGui::Selectable("Normals", false, ImGuiSelectableFlags_::ImGuiSelectableFlags_None, ImVec2(100, 0)))
+					texture_type = 1;
 
 				if (ImGui::Selectable("Depth", false, ImGuiSelectableFlags_::ImGuiSelectableFlags_None, ImVec2(100, 0)))
 					texture_type = 2;
