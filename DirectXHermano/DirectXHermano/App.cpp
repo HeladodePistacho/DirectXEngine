@@ -104,6 +104,7 @@ void DirectXApp::Draw(float dt)
 	//Draw screen plane
 	DrawScreen();
 
+	DrawApplicaionUI();
 	scene->DrawUI(*resource_manager);
 	resource_manager->DrawMaterialEditorUI(window.GetRender());
 }
@@ -156,7 +157,8 @@ void DirectXApp::CameraControls()
 		scene_camera->Rotate(-mouse_delta_y, -mouse_delta_x);
 	}
 
-	scene_camera->DrawUI();
+	if(show_camera_window)
+		scene_camera->DrawUI();
 
 	//mouse stuff
 	last_mouse_pos_x = window.mouse.GetPosX();
@@ -192,11 +194,31 @@ void DirectXApp::DrawScreen()
 	resource_manager->screen_shader->Bind(window.GetRender());
 
 	//Bind Color texture
-	ID3D11ShaderResourceView* tmp_texture = window.GetRender().deferred_buffers->GetShaderResourceView(0);
+	ID3D11ShaderResourceView* tmp_texture = window.GetRender().deferred_buffers->GetDepthView();
 	window.GetRender().direct_context->PSSetShaderResources(0u, 1u, &tmp_texture);
 
 	ID3D11SamplerState* tmp_sampler = window.GetRender().deferred_buffers->GetSamplerState();
 	window.GetRender().direct_context->PSSetSamplers(0u, 1u, &tmp_sampler);
 
 	resource_manager->screen_mesh->DrawAll(window.GetRender());
+}
+
+void DirectXApp::DrawApplicaionUI()
+{
+	if (ImGui::BeginMainMenuBar())
+	{
+
+		if (ImGui::BeginMenu("Application"))
+		{
+			if (ImGui::MenuItem("Camera"))
+				show_camera_window = !show_camera_window;
+
+			ImGui::MenuItem("Render");
+
+			ImGui::EndMenu();
+		}
+		
+
+		ImGui::EndMainMenuBar();
+	}
 }

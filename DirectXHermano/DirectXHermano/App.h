@@ -38,4 +38,9 @@ private:
 	//Render Stuff
 	void DoDeferred();
 	void DrawScreen();
+
+	//ImGui
+	void DrawApplicaionUI();
+	bool show_camera_window = false;
+	bool show_render_window = false;
 };

@@ -33,7 +33,7 @@ Camera& Camera::operator=(const Camera & cam)
 void Camera::DrawUI()
 {
 	bool open = true;
-	ImGui::Begin("Camera Options", &open, ImGuiWindowFlags_::ImGuiWindowFlags_NoMove);
+	ImGui::Begin("Camera Options", &open);
 
 	ImGui::Text("Yaw: %.2f, Pitch: %.2f, Roll: %.2f", DirectX::XMConvertToDegrees(yaw), DirectX::XMConvertToDegrees(pitch), DirectX::XMConvertToDegrees(roll));
 
