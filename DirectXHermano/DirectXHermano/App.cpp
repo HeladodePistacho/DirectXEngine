@@ -195,7 +195,19 @@ void DirectXApp::DrawScreen()
 	resource_manager->screen_shader->Bind(window.GetRender());
 
 	//Bind Color texture
-	ID3D11ShaderResourceView* tmp_texture = window.GetRender().deferred_buffers->GetDepthView();
+	ID3D11ShaderResourceView* tmp_texture = nullptr;
+	switch (texture_type)
+	{
+	case 0:
+		//Albedo
+		tmp_texture = window.GetRender().deferred_buffers->GetShaderResourceView(0);
+		break;
+
+	case 2:
+		//Depth
+		tmp_texture = window.GetRender().deferred_buffers->GetDepthView();
+		break;
+	} 
 	window.GetRender().direct_context->PSSetShaderResources(0u, 1u, &tmp_texture);
 
 	ID3D11SamplerState* tmp_sampler = window.GetRender().deferred_buffers->GetSamplerState();
@@ -221,6 +233,22 @@ void DirectXApp::DrawApplicaionUI()
 
 			if (ImGui::MenuItem("Scene Window"))
 				show_scene_window = !show_scene_window;
+
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("Render"))
+		{
+			if (ImGui::BeginMenu("Visible Texture"))
+			{
+				if (ImGui::Selectable("Albedo", false, ImGuiSelectableFlags_::ImGuiSelectableFlags_None, ImVec2(100, 0)))
+					texture_type = 0;
+
+				if (ImGui::Selectable("Depth", false, ImGuiSelectableFlags_::ImGuiSelectableFlags_None, ImVec2(100, 0)))
+					texture_type = 2;
+				
+				ImGui::EndMenu();
+			}
 
 			ImGui::EndMenu();
 		}
