@@ -309,17 +309,18 @@ bool RenderBuffer::LoadDepth(ID3D11Device * device, int width, int height)
 	HRESULT result;
 	D3D11_TEXTURE2D_DESC depth_texture_descriptor = {};
 	D3D11_DEPTH_STENCIL_VIEW_DESC depth_descriptor = {};
+	D3D11_SHADER_RESOURCE_VIEW_DESC depth_resource_descriptor = {};
 
 	//Load the depth texture
 	depth_texture_descriptor.Width = width;
 	depth_texture_descriptor.Height = height;
 	depth_texture_descriptor.MipLevels = 1u;
 	depth_texture_descriptor.ArraySize = 1u;
-	depth_texture_descriptor.Format = DXGI_FORMAT_D32_FLOAT;
+	depth_texture_descriptor.Format = DXGI_FORMAT_R16_TYPELESS; //DXGI_FORMAT_R24G8_TYPELESS; //DXGI_FORMAT_D32_FLOAT;
 	depth_texture_descriptor.SampleDesc.Count = 1u;
 	depth_texture_descriptor.SampleDesc.Quality = 0u;
 	depth_texture_descriptor.Usage = D3D11_USAGE_DEFAULT;
-	depth_texture_descriptor.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	depth_texture_descriptor.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
 
 	result = device->CreateTexture2D(&depth_texture_descriptor, nullptr, &depth_texture);
 
@@ -327,11 +328,27 @@ bool RenderBuffer::LoadDepth(ID3D11Device * device, int width, int height)
 		return false;
 
 	//Load the Depth view
-	depth_descriptor.Format = depth_texture_descriptor.Format;
+	depth_descriptor.Format = DXGI_FORMAT_D16_UNORM;//DXGI_FORMAT_D24_UNORM_S8_UINT;
 	depth_descriptor.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	depth_descriptor.Texture2D.MipSlice = 0;
 
 	result = device->CreateDepthStencilView(depth_texture, &depth_descriptor, &depth);
+
+	if (FAILED(result))
+		return false;
+
+	//Load the depth resource view
+	depth_resource_descriptor.Format = DXGI_FORMAT_R16_UNORM;//DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+	depth_resource_descriptor.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	depth_resource_descriptor.Texture2D.MipLevels = 1;
+	depth_resource_descriptor.Texture2D.MostDetailedMip = 0;
+
+	result = device->CreateShaderResourceView(depth_texture, &depth_resource_descriptor, &depth_view);
+
+	if (FAILED(result))
+		return false;
+
+	return true;
 }
 
 void RenderBuffer::SetRenderTargets(ID3D11DeviceContext * context)
