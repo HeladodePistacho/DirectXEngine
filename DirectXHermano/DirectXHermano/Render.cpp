@@ -82,7 +82,10 @@ void Render::SetDeferredRenderBuffers()
 
 void Render::LoadDeferredRenderBuffers()
 {
-	deferred_buffers = new RenderBuffer(2);
+	//0 -> difuse color
+	//1 -> normals
+	//2 -> position
+	deferred_buffers = new RenderBuffer(3);
 	deferred_buffers->LoadRenderTargets(direct_device.Get(), view_port.Width, view_port.Height);
 	deferred_buffers->LoadDepth(direct_device.Get(), view_port.Width, view_port.Height);
 }

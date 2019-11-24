@@ -209,6 +209,11 @@ void DirectXApp::DrawScreen()
 		break;
 
 	case 2:
+		//Position
+		tmp_texture = window.GetRender().deferred_buffers->GetShaderResourceView(2);
+		break;
+
+	case 3:
 		//Depth
 		tmp_texture = window.GetRender().deferred_buffers->GetDepthView();
 		break;
@@ -252,8 +257,11 @@ void DirectXApp::DrawApplicaionUI()
 				if (ImGui::Selectable("Normals", false, ImGuiSelectableFlags_::ImGuiSelectableFlags_None, ImVec2(100, 0)))
 					texture_type = 1;
 
-				if (ImGui::Selectable("Depth", false, ImGuiSelectableFlags_::ImGuiSelectableFlags_None, ImVec2(100, 0)))
+				if (ImGui::Selectable("Position", false, ImGuiSelectableFlags_::ImGuiSelectableFlags_None, ImVec2(100, 0)))
 					texture_type = 2;
+
+				if (ImGui::Selectable("Depth", false, ImGuiSelectableFlags_::ImGuiSelectableFlags_None, ImVec2(100, 0)))
+					texture_type = 3;
 				
 				ImGui::EndMenu();
 			}
