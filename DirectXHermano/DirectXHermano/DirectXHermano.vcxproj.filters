@@ -126,6 +126,9 @@
     <ClCompile Include="TextureResource.cpp">
       <Filter>Archivos de código fuente\Resources</Filter>
     </ClCompile>
+    <ClCompile Include="LightComponent.cpp">
+      <Filter>Archivos de código fuente\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">
@@ -214,6 +217,9 @@
     </ClInclude>
     <ClInclude Include="Preset.h">
       <Filter>Archivos de encabezado\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="LightComponent.h">
+      <Filter>Archivos de encabezado\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
