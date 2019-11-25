@@ -27,7 +27,10 @@ void LightComponent::DrawUI()
 		ImGui::Separator();
 
 		ImGui::Text("Light Color: ");
-		ImGui::ColorPicker3("##Light color picker", light_color, ImGuiColorEditFlags_::ImGuiColorEditFlags_DisplayRGB);
+
+		ImGui::PushItemWidth(120.0f);
+		ImGui::ColorPicker3("##Light color picker", light_color, ImGuiColorEditFlags_::ImGuiColorEditFlags_DisplayRGB | ImGuiColorEditFlags_::ImGuiColorEditFlags_NoSidePreview);
+		ImGui::PopItemWidth();
 
 		ImGui::TreePop();
 	}

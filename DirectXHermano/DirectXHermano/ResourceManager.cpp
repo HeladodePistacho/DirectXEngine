@@ -93,15 +93,14 @@ void ResourceManager::DrawMaterialEditorUI(Render& ren)
 		}
 
 		ImGui::Text("Color:"); ImGui::SameLine();
-		if (ImGui::ColorEdit4(" ##difuse color", material_to_modify->GetColor(TEXTURE_TYPE::ALBEDO)))
+
+		ImGui::PushItemWidth(120.0f);
+		if (ImGui::ColorPicker4(" ##difuse color", material_to_modify->GetColor(TEXTURE_TYPE::ALBEDO), ImGuiColorEditFlags_::ImGuiColorEditFlags_RGB | ImGuiColorEditFlags_::ImGuiColorEditFlags_NoSidePreview))
 			material_to_modify->UpdateColor(TEXTURE_TYPE::ALBEDO, ren);
 
+		ImGui::PopItemWidth();
 		ImGui::Separator();
 	}
-
-	ImGui::Image(ren.deferred_buffers->GetShaderResourceView(0), ImVec2(100.0f, 100.0f));
-	ImGui::Image(ren.deferred_buffers->GetShaderResourceView(1), ImVec2(100.0f, 100.0f));
-
 	ImGui::End();
 }
 
