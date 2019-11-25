@@ -12,9 +12,15 @@ class LightComponent
 public:
 	LightComponent(LIGHT_TYPE);
 
+	//UI stuff
+	void DrawUI();
+	
 private:
 	LIGHT_TYPE light_type;
 	float light_color[3];
 
 	ConstBuffer<float>* light_buffer;
+
+	//UI stuff
+	const char* LightTypeToChar();
 };

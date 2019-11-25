@@ -107,16 +107,20 @@ void Entity::DrawUI(ResourceManager& res)
 	ImGui::Text(name.c_str());
 
 	transform->DrawTransformUI();
+	ImGui::Separator();
+
 	mesh_render->DrawMeshRendererUI(res);
 
+	ImGui::Separator();
 	if (!light_component)
 	{
-		if (ImGui::Button("Add Light Component"))
+		if (ImGui::Button("     Add Light Component     "))
 		{
 			light_component = new LightComponent(LIGHT_TYPE::DIRECTIONAL_LIGHT);
 			is_light = true;
 		}
 	}
+	else light_component->DrawUI();
 }
 
 
