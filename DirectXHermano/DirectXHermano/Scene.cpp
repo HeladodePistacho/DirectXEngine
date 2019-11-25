@@ -105,5 +105,11 @@ void Scene::UpdateEntities()
 	for (std::vector<Entity*>::iterator iter = entities.begin(); iter != entities.end(); iter++)
 	{
 		(*iter)->Update();
+
+		if ((*iter)->IsLight())
+		{
+			(*iter)->AddLight();
+			lights.push_back((*iter));
+		}
 	}
 }

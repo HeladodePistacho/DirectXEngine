@@ -24,7 +24,9 @@ public:
 	void DrawUI(ResourceManager&);
 private:
 	Entity* selected_entity = nullptr;
+
 	std::vector<Entity*> entities;
+	std::vector<Entity*> lights;
 
 	void DeleteEntities();
 	void UpdateEntities();

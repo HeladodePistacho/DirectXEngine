@@ -4,6 +4,7 @@
 #include "ConstBuffers.h"
 
 class MeshRenderer;
+class LightComponent;
 class ResourceManager;
 
 class Transform
@@ -50,6 +51,9 @@ public:
 	bool IsSelected() const { return is_selected; }
 	void SetSelected(bool selected) { is_selected = selected; }
 
+	bool IsLight() const { return is_light; }
+	void AddLight() { is_light = false; }
+
 	void DrawUI(ResourceManager&);
 
 	Transform* GetTransform() { return transform; }
@@ -58,8 +62,10 @@ private:
 
 	bool needs_delete = false;
 	bool is_selected = false;
+	bool is_light = false;
 
 	Transform* transform = nullptr;
 	MeshRenderer* mesh_render = nullptr;
+	LightComponent* light_component = nullptr;
 
 };

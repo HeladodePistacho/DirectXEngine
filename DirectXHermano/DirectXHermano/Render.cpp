@@ -101,7 +101,6 @@ void Render::SetDefaultRenderTarget()
 	direct_context->RSSetViewports(1, &view_port);
 }
 
-
 void Render::LoadSwapChain(HWND window_handle, int width, int height)
 {
 	//Holds information configuration for D3D
