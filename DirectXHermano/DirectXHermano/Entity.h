@@ -19,15 +19,15 @@ public:
 	void DrawTransformUI();
 
 	bool NeedsUpdate() const { return needs_update; }
-	DirectX::XMMATRIX GetMatrix() { needs_update = false;  return model_matrix; }
+	DirectX::XMMATRIX GetMatrix() { needs_update = false;  return DirectX::XMLoadFloat4x4(&model_matrix); }
 private:
-	DirectX::XMMATRIX model_matrix;
+	DirectX::XMFLOAT4X4 model_matrix;
 
 	DirectX::XMFLOAT3 position;
 	DirectX::XMFLOAT3 rotation_euler;
 	DirectX::XMFLOAT3 scale;
 
-	DirectX::XMVECTOR rotation_quaternion;
+	DirectX::XMFLOAT4 rotation_quaternion;
 
 	bool needs_update = false;
 };

@@ -6,7 +6,7 @@
 #include "LightComponent.h"
 
 //----------------------------------- TRANSFORM ------------------------------------------------
-Transform::Transform() : position(0.0f, 0.0f, 0.0f), rotation_euler(0.0f, 0.0f, 0.0f), scale(1.0f, 1.0f, 1.0f), rotation_quaternion(DirectX::XMQuaternionRotationRollPitchYaw(rotation_euler.x, rotation_euler.y, rotation_euler.z))
+Transform::Transform() : position(0.0f, 0.0f, 0.0f), rotation_euler(0.0f, 0.0f, 0.0f), scale(1.0f, 1.0f, 1.0f)
 {
 	BuildMatrix();
 }
@@ -21,13 +21,14 @@ void Transform::Update()
 
 void Transform::BuildMatrix()
 {
-	rotation_quaternion = DirectX::XMQuaternionRotationRollPitchYaw(rotation_euler.x, rotation_euler.y, rotation_euler.z);
-
-	model_matrix = DirectX::XMMatrixTranspose(
-		DirectX::XMMatrixRotationQuaternion(rotation_quaternion) *
-		DirectX::XMMatrixScaling(scale.x, scale.y, scale.z) * 
-		DirectX::XMMatrixTranslation(position.x, position.y, position.z)
-		);
+	DirectX::XMStoreFloat4(&rotation_quaternion, DirectX::XMQuaternionRotationRollPitchYaw(rotation_euler.x, rotation_euler.y, rotation_euler.z));
+	DirectX::XMStoreFloat4x4(&model_matrix,
+		DirectX::XMMatrixTranspose(
+			DirectX::XMMatrixRotationQuaternion(DirectX::XMLoadFloat4(&rotation_quaternion)) *
+			DirectX::XMMatrixScaling(scale.x, scale.y, scale.z) *
+			DirectX::XMMatrixTranslation(position.x, position.y, position.z)
+		)
+	);
 }
 
 void Transform::DrawTransformUI()
