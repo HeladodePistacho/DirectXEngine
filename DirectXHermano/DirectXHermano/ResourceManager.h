@@ -62,9 +62,11 @@ private:
 	void LoadCube(Render& ren);
 	void LoadNullTexture(Render& ren);
 	void LoadPlane(Render& ren);
+	void LoadDefaultMaterial(Render& ren);
 
 	//Import stuff
 	const char* actual_resource_path = nullptr;
+	char my_path[256];
 
 	//Mesh load stuff
 	void ImportMesh(const char* path, Render& ren);

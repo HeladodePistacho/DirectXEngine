@@ -38,16 +38,35 @@ ResourceManager::~ResourceManager()
 
 void ResourceManager::Start(Render& ren)
 {
+	//Current path
+	GetCurrentDirectory(256, my_path);
+
 	//Load Basic meshes
 	LoadShaders(ren);
 	LoadCube(ren);
 	LoadPlane(ren);
 
-	actual_resource_path = "C:/Users/Usuari/Documents/GitHub/CuteEngine/CuteEngine/Resources/Models/Patrick/Patrick.obj";
-	ImportMesh(actual_resource_path, ren);
-
 	//Load Null Texture
 	LoadNullTexture(ren);
+
+	//Load Default material
+	LoadDefaultMaterial(ren);
+
+	//Load some Meshes
+	std::string model = my_path;
+	model += "/3DModels/Patrick/Patrick.obj";
+	actual_resource_path = model.c_str();
+	ImportMesh(actual_resource_path, ren);
+
+	model = my_path;
+	model += "/3DModels/PalmTree/PalmTree.obj";
+	actual_resource_path = model.c_str();
+	ImportMesh(actual_resource_path, ren);
+
+	model = my_path;
+	model += "/3DModels/sibenik/sibenik.obj";
+	actual_resource_path = model.c_str();
+	ImportMesh(actual_resource_path, ren);
 }
 
 void ResourceManager::DrawMaterialEditorUI(Render& ren)
@@ -194,9 +213,9 @@ void ResourceManager::ImportMesh(const char* path, Render& ren)
 
 void ResourceManager::LoadShaders(Render& ren)
 {
-	mesh_shader = new ShaderProgram(ren, L"VertexShader.cso", L"PixelShader.cso");
-	screen_shader = new ShaderProgram(ren, L"ScreenVertexShader.cso", L"ScreenPixelShader.cso");
-	light_shader = new ShaderProgram(ren, L"ScreenVertexShader.cso", L"LightPixelShader.cso");
+	mesh_shader = new ShaderProgram(ren, L"Shaders/VertexShader.cso", L"Shaders/PixelShader.cso");
+	screen_shader = new ShaderProgram(ren, L"Shaders/ScreenVertexShader.cso", L"Shaders/ScreenPixelShader.cso");
+	light_shader = new ShaderProgram(ren, L"Shaders/ScreenVertexShader.cso", L"Shaders/LightPixelShader.cso");
 }
 
 void ResourceManager::LoadCube(Render& ren)
@@ -287,33 +306,15 @@ void ResourceManager::LoadCube(Render& ren)
 	Mesh* new_mesh = new Mesh((std::string)"/Cube Mesh");
 	new_mesh->AddSubmesh(new_submesh);
 
-	//IMAGE TESST
-	//actual_resource_path = "C:/Users/Usuari/Desktop/unknown.png";
-	actual_resource_path = "C:/Users/Th_Sola/Desktop/GameDev/uri.png";
-	Texture* test_text = ImportImage("uri.png", ren);
-	Sampler* test_sampler = new Sampler(ren);
-
-	//TextureResource* harambe_texture = new TextureResource("/Harambe.png");
-	TextureResource* harambe_texture = new TextureResource("/Uri.png");
-	harambe_texture->AddTexture(test_text);
-	harambe_texture->AddSampler(test_sampler);
-
-	Material* harambe_material = new Material("/Harambe_Material");
-	harambe_material->InitColorBuffer(ren);
-	harambe_material->SetAlbedoTexture(harambe_texture);
-
 	std::pair<RESOURCE_TYPE, Resource*> map_element_mesh = { RESOURCE_TYPE::MESH, new_mesh };
-	std::pair<RESOURCE_TYPE, Resource*> map_element_texture = { RESOURCE_TYPE::TEXTURE, harambe_texture };
-	std::pair<RESOURCE_TYPE, Resource*> map_element_material = { RESOURCE_TYPE::MATERIAL, harambe_material };
 
 	mapped_resources.insert(map_element_mesh);
-	mapped_resources.insert(map_element_texture);
-	mapped_resources.insert(map_element_material);
+
 }
 
 void ResourceManager::LoadNullTexture(Render& ren)
 {
-	TextureResource* null_texture = new TextureResource("/Null Texture");
+	TextureResource* null_texture = new TextureResource("/No Texture");
 
 	Texture* null_text = new Texture(ren, nullptr, 0, 0, 0);
 	null_texture->AddTexture(null_text);
@@ -361,6 +362,15 @@ void ResourceManager::LoadPlane(Render & ren)
 
 	mapped_resources.insert(std::pair<RESOURCE_TYPE, Resource*>(RESOURCE_TYPE::MESH, new_mesh));
 
+}
+
+void ResourceManager::LoadDefaultMaterial(Render & ren)
+{
+	Material* default_material = new Material("/Default");
+	default_material->InitColorBuffer(ren);
+	default_material->SetAlbedoTexture((TextureResource*)GetResourceByName("No Texture", RESOURCE_TYPE::TEXTURE));
+
+	mapped_resources.insert(std::pair<RESOURCE_TYPE, Resource*>(MATERIAL, default_material));
 }
 
 std::vector<Submesh*> ResourceManager::ProcessNode(const aiScene* scene, aiNode* node, Render& ren)

@@ -80,16 +80,6 @@ void Render::SetDeferredRenderBuffers()
 	deferred_buffers->SetRenderTargets(direct_context.Get());
 }
 
-void Render::LoadDeferredRenderBuffers()
-{
-	//0 -> difuse color
-	//1 -> normals
-	//2 -> position
-	deferred_buffers = new RenderBuffer(3);
-	deferred_buffers->LoadRenderTargets(direct_device.Get(), view_port.Width, view_port.Height);
-	deferred_buffers->LoadDepth(direct_device.Get(), view_port.Width, view_port.Height);
-}
-
 void Render::ClearDeferredBuffers()
 {
 	deferred_buffers->ClearRenderTargets(direct_context.Get());
@@ -143,9 +133,15 @@ void Render::LoadSwapChain(HWND window_handle, int width, int height)
 	}
 }
 
-void Render::LoadRenderTargets(int widht, int height)
+void Render::LoadRenderTargets(int width, int height)
 {
-
+	//0 -> difuse color
+	//1 -> normals
+	//2 -> position
+	//3 -> Shaded scene
+	deferred_buffers = new RenderBuffer(4);
+	deferred_buffers->LoadRenderTargets(direct_device.Get(), width, height);
+	deferred_buffers->LoadDepth(direct_device.Get(), width, height);
 }
 
 void Render::LoadDepthBuffer(int width, int height)

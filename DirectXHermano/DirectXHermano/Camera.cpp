@@ -40,7 +40,7 @@ void Camera::DrawUI()
 	if (ImGui::SliderFloat("Z_Near", &z_near, 0.05f, 1.0f, "%.1f"))
 		needs_update = true;
 
-	if (ImGui::SliderFloat("Z_Far", &z_far, 10.0f, 100.0f, "%.1f"))
+	if (ImGui::SliderFloat("Z_Far", &z_far, 10.0f, 300.0f, "%.1f"))
 		needs_update = true;
 
 	if (ImGui::SliderFloat("Field Of View", &fov, (2.0f / 9.0f) * DirectX::XM_PI, (2.0f / 3.0f) * DirectX::XM_PI, "%.1f"))

@@ -49,6 +49,8 @@ private:
 
 	bool show_camera_window = false;
 	bool show_render_window = false;
-	bool show_scene_window = false;
-	bool show_material_editor = false;
+	bool show_scene_window = true;
+	bool show_material_editor = true;
+
+	float framerate_ms = 0.0f;
 };

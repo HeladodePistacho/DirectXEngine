@@ -59,6 +59,8 @@ int DirectXApp::Start()
 
 void DirectXApp::BeginFrame()
 {
+	timer.Mark();
+
 	//imgui Begin Frame
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
@@ -91,6 +93,9 @@ void DirectXApp::EndFrame()
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
 	window.GetRender().EndFrame();
+
+	
+	framerate_ms = timer.Peek();
 }
 
 void DirectXApp::Draw(float dt)
@@ -229,7 +234,6 @@ void DirectXApp::DrawApplicaionUI()
 {
 	if (ImGui::BeginMainMenuBar())
 	{
-
 		if (ImGui::BeginMenu("Application"))
 		{
 			if (ImGui::MenuItem("Camera Window"))
@@ -266,6 +270,8 @@ void DirectXApp::DrawApplicaionUI()
 			ImGui::EndMenu();
 		}
 		
+		ImGui::Text("Frame MS: %.4f", framerate_ms);
+		ImGui::Text("Framrate: %i",(int)(1.0f / framerate_ms));
 
 		ImGui::EndMainMenuBar();
 	}
