@@ -43,9 +43,6 @@ int DirectXApp::Start()
 	//Messages queue
 	int get_result = 0;
 
-	//Render settings
-	window.GetRender().LoadDeferredRenderBuffers();
-
 	while (true)
 	{	
 		if (Window::ProcessMessages() != MESSAGE_OK)

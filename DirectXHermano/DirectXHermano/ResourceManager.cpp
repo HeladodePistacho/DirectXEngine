@@ -196,6 +196,7 @@ void ResourceManager::LoadShaders(Render& ren)
 {
 	mesh_shader = new ShaderProgram(ren, L"VertexShader.cso", L"PixelShader.cso");
 	screen_shader = new ShaderProgram(ren, L"ScreenVertexShader.cso", L"ScreenPixelShader.cso");
+	light_shader = new ShaderProgram(ren, L"ScreenVertexShader.cso", L"LightPixelShader.cso");
 }
 
 void ResourceManager::LoadCube(Render& ren)
