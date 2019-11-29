@@ -94,6 +94,7 @@ void DirectXApp::EndFrame()
 
 
 	window.GetRender().EndFrame();
+	end_frame_time = render_timer.Peek();
 
 	framerate_ms = timer.Peek();
 }

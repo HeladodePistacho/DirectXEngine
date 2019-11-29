@@ -46,7 +46,7 @@ void Render::EndFrame()
 	HRESULT hr;
 
 	//Swaps buffers -> 1u = 60fps, 2u = 30fps
-	if (FAILED(hr = direct_swap->Present(1u, 0u)))
+	if (FAILED(hr = direct_swap->Present(0u, 0u)))
 	{
 		//custom_exception error("","");
 		//if (hr == DXGI_ERROR_DEVICE_REMOVED)
@@ -104,10 +104,10 @@ void Render::LoadSwapChain(HWND window_handle, int width, int height)
 	descriptor.SampleDesc.Count = 1;
 	descriptor.SampleDesc.Quality = 0;
 	descriptor.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	descriptor.BufferCount = 1;
+	descriptor.BufferCount = 2;
 	descriptor.OutputWindow = window_handle;
 	descriptor.Windowed = TRUE;
-	descriptor.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+	descriptor.SwapEffect = DXGI_SWAP_EFFECT::DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
 	descriptor.Flags = 0;
 
 	//Create the Device, the swap chain and the rendring context
