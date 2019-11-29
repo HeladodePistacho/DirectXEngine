@@ -98,6 +98,12 @@ void Entity::Draw(Render & ren)
 	mesh_render->Draw(ren);
 }
 
+void Entity::DrawLight(Render & ren)
+{
+	if (light_component)
+		light_component->Draw(ren);
+}
+
 void Entity::Delete()
 {
 	needs_delete = true;

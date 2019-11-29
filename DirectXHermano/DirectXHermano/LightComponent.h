@@ -12,6 +12,8 @@ class LightComponent
 public:
 	LightComponent(LIGHT_TYPE);
 
+	void Draw(Render& ren);
+
 	//UI stuff
 	void DrawUI();
 	

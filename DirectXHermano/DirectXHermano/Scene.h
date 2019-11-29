@@ -16,6 +16,7 @@ public:
 
 	void Update();
 	void Draw(Render& ren);
+	void DrawLights(Render& ren);
 
 	void SetSelectedEntity(Entity& entity);
 	Entity& AddEntity();

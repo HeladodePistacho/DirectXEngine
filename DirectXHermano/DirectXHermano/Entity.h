@@ -40,6 +40,7 @@ public:
 
 	void Update();
 	void Draw(Render& ren);
+	void DrawLight(Render& ren);
 
 	bool IsDeleted() { return needs_delete; }
 	void Delete();
