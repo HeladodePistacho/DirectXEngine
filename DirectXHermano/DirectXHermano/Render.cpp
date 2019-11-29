@@ -77,12 +77,22 @@ void Render::SetCamera(Camera & cam)
 
 void Render::SetDeferredRenderBuffers()
 {
-	deferred_buffers->SetRenderTargets(direct_context.Get());
+	deferred_buffers->SetAllRenderTargets(direct_context.Get());
+}
+
+void Render::SetDeferredRenderBuffer(int target)
+{
+	deferred_buffers->SetRenderTarget(direct_context.Get(), target);
 }
 
 void Render::ClearDeferredBuffers()
 {
 	deferred_buffers->ClearRenderTargets(direct_context.Get());
+}
+
+void Render::ClearDeferredBuffer(int target)
+{
+	deferred_buffers->ClearRenderTarget(direct_context.Get(), target);
 }
 
 void Render::SetDefaultRenderTarget()
@@ -349,9 +359,18 @@ bool RenderBuffer::LoadDepth(ID3D11Device * device, int width, int height)
 	return true;
 }
 
-void RenderBuffer::SetRenderTargets(ID3D11DeviceContext * context)
+void RenderBuffer::SetAllRenderTargets(ID3D11DeviceContext * context)
 {
 	context->OMSetRenderTargets(used_targets, view_array, depth);
+	context->RSSetViewports(1, &view_port);
+}
+
+void RenderBuffer::SetRenderTarget(ID3D11DeviceContext * context, int target)
+{
+	if (target >= used_targets)
+		target = used_targets - 1;
+
+	context->OMSetRenderTargets(1u, &view_array[target], nullptr);
 	context->RSSetViewports(1, &view_port);
 }
 
@@ -368,6 +387,16 @@ void RenderBuffer::ClearRenderTargets(ID3D11DeviceContext * context)
 		context->ClearDepthStencilView(depth, D3D11_CLEAR_DEPTH, 1.0f, 0u);
 	}
 	
+}
+
+void RenderBuffer::ClearRenderTarget(ID3D11DeviceContext * context, int target)
+{
+	if (target >= used_targets)
+		target = used_targets - 1;
+
+	float color[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
+
+	context->ClearRenderTargetView(view_array[target], color);
 }
 
 ID3D11ShaderResourceView* RenderBuffer::GetShaderResourceView(unsigned int num_view) const

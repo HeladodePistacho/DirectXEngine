@@ -105,6 +105,9 @@ void DirectXApp::Draw(float dt)
 	render_timer.Mark();
 	DoDeferred();
 	deferred_time = render_timer.Peek();
+
+	//Draw Lights
+	DoLights();
 	
 	//Draw screen plane
 	render_timer.Mark();
@@ -194,6 +197,25 @@ void DirectXApp::DoDeferred()
 	mesh_draw_time = mesh_timer.Peek();
 
 	//Return to default
+	window.GetRender().SetDefaultRenderTarget();
+}
+
+void DirectXApp::DoLights()
+{
+	//Set Render Shaded Target -> 3 for final image
+	window.GetRender().SetDeferredRenderBuffer(3);
+
+	//Clear the Render Target
+	window.GetRender().ClearDeferredBuffer(3);
+
+	//Bind Light Shader
+//	resource_manager->light_shader->Bind(window.GetRender());
+
+	//Only Directional lights for the moment
+	//resource_manager->screen_mesh->DrawAll(window.GetRender());
+	//scene->DrawLights(window.GetRender());
+
+	//Return to Default
 	window.GetRender().SetDefaultRenderTarget();
 }
 

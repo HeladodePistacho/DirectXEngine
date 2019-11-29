@@ -15,8 +15,11 @@ public:
 	bool LoadRenderTargets(ID3D11Device* device, int width, int height);
 	bool LoadDepth(ID3D11Device* device, int width, int height);
 
-	void SetRenderTargets(ID3D11DeviceContext* context);
+	void SetAllRenderTargets(ID3D11DeviceContext* context);
+	void SetRenderTarget(ID3D11DeviceContext* context, int target);
+
 	void ClearRenderTargets(ID3D11DeviceContext* context);
+	void ClearRenderTarget(ID3D11DeviceContext* context, int target);
 
 	ID3D11ShaderResourceView* GetShaderResourceView(unsigned int num_view) const;
 	ID3D11SamplerState* GetSamplerState() const { return sampler_state; }
@@ -63,9 +66,11 @@ public:
 	void SetCamera(Camera& cam);
 
 	//Deferred Functions
-	void LoadDeferredRenderBuffers();
 	void ClearDeferredBuffers();
+	void ClearDeferredBuffer(int target);
+
 	void SetDeferredRenderBuffers();
+	void SetDeferredRenderBuffer(int target);
 
 	void SetDefaultRenderTarget();
 

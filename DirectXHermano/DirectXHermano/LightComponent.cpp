@@ -8,6 +8,10 @@ LightComponent::LightComponent(LIGHT_TYPE type) : light_type(type)
 	light_color[2] = 1.0f;
 }
 
+void LightComponent::Draw(Render & ren)
+{
+}
+
 void LightComponent::DrawUI()
 {
 	if (ImGui::TreeNode("Light Component"))
