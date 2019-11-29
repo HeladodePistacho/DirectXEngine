@@ -34,10 +34,6 @@ int DirectXApp::Start()
 	resource_manager->Start(window.GetRender());
 	scene_camera->needs_update = true;
 
-	Entity* ent = &scene->AddEntity();
-	ent->GetMeshRenderer().SetMesh(&resource_manager->GetCube());
-
-	scene->AddEntity();
 	scene->AddEntity();
 
 	//Messages queue
@@ -76,6 +72,7 @@ void DirectXApp::BeginFrame()
 
 void DirectXApp::Update(float dt)
 {	
+	render_timer.Mark();
 	CameraControls();
 	scene->Update();
 
@@ -84,32 +81,41 @@ void DirectXApp::Update(float dt)
 	{
 		window.GetRender().SetCamera((*scene_camera));
 	}
+	update_time = render_timer.Peek();
+
 }
 
 void DirectXApp::EndFrame()
 {
 	//ImGui
+	render_timer.Mark();
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
+
 	window.GetRender().EndFrame();
 
-	
 	framerate_ms = timer.Peek();
 }
 
 void DirectXApp::Draw(float dt)
 {
 	//Create Deferred textures
+	render_timer.Mark();
 	DoDeferred();
-
+	deferred_time = render_timer.Peek();
+	
 	//Draw screen plane
+	render_timer.Mark();
 	DrawScreen();
+	screen_draw_time = render_timer.Peek();
 
 	//Draw UI
+	render_timer.Mark();
 	DrawApplicaionUI();
 	DrawSceneUI();
 	DrawMaterialEditorUI();
+	ui_draw_time = render_timer.Peek();
 }
 
 void DirectXApp::CameraControls()
@@ -182,7 +188,9 @@ void DirectXApp::DoDeferred()
 	resource_manager->GetShader().Bind(window.GetRender());
 
 	//Draw Geometry
+	mesh_timer.Mark();
 	scene->Draw(window.GetRender());
+	mesh_draw_time = mesh_timer.Peek();
 
 	//Return to default
 	window.GetRender().SetDefaultRenderTarget();
@@ -245,6 +253,23 @@ void DirectXApp::DrawApplicaionUI()
 			if (ImGui::MenuItem("Scene Window"))
 				show_scene_window = !show_scene_window;
 
+			ImGui::Separator();
+
+			ImGui::Text("Perfomance: ");
+			ImGui::Text("Frame MS: %.4f", framerate_ms);
+			ImGui::Text("Framrate: %i", (int)(1.0f / framerate_ms));
+
+			ImGui::Text("Time Update: %.4f", update_time);
+			ImGui::Text("Time Deferred 1st pass: %.4f", deferred_time);
+			ImGui::Text("Time Mesh drawing: %.4f", mesh_draw_time);
+			ImGui::Text("Time Screen Drawing: %.4f", screen_draw_time);
+			ImGui::Text("Time UI Drawing: %.4f", ui_draw_time);
+			ImGui::Text("Time Ending Frame: %.4f", end_frame_time);
+
+			ImGui::Separator();
+			ImGui::Text("Total Time: %.4f", update_time + deferred_time + ui_draw_time + screen_draw_time + end_frame_time);
+
+
 			ImGui::EndMenu();
 		}
 
@@ -270,8 +295,8 @@ void DirectXApp::DrawApplicaionUI()
 			ImGui::EndMenu();
 		}
 		
-		ImGui::Text("Frame MS: %.4f", framerate_ms);
-		ImGui::Text("Framrate: %i",(int)(1.0f / framerate_ms));
+		ImGui::Text("Framrate: %i", (int)(1.0f / framerate_ms));
+		
 
 		ImGui::EndMainMenuBar();
 	}

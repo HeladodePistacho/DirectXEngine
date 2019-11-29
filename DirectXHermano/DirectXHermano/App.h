@@ -19,6 +19,9 @@ private:
 	ImGuiManager imgui_manager;
 
 	Timer timer;
+	Timer render_timer;
+	Timer mesh_timer;
+
 	Window window;
 
 	Camera* scene_camera = nullptr;
@@ -53,4 +56,10 @@ private:
 	bool show_material_editor = true;
 
 	float framerate_ms = 0.0f;
+	float deferred_time = 0.0f;
+	float mesh_draw_time = 0.0f;
+	float screen_draw_time = 0.0f;
+	float ui_draw_time = 0.0f;
+	float update_time = 0.0f;
+	float end_frame_time = 0.0f;
 };
