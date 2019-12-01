@@ -13,7 +13,7 @@ public:
 
 	void DrawUI();
 	void Move(DirectX::XMFLOAT3);
-	void Move(float, float, float);
+	void Move(float, float, float, float);
 	void Rotate(int, int);
 	void ResetRotation();
 
@@ -24,4 +24,6 @@ public:
 	DirectX::XMFLOAT3 position;
 
 	bool needs_update = false;
+
+	float move_speed = 15.0f;
 };

@@ -46,6 +46,8 @@ void Camera::DrawUI()
 	if (ImGui::SliderFloat("Field Of View", &fov, (2.0f / 9.0f) * DirectX::XM_PI, (2.0f / 3.0f) * DirectX::XM_PI, "%.1f"))
 		needs_update = true;
 
+	ImGui::SliderFloat("Camera Speed", &move_speed, 1.0f, 200.0f, "%.1f");
+
 	ImGui::End();
 }
 
@@ -58,11 +60,11 @@ void Camera::Move(DirectX::XMFLOAT3 movement)
 	needs_update = true;
 }
 
-void Camera::Move(float x, float y, float z)
+void Camera::Move(float x, float y, float z, float dt)
 {
-	position.x += x * 0.5f;
-	position.y += y * 0.5f;
-	position.z += z * 0.5f;
+	position.x += x * move_speed * dt;
+	position.y += y * move_speed * dt;
+	position.z += z * move_speed * dt;
 
 	needs_update = true;
 }

@@ -45,7 +45,7 @@ int DirectXApp::Start()
 			return 1;
 	
 		BeginFrame();
-		Update(1.0f);
+		Update(framerate_ms);
 		Draw(1.0f);
 		EndFrame();
 	}
@@ -73,7 +73,7 @@ void DirectXApp::BeginFrame()
 void DirectXApp::Update(float dt)
 {	
 	render_timer.Mark();
-	CameraControls();
+	CameraControls(dt);
 	scene->Update();
 
 	//Set Camera
@@ -122,7 +122,7 @@ void DirectXApp::Draw(float dt)
 	ui_draw_time = render_timer.Peek();
 }
 
-void DirectXApp::CameraControls()
+void DirectXApp::CameraControls(float dt)
 {
 	float yaw = scene_camera->yaw;
 	float pitch = scene_camera->pitch;
@@ -132,28 +132,28 @@ void DirectXApp::CameraControls()
 	if (window.keyboard.KeyIsPressed('W'))
 		scene_camera->Move(-cos(yaw) * sin(pitch),
 							sin(yaw),
-						   -cos(yaw) * cos(pitch));
+						   -cos(yaw) * cos(pitch), dt);
 
 	if (window.keyboard.KeyIsPressed('S'))
 		scene_camera->Move( cos(yaw) * sin(pitch),
 							-sin(yaw) ,
-							cos(yaw) * cos(pitch));
+							cos(yaw) * cos(pitch), dt);
 
 	if (window.keyboard.KeyIsPressed('A'))
 		scene_camera->Move(	cos(yaw) * cos(pitch),
 							0.0f,
-							cos(yaw) * -sin(pitch));
+							cos(yaw) * -sin(pitch), dt);
 
 	if (window.keyboard.KeyIsPressed('D'))
 		scene_camera->Move( -cos(yaw) * cos(pitch),
 							0.0f,
-							cos(yaw) * sin(pitch));
+							cos(yaw) * sin(pitch), dt);
 
 	if (window.keyboard.KeyIsPressed('Q'))
-		scene_camera->Move(0.0f, -0.5f, 0.0f);
+		scene_camera->Move(0.0f, -0.5f, 0.0f, dt);
 
 	if (window.keyboard.KeyIsPressed('E'))
-		scene_camera->Move(0.0f, 0.5f, 0.0f);
+		scene_camera->Move(0.0f, 0.5f, 0.0f, dt);
 
 	if (window.keyboard.KeyIsPressed('R'))
 		scene_camera->ResetRotation();

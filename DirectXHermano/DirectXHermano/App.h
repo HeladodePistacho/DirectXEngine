@@ -36,7 +36,7 @@ private:
 
 	int last_mouse_pos_x = 0;
 	int last_mouse_pos_y = 0;
-	void CameraControls();
+	void CameraControls(float dt);
 
 	//Render Stuff
 	void DoDeferred();
