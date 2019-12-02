@@ -2,7 +2,7 @@
 struct VSOUT
 {
 	float4 out_position : SV_Position;
-	float3 normal : Normal;
+	float3 normal : Normale;
 	float3 position : Position;
 	float2 texture_coords : Texcoord0;
 };
