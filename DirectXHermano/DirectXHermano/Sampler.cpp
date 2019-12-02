@@ -9,6 +9,10 @@ Sampler::Sampler(Render & ren)
 	sampler_descriptor.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
 	sampler_descriptor.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 
+	sampler_descriptor.MipLODBias = 0.0f;
+	sampler_descriptor.MinLOD = 0.0f;
+	sampler_descriptor.MaxLOD = D3D11_FLOAT32_MAX;
+
 	GetDevice(ren)->CreateSamplerState(&sampler_descriptor, &sampler_state);
 }
 
