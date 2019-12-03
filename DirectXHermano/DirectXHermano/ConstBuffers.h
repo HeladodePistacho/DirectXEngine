@@ -20,6 +20,12 @@ public:
 		descriptor.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 		descriptor.MiscFlags = 0u;
 		descriptor.ByteWidth = sizeof(buffer);
+
+		if ((descriptor.ByteWidth % 16) != 0)
+		{
+			descriptor.ByteWidth = 16 + (sizeof(buffer) - (sizeof(buffer) % 16));
+		}
+
 		descriptor.StructureByteStride = 0u;
 
 		D3D11_SUBRESOURCE_DATA data = {};
