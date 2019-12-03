@@ -6,10 +6,31 @@ LightComponent::LightComponent(LIGHT_TYPE type) : light_type(type)
 	light_color[0] = 1.0f;
 	light_color[1] = 1.0f;
 	light_color[2] = 1.0f;
+
+
+	buffer_struct = {};
+	buffer_struct.color = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
+	buffer_struct.position = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
+	buffer_struct.direction = DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f);
+
+	buffer_struct.type = 0.0f;
+	buffer_struct.intensity = 0.0f;
+
+	needs_update = true;
 }
 
 void LightComponent::Draw(Render & ren)
 {
+	light_buffer->BindSlot(ren, 0);
+}
+
+void LightComponent::UpdateLightBuffer(Render & ren)
+{
+	if (light_buffer == nullptr)
+		light_buffer = new ConstBuffer<LightBuffer>(ren, buffer_struct, BUFFER_TYPE::PIXEL_SHADER_BUFFER);
+	else light_buffer->Update(ren, buffer_struct);
+
+	needs_update = false;
 }
 
 void LightComponent::DrawUI()
