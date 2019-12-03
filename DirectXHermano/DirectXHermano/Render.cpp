@@ -101,6 +101,18 @@ void Render::SetDefaultRenderTarget()
 	direct_context->RSSetViewports(1, &view_port);
 }
 
+void Render::BindDeferredTexture(int position, int slot)
+{
+	ID3D11ShaderResourceView* tmp = deferred_buffers->GetShaderResourceView(position);
+	direct_context->PSSetShaderResources(slot, 1u, &tmp);
+}
+
+void Render::BindDeferredSampler()
+{
+	ID3D11SamplerState* tmp = deferred_buffers->GetSamplerState();
+	direct_context->PSSetSamplers(0u, 1u, &tmp);
+}
+
 void Render::LoadSwapChain(HWND window_handle, int width, int height)
 {
 	//Holds information configuration for D3D

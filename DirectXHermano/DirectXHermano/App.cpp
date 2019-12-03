@@ -209,11 +209,18 @@ void DirectXApp::DoLights()
 	window.GetRender().ClearDeferredBuffer(3);
 
 	//Bind Light Shader
-//	resource_manager->light_shader->Bind(window.GetRender());
+	resource_manager->light_shader->Bind(window.GetRender());
+
+	//Bind Deferred Textures
+	window.GetRender().BindDeferredTexture(0, 0); //Diffuse texture, slot 0
+
+	//Bind Sampler
+	window.GetRender().BindDeferredSampler();
 
 	//Only Directional lights for the moment
-	//resource_manager->screen_mesh->DrawAll(window.GetRender());
-	//scene->DrawLights(window.GetRender());
+	scene->DrawLights(window.GetRender());
+	resource_manager->screen_mesh->DrawAll(window.GetRender());
+	
 
 	//Return to Default
 	window.GetRender().SetDefaultRenderTarget();

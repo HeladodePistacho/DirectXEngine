@@ -74,6 +74,9 @@ public:
 
 	void SetDefaultRenderTarget();
 
+	void BindDeferredTexture(int position, int slot);
+	void BindDeferredSampler();
+
 	//Deferred
 	RenderBuffer* deferred_buffers = nullptr;
 
