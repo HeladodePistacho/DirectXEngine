@@ -36,7 +36,7 @@ void Scene::DrawLights(Render & ren)
 {
 	for (std::vector<Entity*>::iterator iter = lights.begin(); iter != lights.end(); iter++)
 	{
-		(*iter)->Draw(ren);
+		(*iter)->DrawLight(ren);
 	}
 }
 

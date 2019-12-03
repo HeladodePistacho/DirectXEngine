@@ -101,7 +101,12 @@ void Entity::Draw(Render & ren)
 void Entity::DrawLight(Render & ren)
 {
 	if (light_component)
+	{
+		if (light_component->NeedsUpdate())
+			light_component->UpdateLightBuffer(ren);
+
 		light_component->Draw(ren);
+	}
 }
 
 void Entity::Delete()
@@ -124,6 +129,7 @@ void Entity::DrawUI(ResourceManager& res)
 		if (ImGui::Button("     Add Light Component     "))
 		{
 			light_component = new LightComponent(LIGHT_TYPE::DIRECTIONAL_LIGHT);
+			
 			is_light = true;
 		}
 	}

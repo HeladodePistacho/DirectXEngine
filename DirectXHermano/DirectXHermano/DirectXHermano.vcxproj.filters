@@ -238,5 +238,8 @@
     <FxCompile Include="LightPixelShader.hlsl">
       <Filter>Archivos de encabezado\Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="LightVertexShader.hlsl">
+      <Filter>Archivos de encabezado\Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
