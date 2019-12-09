@@ -80,6 +80,7 @@ void DirectXApp::Update(float dt)
 	if (scene_camera->needs_update)
 	{
 		window.GetRender().SetCamera((*scene_camera));
+		scene_camera->UpdateBuffer(window.GetRender());
 	}
 	update_time = render_timer.Peek();
 
@@ -213,6 +214,9 @@ void DirectXApp::DoLights()
 
 	//Bind Deferred Textures
 	window.GetRender().BindDeferredTexture(0, 0); //Diffuse texture, slot 0
+
+	//Bind Buffers
+	scene_camera->camera_buffer->BindSlot(window.GetRender(), 1u);
 
 	//Bind Sampler
 	window.GetRender().BindDeferredSampler();

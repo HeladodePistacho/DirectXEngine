@@ -5,7 +5,10 @@
 //-DirectX::XM_PI/18.0f
 //DirectX::XM_PI / 2.0f
 
-Camera::Camera(float width, float height) : yaw(0.0f), pitch(DirectX::XM_PI), roll(0.0f), fov((1.0f/2.0f)*DirectX::XM_PI), position(0.0f, 0.0f, -5.0f), z_near(0.5f), z_far(50.0f), aspect_ratio(width / height) {}
+Camera::Camera(float width, float height) : yaw(0.0f), pitch(DirectX::XM_PI), roll(0.0f), fov((1.0f/2.0f)*DirectX::XM_PI), z_near(0.5f), z_far(50.0f), aspect_ratio(width / height) 
+{
+	camera_struct.cam_position = { 0.0f, 0.0f, -5.0f };
+}
 
 Camera::Camera(const Camera & cam)
 {
@@ -13,7 +16,7 @@ Camera::Camera(const Camera & cam)
 	pitch = cam.pitch;
 	roll = cam.roll;
 	fov = cam.fov;
-	position = cam.position;
+	camera_struct.cam_position = cam.camera_struct.cam_position;
 	z_near = cam.z_near;
 	z_far = cam.z_far;
 	aspect_ratio = cam.aspect_ratio;
@@ -53,18 +56,18 @@ void Camera::DrawUI()
 
 void Camera::Move(DirectX::XMFLOAT3 movement)
 {
-	position.x += movement.x;
-	position.y += movement.y;
-	position.z += movement.z;
+	camera_struct.cam_position.x += movement.x;
+	camera_struct.cam_position.y += movement.y;
+	camera_struct.cam_position.z += movement.z;
 
 	needs_update = true;
 }
 
 void Camera::Move(float x, float y, float z, float dt)
 {
-	position.x += x * move_speed * dt;
-	position.y += y * move_speed * dt;
-	position.z += z * move_speed * dt;
+	camera_struct.cam_position.x += x * move_speed * dt;
+	camera_struct.cam_position.y += y * move_speed * dt;
+	camera_struct.cam_position.z += z * move_speed * dt;
 
 	needs_update = true;
 }
@@ -97,4 +100,11 @@ void Camera::ResetRotation()
 	yaw = 0.0f;
 	pitch = 0.0f;
 	roll = 0.0f;
+}
+
+void Camera::UpdateBuffer(Render& ren)
+{
+	if (!camera_buffer)
+		camera_buffer = new ConstBuffer<CameraBuffer>(ren, camera_struct, BUFFER_TYPE::PIXEL_SHADER_BUFFER);
+	else camera_buffer->Update(ren, camera_struct);
 }

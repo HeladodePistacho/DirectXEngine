@@ -10,8 +10,6 @@ texture2D difuse_color_texture : register(t0);
 
 SamplerState samplerstate;
 
-
-
 cbuffer light_buffer : register(b0)
 {
 	float3 color;
@@ -23,12 +21,17 @@ cbuffer light_buffer : register(b0)
 	float3 direction;
 };
 
+cbuffer camera_buffer : register(b1)
+{
+	float3 camera_position;
+}
+
 float4 main(VSOUT vertex_out) : SV_Target
 {
 	float ambient = 0.1f;
 	float4 difuse_color = difuse_color_texture.Sample(samplerstate, vertex_out.texture_coords);// *ambient;
 
-	float4 final_color = mul(difuse_color, ambient);
+	float4 final_color = float4(camera_position.xyz, 1.0f); //mul(difuse_color, ambient);
 
 
 	return final_color;

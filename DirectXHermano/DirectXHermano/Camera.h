@@ -2,6 +2,11 @@
 #include <DirectXMath.h>
 #include "ConstBuffers.h"
 
+struct CameraBuffer
+{
+	DirectX::XMFLOAT3 cam_position;
+};
+
 class Camera
 {
 public:
@@ -21,9 +26,13 @@ public:
 	float fov; //in radians
 	float aspect_ratio;
 	float z_near, z_far;
-	DirectX::XMFLOAT3 position;
 
 	bool needs_update = false;
 
 	float move_speed = 15.0f;
+
+	//Render stuff
+	CameraBuffer camera_struct;
+	ConstBuffer<CameraBuffer>* camera_buffer = nullptr;
+	void UpdateBuffer(Render& ren);
 };
