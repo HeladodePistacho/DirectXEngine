@@ -21,7 +21,9 @@ void Transform::Update()
 
 void Transform::BuildMatrix()
 {
-	DirectX::XMStoreFloat4(&rotation_quaternion, DirectX::XMQuaternionRotationRollPitchYaw(rotation_euler.x, rotation_euler.y, rotation_euler.z));
+	
+
+	DirectX::XMStoreFloat4(&rotation_quaternion, DirectX::XMQuaternionRotationRollPitchYaw(DirectX::XMConvertToRadians(rotation_euler.x), DirectX::XMConvertToRadians(rotation_euler.y), DirectX::XMConvertToRadians(rotation_euler.z)));
 	DirectX::XMStoreFloat4x4(&model_matrix,
 		DirectX::XMMatrixTranspose(
 			DirectX::XMMatrixRotationQuaternion(DirectX::XMLoadFloat4(&rotation_quaternion)) *
@@ -37,11 +39,11 @@ void Transform::DrawTransformUI()
 	{
 		ImGui::Text("Position ");
 		ImGui::PushItemWidth(50);
-		if (ImGui::DragFloat("X##position", &position.x, 0.5f, 0.0f, 0.0f, "%.2f")) needs_update = true;
+		if (ImGui::DragFloat("X##position", &position.x, 0.05f, 0.0f, 0.0f, "%.2f")) needs_update = true;
 		ImGui::SameLine();
-		if (ImGui::DragFloat("Y##position", &position.y, 0.5f, 0.0f, 0.0f, "%.2f")) needs_update = true;
+		if (ImGui::DragFloat("Y##position", &position.y, 0.05f, 0.0f, 0.0f, "%.2f")) needs_update = true;
 		ImGui::SameLine();
-		if (ImGui::DragFloat("Z##position", &position.z, 0.5f, 0.0f, 0.0f, "%.2f")) needs_update = true;
+		if (ImGui::DragFloat("Z##position", &position.z, 0.05f, 0.0f, 0.0f, "%.2f")) needs_update = true;
 
 		ImGui::Text("Rotation ");
 		if (ImGui::DragFloat("X##rotation", &rotation_euler.x, 0.5f, 0.0f, 0.0f, "%.2f")) needs_update = true;
@@ -51,11 +53,11 @@ void Transform::DrawTransformUI()
 		if (ImGui::DragFloat("Z##rotation", &rotation_euler.z, 0.5f, 0.0f, 0.0f, "%.2f")) needs_update = true;
 
 		ImGui::Text("Scale ");
-		if (ImGui::DragFloat("X##scale", &scale.x, 0.5f, 0.0f, 0.0f, "%.2f")) needs_update = true;
+		if (ImGui::DragFloat("X##scale", &scale.x, 0.05f, 0.0f, 0.0f, "%.2f")) needs_update = true;
 		ImGui::SameLine();
-		if (ImGui::DragFloat("Y##scale", &scale.y, 0.5f, 0.0f, 0.0f, "%.2f")) needs_update = true;
+		if (ImGui::DragFloat("Y##scale", &scale.y, 0.05f, 0.0f, 0.0f, "%.2f")) needs_update = true;
 		ImGui::SameLine();
-		if (ImGui::DragFloat("Z##scale", &scale.z, 0.5f, 0.0f, 0.0f, "%.2f")) needs_update = true;
+		if (ImGui::DragFloat("Z##scale", &scale.z, 0.05f, 0.0f, 0.0f, "%.2f")) needs_update = true;
 		ImGui::PopItemWidth();
 
 		ImGui::TreePop();
