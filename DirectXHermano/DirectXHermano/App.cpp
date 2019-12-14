@@ -214,6 +214,8 @@ void DirectXApp::DoLights()
 
 	//Bind Deferred Textures
 	window.GetRender().BindDeferredTexture(0, 0); //Diffuse texture, slot 0
+	window.GetRender().BindDeferredTexture(1, 1); //Normal texture, slot 1
+	window.GetRender().BindDeferredTexture(2, 2); //Position texture, slot 2
 
 	//Bind Buffers
 	scene_camera->camera_buffer->BindSlot(window.GetRender(), 1u);

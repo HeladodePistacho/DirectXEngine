@@ -3,15 +3,10 @@
 
 LightComponent::LightComponent(LIGHT_TYPE type) : light_type(type)
 {
-	light_color[0] = 1.0f;
-	light_color[1] = 1.0f;
-	light_color[2] = 1.0f;
-
-
 	buffer_struct = {};
 	buffer_struct.color = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
 	buffer_struct.position = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
-	buffer_struct.direction = DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f);
+	buffer_struct.direction = DirectX::XMFLOAT3(0.0f, -1.0f, 0.0f);
 
 	buffer_struct.type = 0.0f;
 	buffer_struct.intensity = 0.0f;
@@ -54,7 +49,7 @@ void LightComponent::DrawUI()
 		ImGui::Text("Light Color: ");
 
 		ImGui::PushItemWidth(120.0f);
-		ImGui::ColorPicker3("##Light color picker", light_color, ImGuiColorEditFlags_::ImGuiColorEditFlags_DisplayRGB | ImGuiColorEditFlags_::ImGuiColorEditFlags_NoSidePreview);
+		ImGui::ColorPicker3("##Light color picker", (float*)&buffer_struct.color, ImGuiColorEditFlags_::ImGuiColorEditFlags_DisplayRGB | ImGuiColorEditFlags_::ImGuiColorEditFlags_NoSidePreview);
 		ImGui::PopItemWidth();
 
 		ImGui::TreePop();

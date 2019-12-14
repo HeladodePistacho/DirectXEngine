@@ -5,8 +5,8 @@ struct VSOUT
 };
 
 texture2D difuse_color_texture : register(t0);
-//texture2D normals_texture : register(t1);
-//texture2D position_texture : register(t2);
+texture2D normals_texture : register(t1);
+texture2D position_texture : register(t2);
 
 SamplerState samplerstate;
 
@@ -28,11 +28,24 @@ cbuffer camera_buffer : register(b1)
 
 float4 main(VSOUT vertex_out) : SV_Target
 {
+	//Variables we need
 	float ambient = 0.1f;
-	float4 difuse_color = difuse_color_texture.Sample(samplerstate, vertex_out.texture_coords);// *ambient;
 
-	float4 final_color = float4(camera_position.xyz, 1.0f); //mul(difuse_color, ambient);
+	float3 mesh_position = position_texture.Sample(samplerstate, vertex_out.texture_coords).xyz;
+	float3 vertex_normal = normals_texture.Sample(samplerstate, vertex_out.texture_coords).xyz;
+	float4 albedo_color = difuse_color_texture.Sample(samplerstate, vertex_out.texture_coords);
 
+	//Vectors
+	float3 pos_to_light = normalize(mesh_position - direction);
+	float3 cam_to_pos = normalize(mesh_position - camera_position);
+
+	//Add ambient
+	float4 final_color = mul(albedo_color, ambient);
+
+	final_color += mul(albedo_color, dot(pos_to_light, vertex_normal));// + pow(dot(vertex_normal, normalize(pos_to_light + cam_to_pos)), 2.0f);
+	
+
+	final_color = final_color * float4(color.rgb, 1.0f);
 
 	return final_color;
 }

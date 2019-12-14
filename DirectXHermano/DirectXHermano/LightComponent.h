@@ -34,10 +34,6 @@ public:
 	
 private:
 	LIGHT_TYPE light_type;
-	float light_color[3];
-	float light_position[3];
-	float light_direction[3];
-	float intensity;
 
 	LightBuffer buffer_struct;
 	ConstBuffer<LightBuffer>* light_buffer = nullptr;
