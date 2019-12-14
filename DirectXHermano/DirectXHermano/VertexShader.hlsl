@@ -28,7 +28,7 @@ VSOUT main(VSIN vertex_shader_in)
 	VSOUT vertex_out;
 	vertex_out.out_position = mul(float4(vertex_shader_in.position, 1.0f), model_view_projection);
 	vertex_out.position = mul(float4(vertex_shader_in.position, 1.0f), model_matrix); 
-	vertex_out.normal = mul(float4(vertex_shader_in.normal, 0.0f), model_matrix);
+	vertex_out.normal = normalize(mul(float4(vertex_shader_in.normal, 0.0f), model_matrix));
 	vertex_out.texture_coords = vertex_shader_in.tex_coords;
 
 	return vertex_out;
