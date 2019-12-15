@@ -6,7 +6,7 @@ LightComponent::LightComponent(LIGHT_TYPE type) : light_type(type)
 	buffer_struct = {};
 	buffer_struct.color = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
 	buffer_struct.position = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
-	buffer_struct.direction = DirectX::XMFLOAT3(0.0f, -1.0f, 0.0f);
+	buffer_struct.direction = DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f);
 
 	buffer_struct.type = 0.0f;
 	buffer_struct.intensity = 0.0f;
