@@ -27,8 +27,12 @@ public:
 	void Draw(Render& ren);
 	void UpdateLightBuffer(Render& ren);
 
+	//Setters
 	void SetDirection(DirectX::XMFLOAT3 dir);
 	void SetPosition(DirectX::XMFLOAT3 pos);
+
+	//Getters
+	int GetLightType() const { return (int)buffer_struct.type; }
 
 	bool NeedsUpdate() const { return needs_update; }
 

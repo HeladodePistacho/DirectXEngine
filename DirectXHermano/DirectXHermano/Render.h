@@ -5,6 +5,7 @@
 #include <wrl.h>
 
 class Camera;
+class BlendState;
 
 class RenderBuffer
 {
@@ -80,6 +81,10 @@ public:
 	//Deferred
 	RenderBuffer* deferred_buffers = nullptr;
 
+	//Blend Functions
+	void BindDefautBlending();
+	void BindLightBlending();
+
 private:
 	Microsoft::WRL::ComPtr<ID3D11Device> direct_device;
 	Microsoft::WRL::ComPtr<IDXGISwapChain> direct_swap;
@@ -96,6 +101,9 @@ private:
 	void LoadRenderTargets(int widht, int height);
 	void LoadDepthBuffer(int width, int height);
 	void LoadViewport(int width, int height);
+	void LoadBlendStates();
 
+	//Blending
+	BlendState* light_blending = nullptr;
 	
 };

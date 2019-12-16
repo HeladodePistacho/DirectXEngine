@@ -126,6 +126,14 @@ void Entity::Delete()
 	needs_delete = true;
 }
 
+int Entity::GetLightType() const
+{
+	if (light_component)
+		return	light_component->GetLightType();
+
+	return -1;
+}
+
 void Entity::DrawUI(ResourceManager& res)
 {
 	ImGui::Text(name.c_str());

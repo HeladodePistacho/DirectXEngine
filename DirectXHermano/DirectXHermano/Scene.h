@@ -17,12 +17,15 @@ public:
 	void Update();
 	void Draw(Render& ren);
 	void DrawLights(Render& ren);
+	void DrawLightAt(int position, Render& ren);
 
-	void SetSelectedEntity(Entity& entity);
 	Entity& AddEntity();
 	void DeleteEntity(Entity&);
 
 	void DrawUI(ResourceManager&);
+
+	int GetNumLights() const { return lights.size(); }
+	int GetLightType(int light) const;
 private:
 	Entity* selected_entity = nullptr;
 

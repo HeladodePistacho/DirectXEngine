@@ -47,6 +47,8 @@ float4 main(VSOUT vertex_out) : SV_Target
 	
 
 	float4 final_color = (ambient_color + difuse_color ) * float4(color.rgb, 1.0f);
+	final_color.a = 1.0f;
+
 
 	return final_color;
 }

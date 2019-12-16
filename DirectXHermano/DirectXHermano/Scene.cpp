@@ -40,6 +40,14 @@ void Scene::DrawLights(Render & ren)
 	}
 }
 
+void Scene::DrawLightAt(int position, Render & ren)
+{
+	if (position < lights.size())
+	{
+		lights[position]->DrawLight(ren);
+	}
+}
+
 Entity& Scene::AddEntity()
 {
 	Entity* new_entity = new Entity(entities.size());
@@ -90,6 +98,12 @@ void Scene::DrawUI(ResourceManager& res)
 
 
 	ImGui::End();
+}
+
+int Scene::GetLightType(int light) const
+{
+	if (light < lights.size())
+		return lights[light]->GetLightType();
 }
 
 void Scene::DeleteEntities()

@@ -4,6 +4,7 @@
 #include "Camera.h"
 #include "ImGui\imgui.h"
 #include "ImGui\imgui_impl_dx11.h"
+#include "BlendState.h"
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
@@ -28,6 +29,9 @@ Render::Render(HWND window_handle, int width, int height)
 	//Set viewport settings
 	LoadViewport(width, height);
 
+	//Load Blendings
+	LoadBlendStates();
+
 	//Load Imgui
 	ImGui_ImplDX11_Init(direct_device.Get(), direct_context.Get());
 }
@@ -46,7 +50,7 @@ void Render::EndFrame()
 	HRESULT hr;
 
 	//Swaps buffers -> 1u = 60fps, 2u = 30fps
-	if (FAILED(hr = direct_swap->Present(0u, 0u)))
+	if (FAILED(hr = direct_swap->Present(1u, 0u)))
 	{
 		//custom_exception error("","");
 		//if (hr == DXGI_ERROR_DEVICE_REMOVED)
@@ -111,6 +115,16 @@ void Render::BindDeferredSampler()
 {
 	ID3D11SamplerState* tmp = deferred_buffers->GetSamplerState();
 	direct_context->PSSetSamplers(0u, 1u, &tmp);
+}
+
+void Render::BindDefautBlending()
+{
+	direct_context->OMSetBlendState(0, 0, 0xffffffff);
+}
+
+void Render::BindLightBlending()
+{
+	light_blending->Bind(*this);
 }
 
 void Render::LoadSwapChain(HWND window_handle, int width, int height)
@@ -213,6 +227,11 @@ void Render::LoadViewport(int width, int height)
 	view_port.TopLeftX = 0;
 	view_port.TopLeftY = 0;
 	direct_context->RSSetViewports(1u, &view_port);
+}
+
+void Render::LoadBlendStates()
+{
+	light_blending = new BlendState(*this);
 }
 
 //----------------------------- RENDER BUFFER ---------------------------------//

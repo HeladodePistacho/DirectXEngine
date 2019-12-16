@@ -57,6 +57,7 @@ public:
 
 	bool IsLight() const { return is_light; }
 	void AddLight() { is_light = false; }
+	int GetLightType() const;
 
 	void DrawUI(ResourceManager&);
 
