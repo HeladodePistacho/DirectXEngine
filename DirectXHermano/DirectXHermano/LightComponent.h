@@ -27,6 +27,9 @@ public:
 	void Draw(Render& ren);
 	void UpdateLightBuffer(Render& ren);
 
+	void SetDirection(DirectX::XMFLOAT3 dir);
+	void SetPosition(DirectX::XMFLOAT3 pos);
+
 	bool NeedsUpdate() const { return needs_update; }
 
 	//UI stuff

@@ -5,10 +5,8 @@ LightComponent::LightComponent(LIGHT_TYPE type) : light_type(type)
 {
 	buffer_struct = {};
 	buffer_struct.color = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
-	buffer_struct.position = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
-	buffer_struct.direction = DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f);
 
-	buffer_struct.type = 0.0f;
+	buffer_struct.type = (float)type;
 	buffer_struct.intensity = 0.0f;
 
 	needs_update = true;
@@ -28,6 +26,24 @@ void LightComponent::UpdateLightBuffer(Render & ren)
 	needs_update = false;
 }
 
+void LightComponent::SetDirection(DirectX::XMFLOAT3 dir)
+{
+	if (light_type == DIRECTIONAL_LIGHT)
+	{
+		buffer_struct.direction = dir;
+		needs_update = true;
+	}
+}
+
+void LightComponent::SetPosition(DirectX::XMFLOAT3 pos)
+{
+	if (light_type == POINT_LIGHT)
+	{
+		buffer_struct.position = pos;
+		needs_update = true;
+	}
+}
+
 void LightComponent::DrawUI()
 {
 	if (ImGui::TreeNode("Light Component"))
@@ -36,10 +52,16 @@ void LightComponent::DrawUI()
 		if (ImGui::BeginCombo("##Light combo", LightTypeToChar()))
 		{
 			if (ImGui::Selectable("Directional Light"))
-				light_type = LIGHT_TYPE::DIRECTIONAL_LIGHT;
+			{
+				buffer_struct.type = (float)LIGHT_TYPE::DIRECTIONAL_LIGHT;
+				needs_update = true;
+			}
 
 			if (ImGui::Selectable("Point Light"))
-				light_type = LIGHT_TYPE::POINT_LIGHT;
+			{
+				buffer_struct.type = (float)LIGHT_TYPE::POINT_LIGHT;
+				needs_update = true;
+			}
 
 			ImGui::EndCombo();
 		}
@@ -49,16 +71,19 @@ void LightComponent::DrawUI()
 		ImGui::Text("Light Color: ");
 
 		ImGui::PushItemWidth(120.0f);
-		ImGui::ColorPicker3("##Light color picker", (float*)&buffer_struct.color, ImGuiColorEditFlags_::ImGuiColorEditFlags_DisplayRGB | ImGuiColorEditFlags_::ImGuiColorEditFlags_NoSidePreview);
+
+		if(ImGui::ColorPicker3("##Light color picker", (float*)&buffer_struct.color, ImGuiColorEditFlags_::ImGuiColorEditFlags_DisplayRGB | ImGuiColorEditFlags_::ImGuiColorEditFlags_NoSidePreview))
+			needs_update = true;
+
 		ImGui::PopItemWidth();
 
 		ImGui::TreePop();
 	}
 }
 
-const char * LightComponent::LightTypeToChar()
+const char* LightComponent::LightTypeToChar()
 {
-	switch (light_type)
+	switch ((int)buffer_struct.type)
 	{
 	case DIRECTIONAL_LIGHT:
 		return "Directional Light";

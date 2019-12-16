@@ -36,12 +36,13 @@ float4 main(VSOUT vertex_out) : SV_Target
 	float4 albedo_color = difuse_color_texture.Sample(samplerstate, vertex_out.texture_coords);
 
 	//Vectors
+	float3 normalized_direction = normalize(direction);
 	float3 cam_to_pos = normalize(camera_position - mesh_position);
-	float3 H_vector = normalize(direction + cam_to_pos);
+	float3 H_vector = normalize(normalized_direction + cam_to_pos);
 
 	//Colors
 	float4 ambient_color = mul(albedo_color, ambient);
-	float4 difuse_color = mul(albedo_color, max(dot(direction, vertex_normal), 0.0f));
+	float4 difuse_color = mul(albedo_color, max(dot(normalized_direction, vertex_normal), 0.0f));
 	float4 specular_color = 0.5f * pow(max(dot(vertex_normal, H_vector), 0.0f), 32.0f);
 	
 

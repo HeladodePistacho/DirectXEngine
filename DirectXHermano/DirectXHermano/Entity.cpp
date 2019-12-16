@@ -11,18 +11,19 @@ Transform::Transform() : position(0.0f, 0.0f, 0.0f), rotation_euler(0.0f, 0.0f, 
 	BuildMatrix();
 }
 
-void Transform::Update()
+bool Transform::Update()
 {
 	if (needs_update)
 	{
 		BuildMatrix();
+		return true;
 	}
+
+	return false;
 }
 
 void Transform::BuildMatrix()
 {
-	
-
 	DirectX::XMStoreFloat4(&rotation_quaternion, DirectX::XMQuaternionRotationRollPitchYaw(DirectX::XMConvertToRadians(rotation_euler.x), DirectX::XMConvertToRadians(rotation_euler.y), DirectX::XMConvertToRadians(rotation_euler.z)));
 	DirectX::XMStoreFloat4x4(&model_matrix,
 		DirectX::XMMatrixTranspose(
@@ -30,7 +31,7 @@ void Transform::BuildMatrix()
 			DirectX::XMMatrixScaling(scale.x, scale.y, scale.z) *
 			DirectX::XMMatrixTranslation(position.x, position.y, position.z)
 		)
-	);
+	);	
 }
 
 void Transform::DrawTransformUI()
@@ -92,7 +93,16 @@ Entity::~Entity()
 
 void Entity::Update()
 {
-	transform->Update();
+	if (transform->Update())
+	{
+		if (light_component)
+		{
+			light_component->SetDirection(transform->GetRotation());
+			light_component->SetPosition(transform->GetPosition());
+		}
+	}
+
+
 }
 
 void Entity::Draw(Render & ren)
@@ -131,7 +141,9 @@ void Entity::DrawUI(ResourceManager& res)
 		if (ImGui::Button("     Add Light Component     "))
 		{
 			light_component = new LightComponent(LIGHT_TYPE::DIRECTIONAL_LIGHT);
-			
+			light_component->SetDirection(transform->GetRotation());
+			light_component->SetPosition(transform->GetPosition());
+
 			is_light = true;
 		}
 	}

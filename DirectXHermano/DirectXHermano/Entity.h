@@ -13,13 +13,16 @@ public:
 	Transform();
 	~Transform() = default;
 
-	void Update();
+	bool Update();
 	void BuildMatrix();
 
 	void DrawTransformUI();
 
 	bool NeedsUpdate() const { return needs_update; }
+
 	DirectX::XMMATRIX GetMatrix() { needs_update = false;  return DirectX::XMLoadFloat4x4(&model_matrix); }
+	DirectX::XMFLOAT3 GetRotation() const { return DirectX::XMFLOAT3(-model_matrix._13, -model_matrix._23, -model_matrix._33); }
+	DirectX::XMFLOAT3 GetPosition() const { return position; }
 private:
 	DirectX::XMFLOAT4X4 model_matrix;
 
