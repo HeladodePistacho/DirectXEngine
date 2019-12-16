@@ -129,6 +129,9 @@
     <ClCompile Include="LightComponent.cpp">
       <Filter>Archivos de código fuente\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="BlendState.cpp">
+      <Filter>Archivos de código fuente\DirectX</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">
@@ -220,6 +223,9 @@
     </ClInclude>
     <ClInclude Include="LightComponent.h">
       <Filter>Archivos de encabezado\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="BlendState.h">
+      <Filter>Archivos de encabezado\DirectX</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
