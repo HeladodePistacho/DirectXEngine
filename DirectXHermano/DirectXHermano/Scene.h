@@ -33,5 +33,6 @@ private:
 	std::vector<Entity*> lights;
 
 	void DeleteEntities();
+	void EraseLights();
 	void UpdateEntities();
 };

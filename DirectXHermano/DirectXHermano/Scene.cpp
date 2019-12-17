@@ -108,6 +108,8 @@ int Scene::GetLightType(int light) const
 
 void Scene::DeleteEntities()
 {
+	EraseLights();
+
 	for (std::vector<Entity*>::iterator iter = entities.begin(); iter != entities.end(); )
 	{
 		if ((*iter)->IsDeleted())
@@ -118,6 +120,19 @@ void Scene::DeleteEntities()
 			continue;
 		}
 
+		iter++;
+	}
+}
+
+void Scene::EraseLights()
+{
+	for (std::vector<Entity*>::iterator iter = lights.begin(); iter != lights.end(); )
+	{
+		if ((*iter)->IsDeleted())
+		{
+			iter = lights.erase(iter);
+			continue;
+		}
 		iter++;
 	}
 }
