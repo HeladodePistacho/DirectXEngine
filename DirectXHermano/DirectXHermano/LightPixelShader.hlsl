@@ -43,10 +43,10 @@ float4 main(VSOUT vertex_out) : SV_Target
 	//Colors
 	float4 ambient_color = mul(albedo_color, ambient);
 	float4 difuse_color = mul(albedo_color, max(dot(normalized_direction, vertex_normal), 0.0f));
-	float4 specular_color = 0.5f * pow(max(dot(vertex_normal, H_vector), 0.0f), 32.0f);
+	float4 specular_color = 0.5f * pow(max(dot(H_vector, vertex_normal), 0.0f), 64.0f);
 	
 
-	float4 final_color = (ambient_color + difuse_color ) * float4(color.rgb, 1.0f);
+	float4 final_color = (ambient_color + difuse_color + specular_color) * float4(color.rgb, 1.0f);
 	final_color.a = 1.0f;
 
 

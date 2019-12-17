@@ -43,8 +43,8 @@ private:
 	void DoLights();
 	void DrawScreen();
 
-	//0 for color, 1 for normals, 2 for depth
-	int texture_type = 0;
+	//0 for color, 1 for normals, 2 for position, 3 for shaded, 4 for depth
+	int texture_type = 3;
 
 	//ImGui
 	void DrawApplicaionUI();

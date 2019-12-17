@@ -407,7 +407,7 @@ void RenderBuffer::SetRenderTarget(ID3D11DeviceContext * context, int target)
 
 void RenderBuffer::ClearRenderTargets(ID3D11DeviceContext * context)
 {
-	float color[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
+	float color[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 	for (int i = 0; i < used_targets; i++)
 	{
 		context->ClearRenderTargetView(view_array[i], color);
@@ -425,7 +425,7 @@ void RenderBuffer::ClearRenderTarget(ID3D11DeviceContext * context, int target)
 	if (target >= used_targets)
 		target = used_targets - 1;
 
-	float color[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
+	float color[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 
 	context->ClearRenderTargetView(view_array[target], color);
 }
