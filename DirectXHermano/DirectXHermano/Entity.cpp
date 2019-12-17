@@ -126,6 +126,15 @@ void Entity::Delete()
 	needs_delete = true;
 }
 
+void Entity::CreateLightComponent()
+{
+	light_component = new LightComponent(LIGHT_TYPE::DIRECTIONAL_LIGHT);
+	light_component->SetDirection(transform->GetRotation());
+	light_component->SetPosition(transform->GetPosition());
+
+	is_light = true;
+}
+
 int Entity::GetLightType() const
 {
 	if (light_component)
@@ -147,13 +156,7 @@ void Entity::DrawUI(ResourceManager& res)
 	if (!light_component)
 	{
 		if (ImGui::Button("     Add Light Component     "))
-		{
-			light_component = new LightComponent(LIGHT_TYPE::DIRECTIONAL_LIGHT);
-			light_component->SetDirection(transform->GetRotation());
-			light_component->SetPosition(transform->GetPosition());
-
-			is_light = true;
-		}
+			CreateLightComponent();
 	}
 	else light_component->DrawUI();
 }

@@ -35,6 +35,7 @@ int DirectXApp::Start()
 	scene_camera->needs_update = true;
 
 	scene->AddEntity();
+	scene->AddEntity().CreateLightComponent();
 
 	//Messages queue
 	int get_result = 0;

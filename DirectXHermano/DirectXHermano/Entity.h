@@ -55,6 +55,7 @@ public:
 	bool IsSelected() const { return is_selected; }
 	void SetSelected(bool selected) { is_selected = selected; }
 
+	void CreateLightComponent();
 	bool IsLight() const { return is_light; }
 	void AddLight() { is_light = false; }
 	int GetLightType() const;
