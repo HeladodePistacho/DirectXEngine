@@ -67,6 +67,11 @@ void ResourceManager::Start(Render& ren)
 	model += "/3DModels/sibenik/sibenik.obj";
 	actual_resource_path = model.c_str();
 	ImportMesh(actual_resource_path, ren);
+
+	model = my_path;
+	model += "/3DModels/sponza_crytek/sponza.obj";
+	actual_resource_path = model.c_str();
+	ImportMesh(actual_resource_path, ren);
 }
 
 void ResourceManager::DrawMaterialEditorUI(Render& ren)
