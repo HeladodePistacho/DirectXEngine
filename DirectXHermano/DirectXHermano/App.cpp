@@ -111,6 +111,9 @@ void DirectXApp::Draw(float dt)
 	//Draw Lights
 	DoLights();
 	
+	//Draw Grid
+	DoGrid();
+
 	//Draw screen plane
 	render_timer.Mark();
 	DrawScreen();
@@ -249,6 +252,22 @@ void DirectXApp::DoLights()
 
 	//Return to Default
 	window.GetRender().SetDefaultRenderTarget();
+}
+
+void DirectXApp::DoGrid()
+{
+	//Set Render Shaded Target -> 3 for final image
+	window.GetRender().SetDeferredRenderBuffer(3);
+
+	//Bind Grid Shder
+	resource_manager->grid_shader->Bind(window.GetRender());
+
+	//Draw quad mesh
+	resource_manager->screen_mesh->DrawAll(window.GetRender());
+
+	//Return to Default
+	window.GetRender().SetDefaultRenderTarget();
+
 }
 
 void DirectXApp::DrawScreen()

@@ -41,6 +41,7 @@ private:
 	//Render Stuff
 	void DoDeferred();
 	void DoLights();
+	void DoGrid();
 	void DrawScreen();
 
 	//0 for color, 1 for normals, 2 for position, 3 for shaded, 4 for depth
