@@ -68,10 +68,10 @@ void ResourceManager::Start(Render& ren)
 	actual_resource_path = model.c_str();
 	ImportMesh(actual_resource_path, ren);
 
-	model = my_path;
-	model += "/3DModels/sponza_crytek/sponza.obj";
-	actual_resource_path = model.c_str();
-	ImportMesh(actual_resource_path, ren);
+	//model = my_path;
+	//model += "/3DModels/sponza_crytek/sponza.obj";
+	//actual_resource_path = model.c_str();
+	//ImportMesh(actual_resource_path, ren);
 }
 
 void ResourceManager::DrawMaterialEditorUI(Render& ren)
@@ -221,6 +221,7 @@ void ResourceManager::LoadShaders(Render& ren)
 	mesh_shader = new ShaderProgram(ren, L"Shaders/VertexShader.cso", L"Shaders/PixelShader.cso");
 	screen_shader = new ShaderProgram(ren, L"Shaders/ScreenVertexShader.cso", L"Shaders/ScreenPixelShader.cso");
 	light_shader = new ShaderProgram(ren, L"Shaders/LightVertexShader.cso", L"Shaders/LightPixelShader.cso");
+	grid_shader = new ShaderProgram(ren, L"Shaders/ScreenVertexShader.cso", L"Shaders/GridPixelShader.cso");
 }
 
 void ResourceManager::LoadCube(Render& ren)
