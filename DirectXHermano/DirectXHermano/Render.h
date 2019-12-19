@@ -76,6 +76,7 @@ public:
 	void SetDefaultRenderTarget();
 
 	void BindDeferredTexture(int position, int slot);
+	void BindDepthTexture(int slot = 0u);
 	void BindDeferredSampler();
 
 	//Deferred

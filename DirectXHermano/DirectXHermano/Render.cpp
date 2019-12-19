@@ -111,6 +111,12 @@ void Render::BindDeferredTexture(int position, int slot)
 	direct_context->PSSetShaderResources(slot, 1u, &tmp);
 }
 
+void Render::BindDepthTexture(int slot)
+{
+	ID3D11ShaderResourceView* tmp = deferred_buffers->GetDepthView();
+	direct_context->PSSetShaderResources(slot, 1u, &tmp);
+}
+
 void Render::BindDeferredSampler()
 {
 	ID3D11SamplerState* tmp = deferred_buffers->GetSamplerState();
