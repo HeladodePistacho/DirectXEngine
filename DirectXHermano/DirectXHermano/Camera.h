@@ -7,6 +7,12 @@ struct CameraBuffer
 	DirectX::XMFLOAT3 cam_position;
 };
 
+struct CameraMatrixBuffer
+{
+	DirectX::XMFLOAT4X4 view_matrix;
+	DirectX::XMFLOAT4X4 perspective_matrix;
+};
+
 class Camera
 {
 public:
@@ -33,6 +39,11 @@ public:
 
 	//Render stuff
 	CameraBuffer camera_struct;
+	CameraMatrixBuffer camera_matrixs_struct;
+
 	ConstBuffer<CameraBuffer>* camera_buffer = nullptr;
-	void UpdateBuffer(Render& ren);
+	ConstBuffer<CameraMatrixBuffer>* camera_matrixs_buffer = nullptr;
+
+	void UpdateCameraBuffer(Render& ren);
+	void UpdateCameraMatrixBuffer(Render& ren);
 };

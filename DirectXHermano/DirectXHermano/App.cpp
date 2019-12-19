@@ -81,7 +81,8 @@ void DirectXApp::Update(float dt)
 	if (scene_camera->needs_update)
 	{
 		window.GetRender().SetCamera((*scene_camera));
-		scene_camera->UpdateBuffer(window.GetRender());
+		scene_camera->UpdateCameraBuffer(window.GetRender());
+		scene_camera->UpdateCameraMatrixBuffer(window.GetRender());
 	}
 	update_time = render_timer.Peek();
 
@@ -135,30 +136,30 @@ void DirectXApp::CameraControls(float dt)
 
 	//Panning
 	if (window.keyboard.KeyIsPressed('W'))
-		scene_camera->Move(-cos(yaw) * sin(pitch),
-							sin(yaw),
-						   -cos(yaw) * cos(pitch), dt);
+		scene_camera->Move(cos(yaw) * sin(pitch),
+							-sin(yaw),
+						   cos(yaw) * cos(pitch), dt);
 
 	if (window.keyboard.KeyIsPressed('S'))
-		scene_camera->Move( cos(yaw) * sin(pitch),
-							-sin(yaw) ,
-							cos(yaw) * cos(pitch), dt);
+		scene_camera->Move( -cos(yaw) * sin(pitch),
+							sin(yaw) ,
+							-cos(yaw) * cos(pitch), dt);
 
 	if (window.keyboard.KeyIsPressed('A'))
-		scene_camera->Move(	cos(yaw) * cos(pitch),
+		scene_camera->Move(	-cos(yaw) * cos(pitch),
 							0.0f,
-							cos(yaw) * -sin(pitch), dt);
+							-cos(yaw) * -sin(pitch), dt);
 
 	if (window.keyboard.KeyIsPressed('D'))
-		scene_camera->Move( -cos(yaw) * cos(pitch),
+		scene_camera->Move( cos(yaw) * cos(pitch),
 							0.0f,
-							cos(yaw) * sin(pitch), dt);
+							-cos(yaw) * sin(pitch), dt);
 
 	if (window.keyboard.KeyIsPressed('Q'))
-		scene_camera->Move(0.0f, -0.5f, 0.0f, dt);
+		scene_camera->Move(0.0f, 0.5f, 0.0f, dt);
 
 	if (window.keyboard.KeyIsPressed('E'))
-		scene_camera->Move(0.0f, 0.5f, 0.0f, dt);
+		scene_camera->Move(0.0f, -0.5f, 0.0f, dt);
 
 	if (window.keyboard.KeyIsPressed('R'))
 		scene_camera->ResetRotation();
@@ -261,6 +262,16 @@ void DirectXApp::DoGrid()
 
 	//Bind Grid Shder
 	resource_manager->grid_shader->Bind(window.GetRender());
+
+	//Bind Deferred Textures
+	window.GetRender().BindDepthTexture();
+
+	//Bind Sampler
+	window.GetRender().BindDeferredSampler();
+
+	//Bind Buffers
+	scene_camera->camera_buffer->BindSlot(window.GetRender());
+	scene_camera->camera_matrixs_buffer->BindSlot(window.GetRender(), 1u);
 
 	//Draw quad mesh
 	resource_manager->screen_mesh->DrawAll(window.GetRender());

@@ -7,7 +7,7 @@
 
 Camera::Camera(float width, float height) : yaw(0.0f), pitch(DirectX::XM_PI), roll(0.0f), fov((1.0f/2.0f)*DirectX::XM_PI), z_near(0.5f), z_far(50.0f), aspect_ratio(width / height) 
 {
-	camera_struct.cam_position = { 0.0f, 0.0f, -5.0f };
+	camera_struct.cam_position = { 0.0f, 0.0f, 5.0f };
 }
 
 Camera::Camera(const Camera & cam)
@@ -102,9 +102,23 @@ void Camera::ResetRotation()
 	roll = 0.0f;
 }
 
-void Camera::UpdateBuffer(Render& ren)
+void Camera::UpdateCameraBuffer(Render& ren)
 {
 	if (!camera_buffer)
 		camera_buffer = new ConstBuffer<CameraBuffer>(ren, camera_struct, BUFFER_TYPE::PIXEL_SHADER_BUFFER);
 	else camera_buffer->Update(ren, camera_struct);
+}
+
+void Camera::UpdateCameraMatrixBuffer(Render & ren)
+{
+
+	DirectX::XMMATRIX tmp_0 = (DirectX::XMMatrixRotationRollPitchYaw(yaw, pitch, roll)) * DirectX::XMMatrixTranslation(camera_struct.cam_position.x, camera_struct.cam_position.y, camera_struct.cam_position.z);
+	DirectX::XMMATRIX tmp4 = DirectX::XMMatrixTranspose(tmp_0);
+
+	DirectX::XMStoreFloat4x4(&camera_matrixs_struct.view_matrix, tmp4);
+	DirectX::XMStoreFloat4x4(&camera_matrixs_struct.perspective_matrix, DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(nullptr, DirectX::XMMatrixPerspectiveFovLH(fov, aspect_ratio, z_near, z_far))));
+
+	if (!camera_matrixs_buffer)
+		camera_matrixs_buffer = new ConstBuffer<CameraMatrixBuffer>(ren, camera_matrixs_struct, BUFFER_TYPE::PIXEL_SHADER_BUFFER);
+	else camera_matrixs_buffer->Update(ren, camera_matrixs_struct);
 }
