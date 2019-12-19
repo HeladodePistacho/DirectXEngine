@@ -38,7 +38,19 @@ float4 main(VSOUT vertex_out) : SV_Target
 	//Change from view space to world space
 	float4 world_space_coordinates = mul(view_space_coordinates, inv_view_matrix);
 
-	if(depth != 1.0)
-		return world_space_coordinates;
-	else return float4(0.0f, 0.0f, 0.0f, 0.0f);
+	float3 camera_pos_dir = normalize(world_space_coordinates.xyz - camera_position);
+
+	float dot_dir_normal = dot(camera_pos_dir , z_plane_normal);
+	float dot_cam_normal = dot(-camera_position, z_plane_normal);
+
+	if (dot_cam_normal != 0) //line outside the plane
+	{
+		if (dot_dir_normal != 0) //Line Intersects
+		{
+			float d = dot_cam_normal / dot_dir_normal;
+			if(d > 0)
+				return float4(1.0f, 1.0f, 1.0f, 1.0f);
+		}
+	}
+	 return world_space_coordinates;
 }
