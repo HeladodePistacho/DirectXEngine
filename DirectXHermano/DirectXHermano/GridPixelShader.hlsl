@@ -41,16 +41,35 @@ float4 main(VSOUT vertex_out) : SV_Target
 	float3 camera_pos_dir = normalize(world_space_coordinates.xyz - camera_position);
 
 	float dot_dir_normal = dot(camera_pos_dir , z_plane_normal);
-	float dot_cam_normal = dot(-camera_position, z_plane_normal);
+	float dot_cam_normal = dot(z_plane_point - camera_position, z_plane_normal);
 
-	if (dot_cam_normal != 0) //line outside the plane
+	float d = dot_cam_normal / dot_dir_normal;
+
+	
+			
+	if (d >= 0.0f)
 	{
-		if (dot_dir_normal != 0) //Line Intersects
-		{
-			float d = dot_cam_normal / dot_dir_normal;
-			if(d > 0)
-				return float4(1.0f, 1.0f, 1.0f, 1.0f);
-		}
+		float3 intersection_world_point = (d * camera_pos_dir) + camera_position;
+		
+		float2 grid = fwidth(intersection_world_point.xz) / (intersection_world_point.xz % 5.0f);
+		float2 inverted_grid = -fwidth(intersection_world_point.xz) / (intersection_world_point.xz % 5.0f);
+
+		if (grid.x < 1.0f)
+			grid.x = inverted_grid.x;
+
+
+		if (grid.y < 1.0f)
+			grid.y = inverted_grid.y;
+
+
+		float value = step(0.8f, max(grid.x, grid.y));
+
+
+
+		return float4(value, value, value, 1.0f);
 	}
+			
+		
+	
 	 return world_space_coordinates;
 }
