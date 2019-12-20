@@ -263,6 +263,9 @@ void DirectXApp::DoGrid()
 	//Bind Grid Shder
 	resource_manager->grid_shader->Bind(window.GetRender());
 
+	//Enable Blending
+	window.GetRender().BindLightBlending();
+
 	//Bind Deferred Textures
 	window.GetRender().BindDepthTexture();
 
@@ -275,6 +278,10 @@ void DirectXApp::DoGrid()
 
 	//Draw quad mesh
 	resource_manager->screen_mesh->DrawAll(window.GetRender());
+
+
+	//Disable Blending
+	window.GetRender().BindDefautBlending();
 
 	//Return to Default
 	window.GetRender().SetDefaultRenderTarget();
