@@ -68,6 +68,12 @@ void ResourceManager::Start(Render& ren)
 	actual_resource_path = model.c_str();
 	ImportMesh(actual_resource_path, ren);
 
+	model = my_path;
+	model += "/3DModels/Sphere/sphere.obj";
+	actual_resource_path = model.c_str();
+	ImportMesh(actual_resource_path, ren);
+	sphere_mesh = (Mesh*)GetResourceByName("sphere.obj", RESOURCE_TYPE::MESH);
+
 	//model = my_path;
 	//model += "/3DModels/sponza_crytek/sponza.obj";
 	//actual_resource_path = model.c_str();

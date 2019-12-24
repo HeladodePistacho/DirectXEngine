@@ -46,6 +46,7 @@ public:
 	//Test for screeen
 	ShaderProgram* screen_shader = nullptr;
 	Mesh* screen_mesh = nullptr;
+	Mesh* sphere_mesh = nullptr;
 
 	ShaderProgram* light_shader = nullptr;
 	ShaderProgram* grid_shader = nullptr;
