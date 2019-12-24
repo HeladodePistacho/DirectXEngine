@@ -243,6 +243,7 @@ void DirectXApp::DoLights()
 			break;
 			
 		case 1: //Point Light
+			resource_manager->sphere_mesh->DrawAll(window.GetRender());
 			break;
 		}
 			

@@ -117,6 +117,7 @@ void Entity::DrawLight(Render & ren)
 		if (light_component->NeedsUpdate())
 			light_component->UpdateLightBuffer(ren);
 
+		mesh_render->PrepareMatrices(ren);
 		light_component->Draw(ren);
 	}
 }
