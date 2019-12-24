@@ -14,13 +14,13 @@ LightComponent::LightComponent(LIGHT_TYPE type) : light_type(type)
 
 void LightComponent::Draw(Render & ren)
 {
-	light_buffer->BindSlot(ren, 0);
+	light_buffer->BindSlot(ren, 1u);
 }
 
 void LightComponent::UpdateLightBuffer(Render & ren)
 {
 	if (light_buffer == nullptr)
-		light_buffer = new ConstBuffer<LightBuffer>(ren, buffer_struct, BUFFER_TYPE::PIXEL_SHADER_BUFFER);
+		light_buffer = new ConstBuffer<LightBuffer>(ren, buffer_struct, BUFFER_TYPE::VERTEX_SHADER_BUFFER);
 	else light_buffer->Update(ren, buffer_struct);
 
 	needs_update = false;
