@@ -17,6 +17,7 @@ struct LightBuffer
 	float intensity;
 
 	DirectX::XMFLOAT3 direction;
+	float scale;
 };
 
 class LightComponent

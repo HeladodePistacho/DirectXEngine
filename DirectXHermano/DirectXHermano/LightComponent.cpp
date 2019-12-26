@@ -9,6 +9,8 @@ LightComponent::LightComponent(LIGHT_TYPE type) : light_type(type)
 	buffer_struct.type = (float)type;
 	buffer_struct.intensity = 0.0f;
 
+	buffer_struct.scale = 1.0f;
+
 	needs_update = true;
 }
 
@@ -76,6 +78,10 @@ void LightComponent::DrawUI()
 			needs_update = true;
 
 		ImGui::PopItemWidth();
+
+		if (buffer_struct.type == (float)LIGHT_TYPE::POINT_LIGHT)
+			if (ImGui::DragFloat("Radius: ", &buffer_struct.scale, 0.25f, 0.0f, 1000.0f, "%.2f"))
+				needs_update = true;
 
 		ImGui::TreePop();
 	}

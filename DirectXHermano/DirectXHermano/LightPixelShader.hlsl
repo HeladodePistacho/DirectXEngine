@@ -12,6 +12,7 @@ struct VSOUT
 	float3 direction : LIGHT_DIRECTION;
 	float3 light_position : LIGHT_POSITION;
 
+	float radius : LIGHT_SCALE;
 };
 
 texture2D difuse_color_texture : register(t0);
@@ -65,16 +66,10 @@ float4 DoPoint(VSOUT vertex_out)
 	float distance_factor;
 
 	//2.5 id the radius hardcoded
-	//if (tmp_lenght > 2.5f)
-	//	distance_factor = 0.0f;
-	//else distance_factor = max(1 - (2.5f / tmp_lenght), 0.0f);
 	
-	float constant = 1.0f;
-	float lin = 0.7f;
-	float quadratic = 1.8f;
 	float attenuation;
-
-	attenuation = saturate(1.0f - ((tmp_length * tmp_length) / (2.5f * 2.5f)));
+	float half_radius = vertex_out.radius / 2.0f;
+	attenuation = saturate(1.0f - ((tmp_length * tmp_length) / (half_radius * half_radius)));
 	attenuation *= 2;
 	
 

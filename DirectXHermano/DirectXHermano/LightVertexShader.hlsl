@@ -18,6 +18,8 @@ struct VSOUT
 
 	float3 direction : LIGHT_DIRECTION;
 	float3 light_position : LIGHT_POSITION;
+
+	float radius : LIGHT_SCALE;
 };
 
 cbuffer matrix_buffer : register(b0)
@@ -36,6 +38,7 @@ cbuffer light_buffer : register(b1)
 	float1 intensity;
 
 	float3 direction;
+	float radius;
 };
 
 VSOUT DoDirectional(VSIN vertex_in)
@@ -68,12 +71,13 @@ VSOUT DoPoint(VSIN vertex_in)
 	matrix model_view = mul(model_matrix, view_matrix);
 	matrix model_view_projection = mul(model_view, projection_matrix);
 
-	ret.position = mul(float4(vertex_in.position * 5.0f, 1.0f), model_view_projection);
+	ret.position = mul(float4(vertex_in.position * radius, 1.0f), model_view_projection);
 	ret.light_center = mul(float4(0.0f, 0.0f, 0.0f, 1.0f), model_matrix);
 	ret.light_position = ret.position.xyz / ret.position.w;
 	ret.texture_coords = vertex_in.tex_coords;
 	ret.type = type;
 	ret.color = color;
+	ret.radius = radius;
 
 	return ret;
 }
