@@ -69,7 +69,7 @@ VSOUT DoPoint(VSIN vertex_in)
 	matrix model_view_projection = mul(model_view, projection_matrix);
 
 	ret.position = mul(float4(vertex_in.position * 5.0f, 1.0f), model_view_projection);
-	ret.light_center = mul(float4(vertex_in.position, 1.0f), model_matrix);
+	ret.light_center = mul(float4(0.0f, 0.0f, 0.0f, 1.0f), model_matrix);
 	ret.light_position = ret.position.xyz / ret.position.w;
 	ret.texture_coords = vertex_in.tex_coords;
 	ret.type = type;
