@@ -46,7 +46,7 @@ float4 DoDirectional(VSOUT vertex_out)
 	float4 specular_color = 0.5f * pow(max(dot(H_vector, vertex_normal), 0.0f), 2.0f);
 
 
-	float4 final_color = (ambient_color + difuse_color + specular_color) * float4(vertex_out.color.rgb, 1.0f);
+	float4 final_color = (ambient_color + difuse_color + specular_color) * vertex_out.intensity * float4(vertex_out.color.rgb, 1.0f);
 	final_color.a = 1.0f;
 
 	return final_color;
@@ -70,7 +70,7 @@ float4 DoPoint(VSOUT vertex_out)
 	float attenuation;
 	float half_radius = vertex_out.radius / 2.0f;
 	attenuation = saturate(1.0f - ((tmp_length * tmp_length) / (half_radius * half_radius)));
-	attenuation *= 2;
+	attenuation *= vertex_out.intensity;
 	
 
 	//Vectors
@@ -81,7 +81,7 @@ float4 DoPoint(VSOUT vertex_out)
 	//Colors
 	float4 ambient_color = mul(albedo_color, ambient);
 	float4 difuse_color = mul(albedo_color, max(dot(pos_to_light, vertex_normal), 0.0f));
-	float4 specular_color = 0.5f * pow(max(dot(H_vector, vertex_normal), 0.0f), 64.0f);
+	float4 specular_color = 0.5f * pow(max(dot(H_vector, vertex_normal), 0.0f), 2.0f);
 
 	float4 final_color = (ambient_color + difuse_color + specular_color)  * attenuation * float4(vertex_out.color.rgb, 1.0f);
 	final_color.a = 1.0f;

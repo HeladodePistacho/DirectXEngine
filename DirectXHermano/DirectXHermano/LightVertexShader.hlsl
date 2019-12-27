@@ -48,6 +48,7 @@ VSOUT DoDirectional(VSIN vertex_in)
 	ret.type = type;
 	ret.color = color;
 	ret.direction = direction;
+	ret.intensity = intensity;
 	ret.texture_coords = vertex_in.tex_coords;
 	//Change texture coords to ndc coords
 	/*
@@ -78,6 +79,7 @@ VSOUT DoPoint(VSIN vertex_in)
 	ret.type = type;
 	ret.color = color;
 	ret.radius = radius;
+	ret.intensity = intensity;
 
 	return ret;
 }
