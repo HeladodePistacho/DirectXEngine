@@ -28,6 +28,8 @@ public:
 	void SetAlbedoTexture(TextureResource* new_albedo);
 	void SetAlbedoColor(Render& ren, float r, float g, float b, float a = 1.0f);
 
+	void SetNormalTexture(TextureResource* new_normals);
+
 	void InitColorBuffer(Render& ren);
 
 	void BindTexture(Render& ren, TEXTURE_TYPE);
@@ -42,6 +44,8 @@ public:
 private:
 	TextureResource* albedo_texture = nullptr;
 	Color albedo_color;
+
+	TextureResource* normal_texture = nullptr;
 
 	//This holds the values to use or not the textures
 	Color use_only_colors;

@@ -44,6 +44,11 @@ void Material::SetAlbedoColor(Render& ren, float r, float g, float b, float a)
 	colors->Update(ren, albedo_color);
 }
 
+void Material::SetNormalTexture(TextureResource * new_normals)
+{
+	normal_texture = new_normals;
+}
+
 void Material::InitColorBuffer(Render & ren)
 {
 	albedo_color = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -66,6 +71,11 @@ void Material::BindTexture(Render& ren, TEXTURE_TYPE type)
 	case ALBEDO:
 		if (albedo_texture != nullptr)
 			albedo_texture->Bind(ren);
+		break;
+
+	case NORMAL:
+		if (normal_texture != nullptr)
+			normal_texture->Bind(ren);
 		break;
 
 	default:
@@ -128,6 +138,9 @@ ID3D11ShaderResourceView* Material::GetTexture(TEXTURE_TYPE texture_type) const
 			return albedo_texture->GetTexture();
 		break;
 	case NORMAL:
+		if (normal_texture)
+			return normal_texture->GetTexture();
+
 		break;
 	case HEIGHT:
 		break;

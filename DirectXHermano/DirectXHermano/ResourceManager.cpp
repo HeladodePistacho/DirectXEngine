@@ -106,10 +106,10 @@ void ResourceManager::DrawMaterialEditorUI(Render& ren)
 	if (material_to_modify != nullptr)
 	{
 		ImGui::Text("Diffuse: ");
-		ID3D11ShaderResourceView* test = material_to_modify->GetTexture(TEXTURE_TYPE::ALBEDO);
+		ID3D11ShaderResourceView* albedo = material_to_modify->GetTexture(TEXTURE_TYPE::ALBEDO);
 
-		if(test)
-			ImGui::Image(material_to_modify->GetTexture(TEXTURE_TYPE::ALBEDO), ImVec2(50.0f, 50.0f));
+		if(albedo) ImGui::Image(albedo, ImVec2(50.0f, 50.0f));
+		
 
 		ImGui::SameLine();
 		if (ImGui::BeginCombo(" ##difuse texture selector", "Select Texture", ImGuiComboFlags_::ImGuiComboFlags_None))
@@ -130,6 +130,22 @@ void ResourceManager::DrawMaterialEditorUI(Render& ren)
 
 		ImGui::PopItemWidth();
 		ImGui::Separator();
+
+		ImGui::Text("Normals: ");
+		ID3D11ShaderResourceView* normal = material_to_modify->GetTexture(TEXTURE_TYPE::NORMAL);
+		if (normal) ImGui::Image(normal, ImVec2(50.0f, 50.0f));
+
+		ImGui::SameLine();
+		if (ImGui::BeginCombo(" ##normal texture selector", "Select Texture", ImGuiComboFlags_::ImGuiComboFlags_None))
+		{
+			const TextureResource* tmp = (TextureResource*)DrawResourceSelectableUI(TEXTURE);
+
+			if (tmp != nullptr)
+				material_to_modify->SetNormalTexture((TextureResource*)tmp);
+
+			ImGui::EndCombo();
+		}
+
 	}
 	ImGui::End();
 }
@@ -555,6 +571,9 @@ const char* ResourceManager::ProcessMaterials(const aiScene * scene, aiNode * no
 					//Add the texture to resources
 					mapped_resources.insert(std::pair<RESOURCE_TYPE, Resource*>(TEXTURE, new_texture));
 				}
+
+				//Add the normal to the material
+				new_material->SetNormalTexture(new_texture);
 			}
 
 			//Look for Difuse Color
