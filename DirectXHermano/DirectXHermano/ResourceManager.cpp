@@ -540,6 +540,23 @@ const char* ResourceManager::ProcessMaterials(const aiScene * scene, aiNode * no
 				new_material->SetAlbedoTexture(new_texture);
 			}
 
+			//Look For Normal Texture
+			if (aiGetMaterialTexture(mesh_material, aiTextureType_NORMALS, 0, &texture_path) == aiReturn_SUCCESS)
+			{
+				//Check if the texture is already loaded
+				TextureResource* new_texture = (TextureResource*)GetResourceByName(texture_path.C_Str(), TEXTURE);
+				if (new_texture == nullptr)
+				{
+					//Load the Texture
+					new_texture = new TextureResource(texture_path.C_Str());
+					new_texture->AddTexture(ImportImage(texture_path.C_Str(), ren));
+					new_texture->AddSampler(new Sampler(ren));
+
+					//Add the texture to resources
+					mapped_resources.insert(std::pair<RESOURCE_TYPE, Resource*>(TEXTURE, new_texture));
+				}
+			}
+
 			//Look for Difuse Color
 			aiColor4D difuse_color;
 			if (aiGetMaterialColor(mesh_material, AI_MATKEY_COLOR_DIFFUSE, &difuse_color) == aiReturn_SUCCESS)
