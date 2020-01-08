@@ -246,7 +246,6 @@ void DirectXApp::DoLights()
 			resource_manager->sphere_mesh->DrawAll(window.GetRender());
 			break;
 		}
-			
 	}
 	
 	//Disable Blending
@@ -283,6 +282,9 @@ void DirectXApp::DoGrid()
 
 	//Disable Blending
 	window.GetRender().BindDefautBlending();
+
+	//Draw Light mesh
+	DrawPointLights();
 
 	//Return to Default
 	window.GetRender().SetDefaultRenderTarget();
@@ -332,6 +334,20 @@ void DirectXApp::DrawScreen()
 	window.GetRender().direct_context->PSSetSamplers(0u, 1u, &tmp_sampler);
 
 	resource_manager->screen_mesh->DrawAll(window.GetRender());
+}
+
+void DirectXApp::DrawPointLights()
+{
+	//Bind Light Mesh Shader
+	resource_manager->light_mesh_shader->Bind(window.GetRender());
+
+	//Only Directional lights for the moment
+	for (int i = 0; i < scene->GetNumLights(); i++)
+	{
+		scene->DrawLightAt(i, window.GetRender());
+
+		resource_manager->light_mesh->DrawAll(window.GetRender());
+	}
 }
 
 //------------------------------ UI -------------------------------------------------

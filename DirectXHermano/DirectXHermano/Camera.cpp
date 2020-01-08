@@ -5,9 +5,9 @@
 //-DirectX::XM_PI/18.0f
 //DirectX::XM_PI / 2.0f
 
-Camera::Camera(float width, float height) : yaw(0.0f), pitch(DirectX::XM_PI), roll(0.0f), fov((1.0f/2.0f)*DirectX::XM_PI), z_near(0.5f), z_far(50.0f), aspect_ratio(width / height) 
+Camera::Camera(float width, float height) : yaw(0.0f), pitch(DirectX::XM_PI), roll(0.0f), fov((1.0f/2.0f)*DirectX::XM_PI), z_near(0.5f), z_far(200.0f), aspect_ratio(width / height) 
 {
-	camera_struct.cam_position = { 0.0f, 0.0f, 5.0f };
+	camera_struct.cam_position = { 0.0f, 5.0f, 8.0f };
 }
 
 Camera::Camera(const Camera & cam)

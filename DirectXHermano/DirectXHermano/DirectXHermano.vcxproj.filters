@@ -250,5 +250,11 @@
     <FxCompile Include="GridPixelShader.hlsl">
       <Filter>Archivos de encabezado\Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="PointLightVertexShader.hlsl">
+      <Filter>Archivos de encabezado\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="PointLightPixelShader.hlsl">
+      <Filter>Archivos de encabezado\Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
