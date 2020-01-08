@@ -47,9 +47,11 @@ public:
 	ShaderProgram* screen_shader = nullptr;
 	Mesh* screen_mesh = nullptr;
 	Mesh* sphere_mesh = nullptr;
+	Mesh* light_mesh = nullptr;
 
 	ShaderProgram* light_shader = nullptr;
 	ShaderProgram* grid_shader = nullptr;
+	ShaderProgram* light_mesh_shader = nullptr;
 
 private:
 	std::multimap<RESOURCE_TYPE, Resource*> mapped_resources;

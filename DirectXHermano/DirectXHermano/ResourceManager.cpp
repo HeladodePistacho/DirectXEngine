@@ -244,6 +244,7 @@ void ResourceManager::LoadShaders(Render& ren)
 	screen_shader = new ShaderProgram(ren, L"Shaders/ScreenVertexShader.cso", L"Shaders/ScreenPixelShader.cso");
 	light_shader = new ShaderProgram(ren, L"Shaders/LightVertexShader.cso", L"Shaders/LightPixelShader.cso");
 	grid_shader = new ShaderProgram(ren, L"Shaders/ScreenVertexShader.cso", L"Shaders/GridPixelShader.cso");
+	light_mesh_shader = new ShaderProgram(ren, L"Shaders/PointLightVertexShader.cso", L"Shaders/PointLightPixelShader.cso");
 }
 
 void ResourceManager::LoadCube(Render& ren)
@@ -330,7 +331,7 @@ void ResourceManager::LoadCube(Render& ren)
 	new_submesh->AddIndices(new_indexbuffer);
 	new_submesh->AddInfo(vertices.size(), indices.size());
 
-	//std::string name = "Cube Mesh";
+	//CubeMesh
 	Mesh* new_mesh = new Mesh((std::string)"/Cube Mesh");
 	new_mesh->AddSubmesh(new_submesh);
 
@@ -338,6 +339,21 @@ void ResourceManager::LoadCube(Render& ren)
 
 	mapped_resources.insert(map_element_mesh);
 
+	//Cube Mesh Only For Lights drawing
+	std::vector<D3D11_INPUT_ELEMENT_DESC> light_layout =
+	{
+		{ "Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+	};
+
+	Submesh* light_submesh = new Submesh();
+	light_submesh->AddBind(new_vertexbuffer);
+	light_submesh->AddBind(new_topology);
+	light_submesh->AddBind(new_inputlayout);
+	light_submesh->AddIndices(new_indexbuffer);
+	light_submesh->AddInfo(vertices.size(), indices.size());
+
+	light_mesh = new Mesh((std::string)"/Light Mesh");
+	light_mesh->AddSubmesh(light_submesh);
 }
 
 void ResourceManager::LoadNullTexture(Render& ren)
