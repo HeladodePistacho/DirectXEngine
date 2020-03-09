@@ -236,16 +236,7 @@ void DirectXApp::DoLights()
 	{
 		scene->DrawLightAt(i, window.GetRender());
 
-		switch (scene->GetLightType(i))
-		{
-		case 0: //Directional Light
-			resource_manager->screen_mesh->DrawAll(window.GetRender());
-			break;
-			
-		case 1: //Point Light
-			resource_manager->sphere_mesh->DrawAll(window.GetRender());
-			break;
-		}
+		resource_manager->screen_mesh->DrawAll(window.GetRender());
 	}
 	
 	//Disable Blending
