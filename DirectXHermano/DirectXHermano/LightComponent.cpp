@@ -1,7 +1,7 @@
 #include "LightComponent.h"
 #include "ImGui/imgui.h"
 
-LightComponent::LightComponent(LIGHT_TYPE type) : light_type(type)
+LightComponent::LightComponent(LIGHT_TYPE type)
 {
 	buffer_struct = {};
 	buffer_struct.color = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
@@ -9,7 +9,7 @@ LightComponent::LightComponent(LIGHT_TYPE type) : light_type(type)
 	buffer_struct.type = (float)type;
 	buffer_struct.intensity = 1.0f;
 
-	buffer_struct.scale = 1.0f;
+	buffer_struct.position = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
 	buffer_struct.scale = 5.0f;
 
 	needs_update = true;
@@ -31,7 +31,7 @@ void LightComponent::UpdateLightBuffer(Render & ren)
 
 void LightComponent::SetDirection(DirectX::XMFLOAT3 dir)
 {
-	if (light_type == DIRECTIONAL_LIGHT)
+	if (buffer_struct.type == DIRECTIONAL_LIGHT)
 	{
 		buffer_struct.direction = dir;
 		needs_update = true;
@@ -40,7 +40,7 @@ void LightComponent::SetDirection(DirectX::XMFLOAT3 dir)
 
 void LightComponent::SetPosition(DirectX::XMFLOAT3 pos)
 {
-	if (light_type == POINT_LIGHT)
+	if (buffer_struct.type == POINT_LIGHT)
 	{
 		buffer_struct.position = pos;
 		needs_update = true;
