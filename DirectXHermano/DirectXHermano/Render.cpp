@@ -181,7 +181,7 @@ void Render::LoadRenderTargets(int width, int height)
 	//1 -> normals
 	//2 -> position
 	//3 -> Shaded scene
-	deferred_buffers = new RenderBuffer(4);
+	deferred_buffers = new RenderBuffer(5);
 	deferred_buffers->LoadRenderTargets(direct_device.Get(), width, height);
 	deferred_buffers->LoadDepth(direct_device.Get(), width, height);
 }

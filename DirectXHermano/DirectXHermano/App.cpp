@@ -208,11 +208,11 @@ void DirectXApp::DoDeferred()
 
 void DirectXApp::DoLights()
 {
-	//Set Render Shaded Target -> 3 for final image
-	window.GetRender().SetDeferredRenderBuffer(3);
+	//Set Render Shaded Target -> 4 for final image
+	window.GetRender().SetDeferredRenderBuffer(4);
 
 	//Clear the Render Target
-	window.GetRender().ClearDeferredBuffer(3);
+	window.GetRender().ClearDeferredBuffer(4);
 
 	//Bind Light Shader
 	resource_manager->light_shader->Bind(window.GetRender());
@@ -249,7 +249,7 @@ void DirectXApp::DoLights()
 void DirectXApp::DoGrid()
 {
 	//Set Render Shaded Target -> 3 for final image
-	window.GetRender().SetDeferredRenderBuffer(3);
+	window.GetRender().SetDeferredRenderBuffer(4);
 
 	//Bind Grid Shder
 	resource_manager->grid_shader->Bind(window.GetRender());
@@ -310,15 +310,21 @@ void DirectXApp::DrawScreen()
 		break;
 
 	case 3:
-		//Depth
-		tmp_texture = window.GetRender().deferred_buffers->GetShaderResourceView(3);
+		//final result
+		tmp_texture = window.GetRender().deferred_buffers->GetShaderResourceView(4);
 		break;
 
 	case 4:
 		//Depth
 		tmp_texture = window.GetRender().deferred_buffers->GetDepthView();
 		break;
+
+	case 5:
+		//specular
+		tmp_texture = window.GetRender().deferred_buffers->GetShaderResourceView(3);
+		break;
 	} 
+
 	window.GetRender().direct_context->PSSetShaderResources(0u, 1u, &tmp_texture);
 
 	ID3D11SamplerState* tmp_sampler = window.GetRender().deferred_buffers->GetSamplerState();
@@ -390,6 +396,9 @@ void DirectXApp::DrawApplicaionUI()
 
 				if (ImGui::Selectable("Position", false, ImGuiSelectableFlags_::ImGuiSelectableFlags_None, ImVec2(100, 0)))
 					texture_type = 2;
+
+				if (ImGui::Selectable("Specular", false, ImGuiSelectableFlags_::ImGuiSelectableFlags_None, ImVec2(100, 0)))
+					texture_type = 5;
 
 				if (ImGui::Selectable("Final Result", false, ImGuiSelectableFlags_::ImGuiSelectableFlags_None, ImVec2(100, 0)))
 					texture_type = 3;

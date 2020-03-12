@@ -12,6 +12,7 @@ struct PSOUT
 	float4 diffuse_color : SV_Target0;
 	float4 normals : SV_Target1;
 	float4 position : SV_Target2;
+	float4 specular : SV_Target3;
 };
 
 Texture2D albedo : register(t0);
@@ -37,6 +38,7 @@ PSOUT main(VSOUT vertex_out)
 
 	pixel_shader_out.normals = float4(vertex_out.normal, 1.0f);
 	pixel_shader_out.position = float4(vertex_out.position, 1.0f);
+	pixel_shader_out.specular = float4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	return pixel_shader_out;
 }
