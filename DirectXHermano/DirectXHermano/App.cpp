@@ -224,6 +224,7 @@ void DirectXApp::DoLights()
 	window.GetRender().BindDeferredTexture(0, 0); //Diffuse texture, slot 0
 	window.GetRender().BindDeferredTexture(1, 1); //Normal texture, slot 1
 	window.GetRender().BindDeferredTexture(2, 2); //Position texture, slot 2
+	window.GetRender().BindDeferredTexture(3, 3); //Specular texture, slot 3
 
 	//Bind Buffers
 	scene_camera->camera_buffer->BindSlot(window.GetRender(), 1u);
@@ -248,7 +249,7 @@ void DirectXApp::DoLights()
 
 void DirectXApp::DoGrid()
 {
-	//Set Render Shaded Target -> 3 for final image
+	//Set Render Shaded Target -> 4 for final image
 	window.GetRender().SetDeferredRenderBuffer(4);
 
 	//Bind Grid Shder
