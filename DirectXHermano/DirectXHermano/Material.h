@@ -12,6 +12,12 @@ struct Color
 	float components[4];
 };
 
+struct MaterialStructBuffer
+{
+	float use_only_color;
+	float specular_value;
+};
+
 enum TEXTURE_TYPE
 {
 	ALBEDO = 0,
@@ -34,11 +40,16 @@ public:
 
 	void BindTexture(Render& ren, TEXTURE_TYPE);
 
+	//Color
 	float* GetColor(TEXTURE_TYPE);
 	void UpdateColor(TEXTURE_TYPE, Render&);
 
-	//test
+	//Textures
 	ID3D11ShaderResourceView* GetTexture(TEXTURE_TYPE) const;
+
+	//Speculatr
+	float GetSpecular() const { return material_struct.specular_value; }
+	void SetSpecular(int spec);
 
 	void SetNeedsUpdate(bool state) { needs_update = state; }
 private:
@@ -48,10 +59,10 @@ private:
 	TextureResource* normal_texture = nullptr;
 
 	//This holds the values to use or not the textures
-	Color use_only_colors;
+	MaterialStructBuffer material_struct;
 
 	ConstBuffer<Color>* colors = nullptr;
-	ConstBuffer<Color>* use_colors = nullptr;
+	ConstBuffer<MaterialStructBuffer>* material_buffer = nullptr;
 
 	//Update Elements
 	bool needs_update = false;

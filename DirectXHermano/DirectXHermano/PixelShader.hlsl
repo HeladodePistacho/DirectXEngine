@@ -23,9 +23,10 @@ cbuffer texture_colors : register(b0)
 	float4 albedo_color;
 };
 
-cbuffer test : register(b1)
+cbuffer material_buffer : register(b1)
 {
-	float4 only_color;
+	float only_color;
+	float specular_value;
 };
 
 PSOUT main(VSOUT vertex_out)
@@ -38,7 +39,7 @@ PSOUT main(VSOUT vertex_out)
 
 	pixel_shader_out.normals = float4(vertex_out.normal, 1.0f);
 	pixel_shader_out.position = float4(vertex_out.position, 1.0f);
-	pixel_shader_out.specular = float4(1.0f, 1.0f, 1.0f, 1.0f);
+	pixel_shader_out.specular = float4(specular_value, specular_value, specular_value, 1.0f);
 
 	return pixel_shader_out;
 }

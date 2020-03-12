@@ -10,8 +10,8 @@ Material::~Material()
 	if (colors != nullptr)
 		delete colors;
 
-	if (use_colors != nullptr)
-		delete colors;
+	if (material_buffer != nullptr)
+		delete material_buffer;
 }
 
 void Material::SetAlbedoTexture(TextureResource * new_albedo)
@@ -23,14 +23,14 @@ void Material::SetAlbedoTexture(TextureResource * new_albedo)
 		Texture* tmp = albedo_texture->GetTextureBindable();
 		if (tmp == nullptr || tmp->IsNull())
 		{
-			use_only_colors.components[0] = 1.0f;
+			material_struct.use_only_color = 1.0f;
 			needs_update = true;
 		}
 		else
 		{
-			if (use_only_colors.components[0] > 0.0)
+			if (material_struct.use_only_color > 0.0)
 			{
-				use_only_colors.components[0] = -1.0f;
+				material_struct.use_only_color = -1.0f;
 				needs_update = true;
 			}
 		}
@@ -52,13 +52,13 @@ void Material::SetNormalTexture(TextureResource * new_normals)
 void Material::InitColorBuffer(Render & ren)
 {
 	albedo_color = { 1.0f, 1.0f, 1.0f, 1.0f };
-	use_only_colors = { -1.0f, -1.0f, -1.0f, -1.0f };
+	material_struct = { -1.0f, 2.0f };
 
 	if (colors == nullptr)
 		colors = new ConstBuffer<Color>(ren, albedo_color, BUFFER_TYPE::PIXEL_SHADER_BUFFER);
 
-	if(use_colors == nullptr)
-		use_colors = new ConstBuffer<Color>(ren, use_only_colors, BUFFER_TYPE::PIXEL_SHADER_BUFFER);
+	if(material_buffer == nullptr)
+		material_buffer = new ConstBuffer<MaterialStructBuffer>(ren, material_struct, BUFFER_TYPE::PIXEL_SHADER_BUFFER);
 }
 
 void Material::BindTexture(Render& ren, TEXTURE_TYPE type)
@@ -85,8 +85,8 @@ void Material::BindTexture(Render& ren, TEXTURE_TYPE type)
 	if(colors != nullptr)
 		colors->Bind(ren);
 
-	if (use_colors != nullptr)
-		use_colors->BindSlot(ren, 1u);
+	if (material_buffer != nullptr)
+		material_buffer->BindSlot(ren, 1u);
 }
 
 float* Material::GetColor(TEXTURE_TYPE color_type)
@@ -112,7 +112,7 @@ void Material::Update(Render & ren)
 
 void Material::UpdateColorUsage(Render & ren)
 {
-	use_colors->Update(ren, use_only_colors);
+	material_buffer->Update(ren, material_struct);
 }
 
 void Material::UpdateColor(TEXTURE_TYPE color_type, Render& ren)
@@ -146,4 +146,10 @@ ID3D11ShaderResourceView* Material::GetTexture(TEXTURE_TYPE texture_type) const
 		break;
 	}
 	return nullptr;
+}
+
+void Material::SetSpecular(int spec)
+{
+	material_struct.specular_value = (float)spec;
+	needs_update = true;
 }

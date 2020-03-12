@@ -35,7 +35,7 @@ float4 DoDirectional(VSOUT vertex_out)
 	float4 albedo_color = difuse_color_texture.Sample(samplerstate, vertex_out.texture_coords);
 
 	float specular_value = specular_texture.Sample(samplerstate, vertex_out.texture_coords).x;
-	if (specular_value >= 0.0f) specular_value = 1.0f;
+	if (specular_value <= 0.0f) specular_value = 1.0f;
 
 	//Vectors
 	float3 normalized_direction = normalize(vertex_out.direction);
@@ -45,8 +45,7 @@ float4 DoDirectional(VSOUT vertex_out)
 	//Colors
 	float4 ambient_color = mul(albedo_color, ambient);
 	float4 difuse_color = mul(albedo_color, max(dot(normalized_direction, vertex_normal), 0.0f));
-	float4 specular_color = pow(max(dot(H_vector, vertex_normal), 0.0f), specular_value);
-
+	float4 specular_color = 0.5f * pow(max(dot(H_vector, vertex_normal), 0.0f), specular_value);
 
 	float4 final_color = (ambient_color + difuse_color + specular_color) * vertex_out.intensity * float4(vertex_out.color.rgb, 1.0f);
 	final_color.a = 1.0f;
@@ -64,7 +63,7 @@ float4 DoPoint(VSOUT vertex_out)
 	float4 albedo_color = difuse_color_texture.Sample(samplerstate, vertex_out.texture_coords);
 
 	float specular_value = specular_texture.Sample(samplerstate, vertex_out.texture_coords).x;
-	if (specular_value >= 0.0f) specular_value = 1.0f;
+	if (specular_value <= 0.0f) specular_value = 1.0f;
 
 	float tmp_length = length(vertex_out.light_center - mesh_position);
 	float distance_factor;
@@ -82,7 +81,7 @@ float4 DoPoint(VSOUT vertex_out)
 	//Colors
 	float4 ambient_color = mul(albedo_color, ambient);
 	float4 difuse_color = mul(albedo_color, max(dot(pos_to_light, vertex_normal), 0.0f));
-	float4 specular_color = pow(max(dot(H_vector, vertex_normal), 0.0f), specular_value);
+	float4 specular_color = 0.5f * pow(max(dot(H_vector, vertex_normal), 0.0f), specular_value);
 
 	float4 final_color = (ambient_color + difuse_color + specular_color)  * attenuation * float4(vertex_out.color.rgb, 1.0f);
 	final_color.a = 1.0f;

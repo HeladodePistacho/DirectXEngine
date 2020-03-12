@@ -146,6 +146,12 @@ void ResourceManager::DrawMaterialEditorUI(Render& ren)
 			ImGui::EndCombo();
 		}
 
+		int specular_value = material_to_modify->GetSpecular();
+		if (ImGui::SliderInt("Specular", &specular_value, 2, 512))
+		{
+			material_to_modify->SetSpecular(specular_value);
+		}
+
 	}
 	ImGui::End();
 }
