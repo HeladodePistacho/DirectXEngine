@@ -16,6 +16,7 @@ struct MaterialStructBuffer
 {
 	float use_only_color;
 	float specular_value;
+	float metalness;
 };
 
 enum TEXTURE_TYPE
@@ -50,6 +51,10 @@ public:
 	//Speculatr
 	float GetSpecular() const { return material_struct.specular_value; }
 	void SetSpecular(int spec);
+
+	//Metalness
+	float GetMetalness() const { return material_struct.metalness;  }
+	void SetMetalness(float metal);
 
 	void SetNeedsUpdate(bool state) { needs_update = state; }
 private:

@@ -27,6 +27,7 @@ cbuffer material_buffer : register(b1)
 {
 	float only_color;
 	float specular_value;
+	float metal_value;
 };
 
 PSOUT main(VSOUT vertex_out)
@@ -39,7 +40,7 @@ PSOUT main(VSOUT vertex_out)
 
 	pixel_shader_out.normals = float4(vertex_out.normal, 1.0f);
 	pixel_shader_out.position = float4(vertex_out.position, 1.0f);
-	pixel_shader_out.specular = float4(specular_value, specular_value, specular_value, 1.0f);
+	pixel_shader_out.specular = float4(specular_value, metal_value, 0.0f, 1.0f);
 
 	return pixel_shader_out;
 }

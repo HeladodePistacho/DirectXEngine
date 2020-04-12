@@ -52,7 +52,7 @@ void Material::SetNormalTexture(TextureResource * new_normals)
 void Material::InitColorBuffer(Render & ren)
 {
 	albedo_color = { 1.0f, 1.0f, 1.0f, 1.0f };
-	material_struct = { -1.0f, 2.0f };
+	material_struct = { -1.0f, 0.0f, 0.0f };
 
 	if (colors == nullptr)
 		colors = new ConstBuffer<Color>(ren, albedo_color, BUFFER_TYPE::PIXEL_SHADER_BUFFER);
@@ -150,6 +150,14 @@ ID3D11ShaderResourceView* Material::GetTexture(TEXTURE_TYPE texture_type) const
 
 void Material::SetSpecular(int spec)
 {
-	material_struct.specular_value = (float)spec;
+	//Normalized between 2 and 512
+	float normalized_spec = ((spec - 2) / 512.0f) + (2.0f / 512.0f);
+	material_struct.specular_value = normalized_spec;
+	needs_update = true;
+}
+
+void Material::SetMetalness(float metal)
+{
+	material_struct.metalness = metal;
 	needs_update = true;
 }
